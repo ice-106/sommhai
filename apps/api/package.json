@@ -1,0 +1,25 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "ts-node build.ts",
+    "dev": "tsnd --files --watch .env --respawn src/index.ts",
+    "lint": "eslint \"src/**/*.ts*\"",
+    "clean": "rm -rf build",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@ts-rest/express": "^3.51.0",
+    "express": "^4.21.2",
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0"
+  },
+  "devDependencies": {
+    "@sommhai/eslint-config": "workspace:*",
+    "@sommhai/typescript-config": "workspace:*",
+    "@types/express": "^5.0.0"
+  }
+}

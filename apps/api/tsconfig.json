@@ -1,0 +1,8 @@
+{
+  "extends": "@sommhai/typescript-config/express.json",
+  "include": ["."],
+  "exclude": ["build", "node_modules"],
+  "compilerOptions": {
+    "outDir": "./build"
+  }
+}
