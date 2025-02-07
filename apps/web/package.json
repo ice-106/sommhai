@@ -7,20 +7,25 @@
     "dev": "next dev --port 3000 --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint --max-warnings 0",
+    "lint": "eslint \"src/**/*.ts*\"",
     "check-types": "tsc --noEmit"
   },
   "dependencies": {
-    "@sommhai/ui": "workspace:*",
-    "next": "^15.1.6",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
-  },
-  "devDependencies": {
-    "@next/eslint-plugin-next": "^15.1.6",
+    "@sommhai/api-contract": "workspace:*",
     "@sommhai/eslint-config": "workspace:*",
     "@sommhai/tailwind-config": "workspace:*",
     "@sommhai/typescript-config": "workspace:*",
+    "@sommhai/ui": "workspace:*",
+    "@tanstack/react-query": "^5.66.0",
+    "@ts-rest/core": "^3.51.0",
+    "@ts-rest/react-query": "^3.51.0",
+    "axios": "^1.7.9",
+    "next": "^15.1.6",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@next/eslint-plugin-next": "^15.1.6",
     "@types/node": "^22.12.0",
     "@types/react": "^19.0.7",
     "@types/react-dom": "^19.0.3",

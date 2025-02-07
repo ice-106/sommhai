@@ -1,0 +1,32 @@
+{
+  "name": "@sommhai/api-contract",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "type": "module",
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --target node20 --dts",
+    "dev": "tsup src/index.ts --format cjs,esm --target node20 --dts --watch",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint \"src/**/*.ts*\"",
+    "check-types": "tsc --noEmit"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@sommhai/shared-type": "workspace:*",
+    "@ts-rest/core": "^3.51.0",
+    "tsup": "^8.3.6",
+    "zod": "^3.24.1"
+  }
+}

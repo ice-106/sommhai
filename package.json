@@ -1,14 +1,20 @@
 {
-  "name": "with-tailwind",
+  "name": "sommhai",
   "private": true,
   "scripts": {
     "build": "turbo build",
     "dev": "turbo run dev",
     "lint": "turbo run lint",
-    "check-types": "turbo check-types",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "prepare": "husky",
+    "check-types": "turbo run check-types"
   },
   "devDependencies": {
+    "@sommhai/eslint-config": "workspace:*",
+    "@sommhai/typescript-config": "workspace:*",
+    "eslint": "^9.19.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.4.3",
     "prettier": "^3.4.2",
     "prettier-plugin-tailwindcss": "^0.6.11",
     "turbo": "^2.4.0"

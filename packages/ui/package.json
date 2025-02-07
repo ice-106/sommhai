@@ -1,6 +1,7 @@
 {
   "name": "@sommhai/ui",
   "version": "0.0.0",
+  "type": "module",
   "sideEffects": [
     "**/*.css"
   ],
@@ -16,7 +17,7 @@
     "build": "tailwindcss -i ./src/styles.css -o ./dist/index.css",
     "check-types": "tsc --noEmit",
     "dev": "tailwindcss -i ./src/styles.css -o ./dist/index.css --watch",
-    "lint": "eslint src --max-warnings 0"
+    "lint": "eslint \"src/**/*.ts*\""
   },
   "peerDependencies": {
     "react": "^19"

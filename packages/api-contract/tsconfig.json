@@ -1,0 +1,8 @@
+{
+  "extends": "@sommhai/typescript-config/base.json",
+  "include": ["src"],
+  "exclude": ["build", "node_modules"],
+  "compilerOptions": {
+    "outDir": "./build"
+  }
+}
