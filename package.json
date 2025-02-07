@@ -10,6 +10,8 @@
     "check-types": "turbo run check-types"
   },
   "devDependencies": {
+    "@commitlint/cli": "^19.7.1",
+    "@commitlint/config-conventional": "^19.7.1",
     "@sommhai/eslint-config": "workspace:*",
     "@sommhai/typescript-config": "workspace:*",
     "eslint": "^9.19.0",
