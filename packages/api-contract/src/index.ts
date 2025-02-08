@@ -1,6 +1,6 @@
-import { initContract } from "@ts-rest/core";
-import { z } from "zod";
-import { postContract } from "./contracts/post";
+import { initContract } from '@ts-rest/core';
+
+import { postContract } from './contracts/post';
 
 const c = initContract();
 
