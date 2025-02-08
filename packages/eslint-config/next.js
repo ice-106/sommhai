@@ -25,6 +25,10 @@ export const nextJsConfig = [
         ...globals.serviceworker,
       },
     },
+    rules: {
+      ...pluginReact.configs.flat.recommended.rules,
+      "react/jsx-sort-props": ["error", { callbacksLast: true }],
+    },
   },
   {
     plugins: {
