@@ -1,5 +1,11 @@
 {
   "extends": "@sommhai/typescript-config/react-library.json",
   "include": ["src"],
-  "exclude": ["dist", "build", "node_modules"]
+  "exclude": ["dist", "build", "node_modules"],
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@ui/*": ["src/*"]
+    }
+  }
 }

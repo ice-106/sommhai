@@ -2,7 +2,7 @@
   "name": "api",
   "version": "1.0.0",
   "scripts": {
-    "build": "ts-node build.ts",
+    "build": "tsc -d",
     "dev": "tsnd --files --watch .env --respawn src/index.ts",
     "lint": "eslint \"src/**/*.ts*\"",
     "clean": "rm -rf build",
