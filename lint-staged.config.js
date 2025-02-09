@@ -1,3 +1,5 @@
+const path = require("path");
+
 const TYPESCRIPT_MODULES = [
   {
     name: '@sommhai/api-contract',
@@ -6,6 +8,10 @@ const TYPESCRIPT_MODULES = [
   {
     name: '@sommhai/shared-type',
     path: 'packages/shared-type',
+  },
+  {
+    name: '@sommhai/ui',
+    path: 'packages/ui',
   },
   {
     name: 'api',
