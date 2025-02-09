@@ -21,6 +21,10 @@ const TYPESCRIPT_MODULES = [
     name: 'web',
     path: 'apps/web',
   },
+  {
+    name: 'liff',
+    path: 'apps/liff',
+  }
 ];
 
 const TYPESCRIPT_LINTER = TYPESCRIPT_MODULES.reduce((acc, { name, path }) => {
