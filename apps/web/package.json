@@ -13,6 +13,7 @@
   "dependencies": {
     "@sommhai/api-contract": "workspace:*",
     "@sommhai/eslint-config": "workspace:*",
+    "@sommhai/shared-type": "workspace:*",
     "@sommhai/tailwind-config": "workspace:*",
     "@sommhai/typescript-config": "workspace:*",
     "@sommhai/ui": "workspace:*",
