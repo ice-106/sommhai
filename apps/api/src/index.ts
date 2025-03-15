@@ -1,5 +1,6 @@
 import { contract } from '@sommhai/api-contract';
 import { createExpressEndpoints } from '@ts-rest/express';
+import cors from 'cors';
 import express from 'express';
 import * as swaggerUi from 'swagger-ui-express';
 
@@ -10,6 +11,7 @@ import { router } from './router';
 const app = express();
 const port = 8080;
 
+app.use(cors());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 

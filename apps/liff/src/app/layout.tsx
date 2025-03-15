@@ -2,8 +2,10 @@ import './globals.css';
 
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
+import { StrictMode } from 'react';
 
 import { LiffProvider } from '@/contexts/global/liff';
+import { QueryProvider } from '@/contexts/global/query';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -28,7 +30,11 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <LiffProvider>{children}</LiffProvider>
+        <StrictMode>
+          <QueryProvider>
+            <LiffProvider>{children}</LiffProvider>
+          </QueryProvider>
+        </StrictMode>
       </body>
     </html>
   );

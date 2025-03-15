@@ -19,10 +19,22 @@ export const postContract = c.router({
       500: z.object({ message: z.string() }),
     },
   },
+  getPost: {
+    method: 'GET',
+    path: '/posts/:postId',
+    pathParams: z.object({ postId: z.string().regex(/^\d+$/).transform(Number) }),
+    responses: {
+      200: z.object({ userPost }),
+      404: z.object({ message: z.string() }),
+      500: z.object({ message: z.string() }),
+    },
+  },
   getPosts: {
     method: 'GET',
     path: '/posts',
     query: z.object({
+      postIds: z.array(z.string().regex(/^\d+$/).transform(Number)),
+      postTitles: z.array(z.string()).optional(),
       take: z.string().regex(/^\d+$/).transform(Number).optional(),
       skip: z.string().regex(/^\d+$/).transform(Number).optional(),
       search: z.string().optional(),
@@ -32,6 +44,7 @@ export const postContract = c.router({
         posts: z.array(userPost),
         total: z.number(),
       }),
+      404: z.object({ message: z.string() }),
       500: z.object({ message: z.string() }),
     },
   },
