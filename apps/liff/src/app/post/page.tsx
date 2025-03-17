@@ -1,11 +1,11 @@
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import React, { Suspense } from 'react';
 
+import Loading from '@/components/common/loading';
 import { getQueryClientRsc } from '@/libs/reactQuery';
 import { tsr } from '@/libs/tsr';
 
-import Loading from './loading';
-import { ClientPostPage } from './post';
+import { ClientPostPage } from './view';
 
 export const dynamic = 'force-dynamic';
 
