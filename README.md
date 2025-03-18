@@ -19,7 +19,7 @@
 2. Configure `.env` file, example can be use from `.env.example` or run the following command
 
    ```bash
-   cp apps/liff/.env.example apps.liff/.env
+   cp apps/liff/.env.example apps/liff/.env
    ```
 
 3. Obtain LIFF Channel ID from [LINE Developers](https://developers.line.biz/)
