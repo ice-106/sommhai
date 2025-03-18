@@ -1,58 +1,128 @@
-# Turborepo Tailwind CSS starter
+# SomMhai App
 
-This Turborepo starter is maintained by the Turborepo core team.
+## Pre-requisites
 
-## Using this example
+- [Node.js (>=20.0.0)](https://nodejs.org/en/) - JavaScript runtime
+- [PNPM (>=9.0.0)](https://pnpm.io/) - Package manager
+- [Docker](https://www.docker.com/) - Containerization platform
 
-Run the following command:
+## Getting Started
+
+### Local Development
+
+1. Install Dependencies
+
+   ```bash
+   pnpm install
+   ```
+
+2. Configure `.env` file, example can be use from `.env.example` or run the following command
+
+   ```bash
+   cp apps/liff/.env.example apps.liff/.env
+   ```
+
+3. Obtain LIFF Channel ID from [LINE Developers](https://developers.line.biz/)
+
+   - Create your own providers with `LINE Login` application type
+   - Create LIFF channel
+   - Add the LIFF Chaneel ID on `NEXT_PUBLIC_LIFF_ID`
+
+4. Prepare local database instance
+
+   ```bash เดะมาเขียนต่อ
+   docker compose up -d
+   pnpm db:migrate
+   pnpm db:seed
+   ```
+
+5. Start the development server
+
+   ```bash
+   pnpm dev
+   ```
+
+   See in the console for the URL of the development server. Basically, as shown below.
+
+|   app   |            URL             | Description        |
+| :-----: | :------------------------: | ------------------ |
+|   web   |   http://localhost:3000    | Landing Page (TBD) |
+|  liff   |   http://localhost:3001    | Line Webview       |
+|   api   |   http://localhost:8080    | SomMhai API        |
+| swagger | http://localhost:8080/docs | API Doc            |
+
+## Turbo
+
+### Package Installation
+
+```bash
+# Install a package in a workspace
+pnpm add <package> --filter <workspace>
+
+# Remove a package from a workspace
+pnpm uninstall <package> --filter <workspace>
+
+# Upgrade a package in a workspace
+pnpm update <package> --filter <workspace>
+```
+
+### Add ui components
+
+Use the pre-made script:
 
 ```sh
-npx create-turbo@latest -e with-tailwind
+pnpm ui:add <component-name>
 ```
 
-## What's inside?
+> This works just like the add command in the `shadcn/ui` CLI.
 
-This Turborepo includes the following packages/apps:
+### Add a new app
 
-### Apps and Packages
+Turborepo offer a simple command to add a new app:
 
-- `docs`: a [Next.js](https://nextjs.org/) app with [Tailwind CSS](https://tailwindcss.com/)
-- `web`: another [Next.js](https://nextjs.org/) app with [Tailwind CSS](https://tailwindcss.com/)
-- `ui`: a stub React component library with [Tailwind CSS](https://tailwindcss.com/) shared by both `web` and `docs` applications
-- `@sommhai/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@sommhai/typescript-config`: `tsconfig.json`s used throughout the monorepo
-
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Building packages/ui
-
-This example is set up to produce compiled styles for `ui` components into the `dist` directory. The component `.tsx` files are consumed by the Next.js apps directly using `transpilePackages` in `next.config.js`. This was chosen for several reasons:
-
-- Make sharing one `tailwind.config.js` to apps and packages as easy as possible.
-- Make package compilation simple by only depending on the Next.js Compiler and `tailwindcss`.
-- Ensure Tailwind classes do not overwrite each other. The `ui` package uses a `ui-` prefix for it's classes.
-- Maintain clear package export boundaries.
-
-Another option is to consume `packages/ui` directly from source without building. If using this option, you will need to update the `tailwind.config.js` in your apps to be aware of your package locations, so it can find all usages of the `tailwindcss` class names for CSS compilation.
-
-For example, in [tailwind.config.js](packages/tailwind-config/tailwind.config.js):
-
-```js
-  content: [
-    // app content
-    `src/**/*.{js,ts,jsx,tsx}`,
-    // include packages if not transpiling
-    "../../packages/ui/*.{js,ts,jsx,tsx}",
-  ],
+```sh
+pnpm turbo gen workspace --name <app-name>
 ```
 
-If you choose this strategy, you can remove the `tailwindcss` and `autoprefixer` dependencies from the `ui` package.
+This will create a new empty app in the `apps` directory.
 
-### Utilities
+If you want, you can copy an existing app with:
 
-This Turborepo has some additional tools already setup for you:
+```sh
+pnpm turbo gen workspace --name <app-name> --copy
+```
 
-- [Tailwind CSS](https://tailwindcss.com/) for styles
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
+> [!NOTE]
+> Remember to run `pnpm install` after cloneing the app.
+
+# Repository Structure
+
+ประกอบไปด้วย 3 folder หลัก ๆ
+
+```tree
+sommhai/
+├── apps/
+│     └──api/
+│      └──liff/
+│      └──web/
+│      └──mobile/
+│
+└── packages/
+    ├── api-contract
+    ├── shared-type
+    └── ui
+```
+
+**api**: backend service for SomMhai.
+
+**liff**: line webview for SomMhai.
+
+**web**: potentail landing page.
+
+**mobile**: poentail SomMhai mobile app.
+
+**api-contract**: ts-rest contract.
+
+**shared-type**: shared typescript interterface
+
+**ui**: shared ui components
