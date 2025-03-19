@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import React from 'react';
 
-import EventCard from '../component/EventCard';
+import EventCard from '@/components/EventCard';
 
 function HomePage(): React.ReactElement {
   return (
