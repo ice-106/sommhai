@@ -30,10 +30,8 @@
 
 4. Prepare local database instance
 
-   ```bash เดะมาเขียนต่อ
+   ```bash
    docker compose up -d
-   pnpm db:migrate
-   pnpm db:seed
    ```
 
 5. Start the development server
@@ -44,12 +42,12 @@
 
    See in the console for the URL of the development server. Basically, as shown below.
 
-|   app   |            URL             | Description        |
-| :-----: | :------------------------: | ------------------ |
-|   web   |   http://localhost:3000    | Landing Page (TBD) |
-|  liff   |   http://localhost:3001    | Line Webview       |
-|   api   |   http://localhost:8080    | SomMhai API        |
-| swagger | http://localhost:8080/docs | API Doc            |
+|   app   |             URL              | Description        |
+| :-----: | :--------------------------: | ------------------ |
+|   web   |   <http://localhost:3000>    | Landing Page (TBD) |
+|  liff   |   <http://localhost:3001>    | Line Webview       |
+|   api   |   <http://localhost:8080>    | SomMhai API        |
+| swagger | <http://localhost:8080/docs> | API Doc            |
 
 ## Turbo
 
