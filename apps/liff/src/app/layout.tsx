@@ -5,7 +5,6 @@ import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import { StrictMode } from 'react';
 
-import AppLayout from '@/components/common/layout';
 import { LiffProvider } from '@/contexts/global/liff';
 import { QueryProvider } from '@/contexts/global/query';
 
@@ -34,9 +33,7 @@ export default function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <StrictMode>
           <QueryProvider>
-            <LiffProvider>
-              <AppLayout>{children}</AppLayout>
-            </LiffProvider>
+            <LiffProvider>{children}</LiffProvider>
           </QueryProvider>
         </StrictMode>
       </body>

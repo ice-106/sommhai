@@ -1,4 +1,4 @@
-import { cn } from '@sommhai/ui/lib/utils';
+import { cn } from '@sommhai/ui/src/lib/utils';
 import React from 'react';
 
 export default function AppLayout({
