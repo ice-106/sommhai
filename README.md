@@ -19,7 +19,7 @@
 2. Configure `.env` file, example can be use from `.env.example` or run the following command
 
    ```bash
-   cp apps/liff/.env.example apps/liff/.env
+   cp apps/liff/.env.example apps.liff/.env
    ```
 
 3. Obtain LIFF Channel ID from [LINE Developers](https://developers.line.biz/)
@@ -30,8 +30,10 @@
 
 4. Prepare local database instance
 
-   ```bash
+   ```bash เดะมาเขียนต่อ
    docker compose up -d
+   pnpm db:migrate
+   pnpm db:seed
    ```
 
 5. Start the development server
@@ -42,12 +44,12 @@
 
    See in the console for the URL of the development server. Basically, as shown below.
 
-|   app   |             URL              | Description        |
-| :-----: | :--------------------------: | ------------------ |
-|   web   |   <http://localhost:3000>    | Landing Page (TBD) |
-|  liff   |   <http://localhost:3001>    | Line Webview       |
-|   api   |   <http://localhost:8080>    | SomMhai API        |
-| swagger | <http://localhost:8080/docs> | API Doc            |
+|   app   |            URL             | Description        |
+| :-----: | :------------------------: | ------------------ |
+|   web   |   http://localhost:3000    | Landing Page (TBD) |
+|  liff   |   http://localhost:3001    | Line Webview       |
+|   api   |   http://localhost:8080    | SomMhai API        |
+| swagger | http://localhost:8080/docs | API Doc            |
 
 ## Turbo
 

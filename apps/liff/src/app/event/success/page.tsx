@@ -1,15 +1,15 @@
 import Link from 'next/link';
 import React from 'react';
 
-function Landing() {
+function Success() {
   return (
     <div>
-      <h1>Welcome to sommhai!</h1>
+      Success
       <Link href='/home'>
-        <h1 className='font-bold text-blue-600'>Home</h1>
+        <h1 className='font-bold text-blue-500'>Next</h1>
       </Link>
     </div>
   );
 }
 
-export default Landing;
+export default Success;
