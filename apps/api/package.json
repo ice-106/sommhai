@@ -8,10 +8,14 @@
     "clean": "rm -rf build",
     "check-types": "tsc --noEmit"
   },
+  "prisma": {
+    "schema": "prisma/schema.prisma"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@prisma/client": "6.5.0",
     "@sommhai/api-contract": "workspace:*",
     "@sommhai/eslint-config": "workspace:*",
     "@sommhai/shared-type": "workspace:*",

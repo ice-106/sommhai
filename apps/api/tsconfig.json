@@ -1,6 +1,6 @@
 {
   "extends": "@sommhai/typescript-config/express.json",
-  "include": ["."],
+  "include": [".", "src/common/libs/db.ts"],
   "exclude": ["build", "node_modules"],
   "compilerOptions": {
     "outDir": "./build"
