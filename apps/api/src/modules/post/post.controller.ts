@@ -16,7 +16,6 @@ export const PostController: RouterImplementation<typeof contract.post> = {
   },
   getPosts: async ({ query: { postIds, search, skip, take } }) => {
     // const posts = await PostService.getManyPosts({ postIds, search, skip, take });
-
     return {
       status: 200,
       body: {
