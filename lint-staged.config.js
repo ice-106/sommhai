@@ -18,10 +18,6 @@ const TYPESCRIPT_MODULES = [
     path: 'apps/api',
   },
   {
-    name: 'web',
-    path: 'apps/web',
-  },
-  {
     name: 'liff',
     path: 'apps/liff',
   }
