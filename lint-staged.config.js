@@ -1,4 +1,4 @@
-const path = require("path");
+const path = require('path');
 
 const TYPESCRIPT_MODULES = [
   {
@@ -20,7 +20,7 @@ const TYPESCRIPT_MODULES = [
   {
     name: 'liff',
     path: 'apps/liff',
-  }
+  },
 ];
 
 const TYPESCRIPT_LINTER = TYPESCRIPT_MODULES.reduce((acc, { name, path }) => {
