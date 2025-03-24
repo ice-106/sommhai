@@ -8,6 +8,7 @@
     "clean": "rm -rf build",
     "check-types": "tsc --noEmit",
     "seed": "prisma db seed",
+    "generate": "prisma generate --sql",
     "studio": "prisma studio"
   },
   "prisma": {
