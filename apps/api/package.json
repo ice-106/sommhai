@@ -6,7 +6,9 @@
     "dev": "tsnd --files --watch .env --respawn src/index.ts",
     "lint": "eslint \"src/**/*.ts*\"",
     "clean": "rm -rf build",
-    "check-types": "tsc --noEmit"
+    "check-types": "tsc --noEmit",
+    "seed": "prisma db seed",
+    "studio": "prisma studio"
   },
   "prisma": {
     "schema": "prisma/schema.prisma",

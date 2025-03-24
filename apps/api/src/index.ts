@@ -1,5 +1,3 @@
-import { PrismaClient } from '@prisma/client';
-import { getPostsAndAuthor } from '@prisma/client/sql';
 import { contract } from '@sommhai/api-contract';
 import { createExpressEndpoints } from '@ts-rest/express';
 import cors from 'cors';
@@ -32,12 +30,3 @@ app.get('/', (req, res) => {
 app.listen(port, () => {
   console.log(`SomMhai app listening on port ${port}`);
 });
-
-async function main() {
-  const prisma = new PrismaClient();
-  const stats = await prisma.$queryRawTyped(getPostsAndAuthor());
-
-  console.log(stats);
-}
-
-main();
