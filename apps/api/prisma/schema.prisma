@@ -1,0 +1,77 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["typedSql"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  uid               String      @id @default(cuid())
+  phone             String
+  email             String      @unique
+  dob               DateTime
+  first_name        String
+  last_name         String
+  payment_method    String?
+  subscription_plan String?
+  attendees         Attendee[]
+  eventsHosted      Event[]     @relation("EventHost")
+  mediaTaken        Media[]
+  organizers        Organizer[]
+}
+
+model Event {
+  eid                 String      @id @default(cuid())
+  name                String
+  time                DateTime
+  place               String
+  description         String?
+  number_of_attendees Int
+  memory              String?
+  feedbacks           String?
+  hostId              String
+  attendees           Attendee[]
+  host                User        @relation("EventHost", fields: [hostId], references: [uid], onDelete: Cascade)
+  Media               Media[]
+  organizers          Organizer[]
+  Updates             Updates[]
+}
+
+model Attendee {
+  uid   String
+  eid   String
+  event Event  @relation(fields: [eid], references: [eid], onDelete: Cascade)
+  user  User   @relation(fields: [uid], references: [uid], onDelete: Cascade)
+
+  @@id([uid, eid])
+}
+
+model Organizer {
+  uid   String
+  eid   String
+  event Event  @relation(fields: [eid], references: [eid], onDelete: Cascade)
+  user  User   @relation(fields: [uid], references: [uid], onDelete: Cascade)
+
+  @@id([uid, eid])
+}
+
+model Media {
+  media_id    String  @id @default(cuid())
+  source      String
+  taken_by_id String?
+  eid         String
+  event       Event   @relation(fields: [eid], references: [eid], onDelete: Cascade)
+  taken_by    User?   @relation(fields: [taken_by_id], references: [uid])
+}
+
+model Updates {
+  log_id          String   @id @default(cuid())
+  message         String
+  acknowledge     Boolean
+  date_of_message DateTime
+  eid             String
+  event           Event    @relation(fields: [eid], references: [eid], onDelete: Cascade)
+}

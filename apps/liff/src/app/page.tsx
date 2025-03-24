@@ -1,13 +1,13 @@
-import Link from 'next/link';
+// import Link from 'next/link';
 import React from 'react';
 
 function Landing() {
   return (
     <div>
       <h1>Welcome to sommhai!</h1>
-      <Link href='/home'>
+      {/* {* <Link href='/home'>
         <h1 className='font-bold text-blue-600'>Home</h1>
-      </Link>
+      </Link> *} */}
     </div>
   );
 }
