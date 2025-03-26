@@ -1,5 +1,7 @@
 import { Button } from '@sommhai/ui/components/ui/button';
 
+import React from 'react';
+
 function CreateEvent() {
   return (
     <div className='flex h-screen flex-col items-center justify-center'>
