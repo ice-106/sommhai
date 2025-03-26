@@ -20,7 +20,8 @@
     "build": "tailwindcss -i ./src/styles.css -o ./dist/index.css",
     "check-types": "tsc --noEmit",
     "dev": "tailwindcss -i ./src/styles.css -o ./dist/index.css --watch",
-    "lint": "eslint \"src/**/*.ts*\""
+    "lint": "eslint \"src/**/*.ts*\"",
+    "ui:add": "pnpm dlx shadcn@latest add"
   },
   "peerDependencies": {
     "react": "^19"
