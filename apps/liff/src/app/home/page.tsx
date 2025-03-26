@@ -1,11 +1,20 @@
 import React from 'react';
+import Link from 'next/link';
 
-import HeaderBurgur from '@/components/HeaderBurgur';
+import CreateEvent from '@/components/CreateEvent';
+import EventCard from '@/components/EventCard';
 
 function HomePage(): React.ReactElement {
   return (
-    <div className='bg-g flex h-full w-screen flex-col'>
-      <HeaderBurgur name='Home' />
+    <div className='flex flex-col items-center justify-center'>
+      <h1>HomePage</h1>
+      <Link href='/event/create'>
+        <h1 className='font-bold text-blue-500'>Create an event</h1>
+        <CreateEvent />
+      </Link>
+      <div>
+        <EventCard />
+      </div>
     </div>
   );
 }
