@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import React from 'react';
 
+import CreateEvent from '@/components/CreateEvent';
 import EventCard from '@/components/EventCard';
 
 function HomePage(): React.ReactElement {
@@ -9,6 +10,7 @@ function HomePage(): React.ReactElement {
       <h1>HomePage</h1>
       <Link href='/event/create'>
         <h1 className='font-bold text-blue-500'>Create an event</h1>
+        <CreateEvent />
       </Link>
       <div>
         <EventCard />
