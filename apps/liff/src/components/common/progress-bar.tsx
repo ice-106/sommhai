@@ -6,7 +6,6 @@ interface ProgressBarProps {
 }
 
 function ProgressBar({ totalSteps, currentStep }: ProgressBarProps) {
-<<<<<<< HEAD
   // Calculate the overall progress percentage (0-100)
   const [progress, setProgress] = useState(0);
   // Create an array representing each step/question
@@ -19,19 +18,10 @@ function ProgressBar({ totalSteps, currentStep }: ProgressBarProps) {
 
     // Animate to the new progress value without resetting
     setTimeout(() => setProgress(newProgress), 300);
-=======
-  const [progress, setProgress] = useState(0);
-
-  useEffect(() => {
-    // Calculate progress as a percentage of total steps
-    const stepWidth = 100 / totalSteps;
-    setTimeout(() => setProgress(currentStep * stepWidth), 300);
->>>>>>> 4dc6180 (feat: progress bar)
   }, [currentStep, totalSteps]);
 
   return (
     <div className='flex w-screen flex-col items-center gap-2'>
-<<<<<<< HEAD
       <div className='flex h-8 w-full max-w-lg gap-3 overflow-hidden bg-transparent'>
         {steps.map((step) => {
           // Calculate fill percentage for this specific segment
@@ -57,21 +47,11 @@ function ProgressBar({ totalSteps, currentStep }: ProgressBarProps) {
 
       <div className='text-sm text-white'>
         Question {currentStep} of {totalSteps}
-=======
-      <div className='relative flex h-8 w-full max-w-lg gap-2 overflow-hidden rounded-[24px] bg-transparent'>
-        {/* Filled section */}
-        <div
-          className='h-full rounded-[24px] bg-white transition-all duration-1000 ease-in-out'
-          style={{ width: `${progress}%` }}
-        />
-        <div className='h-full flex-1 rounded-[24px] bg-[#AEAEAE]' />
->>>>>>> 4dc6180 (feat: progress bar)
       </div>
     </div>
   );
 }
 
-<<<<<<< HEAD
 /**
  * Calculates how much a specific segment should be filled based on overall progress.
  *
@@ -110,6 +90,4 @@ function calculateSegmentProgress(
   return (progressInCurrentSegment / segmentWidth) * 100;
 }
 
-=======
->>>>>>> 4dc6180 (feat: progress bar)
 export default ProgressBar;
