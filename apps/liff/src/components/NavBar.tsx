@@ -1,38 +1,23 @@
-import { House } from 'lucide-react';
-import Link from 'next/link';
-import React from 'react';
+import { AiFillHome } from 'react-icons/ai';
 
 function Navbar() {
   return (
-    <div className='bottom-0 flex h-[30vh] w-full flex-col justify-evenly bg-black'>
-      <div className='flex justify-evenly'>
-        <div className='flex w-1/3 flex-col items-center justify-center border border-gray-500'>
-          <Link href={'/home'}>
-            <div className='ml-3'>
-              <House color='white' />
-            </div>
-            <h1 className='font-bold text-blue-600'>Home</h1>
-          </Link>
+    <div className='relative h-16 w-screen'>
+      <div className='left-0 top-0 inline-flex h-16 w-full items-start justify-between overflow-hidden bg-zinc-300'>
+        <div className='flex-coli h-full items-center justify-center rounded-tl rounded-tr bg-red-300 px-3 py-1 outline outline-1 outline-offset-[-1px] outline-zinc-400'>
+          <div className=''>
+            <AiFillHome />
+          </div>
+          <p className='text-center'>Home</p>
         </div>
-        <div className='flex w-1/3 flex-col items-center justify-center border border-gray-500'>
-          <Link href={'/home'}>
-            <div className='mb-2 h-10 w-10 bg-gray-300' />
-            <h1 className='font-bold text-blue-600'>Home</h1>
-          </Link>
+        <div className='inline-flex items-center justify-center self-stretch rounded-tl rounded-tr px-3 py-1 outline outline-1 outline-offset-[-1px] outline-zinc-400'>
+          <div></div>
         </div>
-        <div className='flex w-1/3 flex-col items-center justify-center border border-gray-500'>
-          <Link href={'/home'}>
-            <div className='mb-2 h-10 w-10 bg-gray-300' />
-            <h1 className='font-bold text-blue-600'>Home</h1>
-          </Link>
+        <div className='inline-flex items-center justify-center self-stretch rounded-tl rounded-tr px-3 py-1 outline outline-1 outline-offset-[-1px] outline-zinc-400'>
+          <div></div>
         </div>
-      </div>
-      <div className='flex justify-evenly'>
-        <div className='flex w-1/3 flex-col items-center justify-center border border-gray-500'>
-          <Link href={'/home'}>
-            <div className='mb-2 h-10 w-10 bg-gray-300' />
-            <h1 className='font-bold text-blue-600'>Home</h1>
-          </Link>
+        <div className='inline-flex items-center justify-center self-stretch rounded-tl rounded-tr px-3 py-1 outline outline-1 outline-offset-[-1px] outline-zinc-400'>
+          <div></div>
         </div>
       </div>
     </div>
