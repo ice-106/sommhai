@@ -7,11 +7,18 @@
     "lint": "eslint \"src/**/*.ts*\"",
     "clean": "rm -rf build",
     "check-types": "tsc --noEmit",
-    "seed": "prisma db seed",
-    "generate": "prisma generate --sql",
-    "studio": "prisma studio",
-    "migrate:local": "dotenv -e .env.local prisma migrate dev",
-    "migrate:neon": "dotenv -e .env.dev prisma migrate"
+    "seed:local": "dotenv -e .env prisma db seed",
+    "seed:neon": "dotenv -e .env.dev prisma db seed",
+    "reset:local": "dotenv -e .env prisma migrate reset --force",
+    "reset:neon": "dotenv -e .env.dev prisma migrate reset --force",
+    "generate": "prisma generate",
+    "migrate:local": "dotenv -e .env prisma migrate dev",
+    "migrate:neon": "dotenv -e .env.dev prisma migrate dev",
+    "migrate:all": "dotenv -e .env prisma migrate dev && dotenv -e .env.dev prisma migrate dev",
+    "push:local": "dotenv -e .env prisma db push",
+    "push:neon": "dotenv -e .env.dev prisma db push",
+    "studio:local": "dotenv -e .env prisma studio",
+    "studio:neon": "dotenv -e .env.dev prisma studio"
   },
   "prisma": {
     "schema": "prisma/schema.prisma",
@@ -21,7 +28,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@faker-js/faker": "^9.6.0",
+    "@faker-js/faker": "^8.4.1",
     "@neondatabase/serverless": "^0.10.4",
     "@prisma/adapter-neon": "^6.5.0",
     "@prisma/client": "6.5.0",

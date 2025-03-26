@@ -8,12 +8,19 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "prepare": "husky",
     "check-types": "turbo run check-types",
-    "db:seed": "pnpm --filter api seed",
-    "db:generate": "pnpm --filter api generate",
-    "db:studio": "pnpm --filter api studio",
     "ui:add": "pnpm --filter @sommhai/ui ui:add",
+    "db:seed:local": "pnpm --filter api seed:local",
+    "db:seed:neon": "pnpm --filter api seed:neon",
+    "db:reset:local": "pnpm --filter api reset:local",
+    "db:reset:neon": "pnpm --filter api reset:neon",
+    "db:generate": "pnpm --filter api generate",
     "db:migrate:local": "pnpm --filter api migrate:local",
-    "db:migrate:neon": "pnpm --filter api migrate:neon"
+    "db:migrate:neon": "pnpm --filter api migrate:neon",
+    "db:migrate:all": "pnpm --filter api migrate:all",
+    "db:push:local": "pnpm --filter api push:local",
+    "db:push:neon": "pnpm --filter api push:neon",
+    "db:studio:local": "pnpm --filter api studio:local",
+    "db:studio:neon": "pnpm --filter api studio:neon"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.8.0",

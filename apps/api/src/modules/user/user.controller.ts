@@ -2,7 +2,7 @@ import { contract } from '@sommhai/api-contract';
 import { RouterImplementation } from '@ts-rest/express/src/lib/types';
 
 import { InternalServerErrorException } from '../../common/exception/http';
-import { prisma } from '../../common/libs/db';
+import { prisma } from '../../common/libs/prisma';
 import { UserService } from './user.service';
 
 export const UserController: RouterImplementation<typeof contract.user> = {
