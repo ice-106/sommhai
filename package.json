@@ -10,7 +10,8 @@
     "check-types": "turbo run check-types",
     "db:seed": "pnpm --filter api seed",
     "db:generate": "pnpm --filter api generate",
-    "db:studio": "pnpm --filter api studio"
+    "db:studio": "pnpm --filter api studio",
+    "ui:add": "pnpm --filter @sommhai/ui ui:add"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.7.1",
