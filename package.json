@@ -11,7 +11,9 @@
     "db:seed": "pnpm --filter api seed",
     "db:generate": "pnpm --filter api generate",
     "db:studio": "pnpm --filter api studio",
-    "ui:add": "pnpm --filter @sommhai/ui ui:add"
+    "ui:add": "pnpm --filter @sommhai/ui ui:add",
+    "db:migrate:local": "pnpm --filter api migrate:local",
+    "db:migrate:neon": "pnpm --filter api migrate:neon"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.8.0",
