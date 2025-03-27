@@ -16,10 +16,10 @@ const Landing = () => {
           <p className='text-center text-[7vw] font-bold text-black'>Welcome</p>
           <p className='mt-[5vw] text-center text-black'>Select your role</p>
         </div>
-        <Link href='/home'>
+        <Link href='/organizer'>
           <Button name='Organizer' />
         </Link>
-        <Link href='/home'>
+        <Link href='/attendee'>
           <Button name='Attendee' />
         </Link>
       </div>

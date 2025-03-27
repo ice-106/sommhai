@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { useState } from 'react';
-import { AiFillHome, AiOutlineMenu } from 'react-icons/ai';
+import { AiFillHome, AiOutlineHistory, AiOutlineMenu, AiOutlineUser } from 'react-icons/ai';
 
 export default function HeaderBurgur({ name }: { name: string }) {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -11,7 +11,7 @@ export default function HeaderBurgur({ name }: { name: string }) {
 
   return (
     <nav>
-      <div className='flex h-[4rem] w-dvw justify-between shadow-sm'>
+      <div className='flex h-[4rem] w-dvw justify-between shadow-md'>
         <div className='h-full w-[70%] items-center'>
           <p className='mx-7 text-[2.5rem] font-bold'>{name}</p>
         </div>
@@ -31,14 +31,28 @@ export default function HeaderBurgur({ name }: { name: string }) {
           }
         >
           <div className='h-full'>
-            <p className='text-[1.75rem] font-bold'>Sommhai</p>
+            <Link href='/'>
+              <p className='text-[1.75rem] font-bold'>Sommhai</p>
+            </Link>
             <div className='mx-3 w-full border-b-2 border-s-gray-600' />
             <div className='flex flex-col py-[2rem]'>
               <ul>
-                <Link href=''>
+                <Link href='/organizer'>
                   <li className='flex py-2 pl-2'>
                     <AiFillHome size='1.2rem' />
                     <p className='ml-1'>Home</p>
+                  </li>
+                </Link>
+                <Link href='/organizer/profile'>
+                  <li className='flex py-2 pl-2'>
+                    <AiOutlineUser size='1.2rem' />
+                    <p className='ml-1'>Profile</p>
+                  </li>
+                </Link>
+                <Link href='/organizer/history'>
+                  <li className='flex py-2 pl-2'>
+                    <AiOutlineHistory size='1.2rem' />
+                    <p className='ml-1'>History</p>
                   </li>
                 </Link>
               </ul>
