@@ -1,5 +1,4 @@
 import { Button } from '@sommhai/ui/components/ui/button';
-import React from 'react';
 
 function CreateEvent() {
   return (
