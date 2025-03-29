@@ -1,14 +1,20 @@
+import { SlidersHorizontal } from 'lucide-react';
 import React from 'react';
 
 import HeaderBurgur from '@/components/HeaderBurgur';
-import { Input } from '@/components/ui/input';
+import CreateEventButton from '@/components/landing/organizer/button';
+import Search from '@/components/Search';
 
 function page() {
   return (
     <div className='bg-g flex h-screen w-screen flex-col'>
       <HeaderBurgur name='Home' />
-      <div className='my-7 flex w-full justify-center px-5'>
-        <Input placeholder='Search...' />
+      <div className='my-5 flex w-full items-center gap-2 px-7'>
+        <Search placeholder='Search...' />
+        <SlidersHorizontal />
+      </div>
+      <div className='my-5 flex w-full items-center gap-2 px-7'>
+        <CreateEventButton />
       </div>
     </div>
   );
