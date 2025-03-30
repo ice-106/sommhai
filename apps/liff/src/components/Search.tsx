@@ -1,8 +1,7 @@
 'use client';
+import { Input } from '@sommhai/ui/components/ui/input';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useDebouncedCallback } from 'use-debounce';
-
-import { Input } from './ui/input';
 
 export default function Search({ placeholder }: { placeholder: string }) {
   const searchParams = useSearchParams();
