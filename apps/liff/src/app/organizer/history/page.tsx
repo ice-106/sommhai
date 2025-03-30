@@ -1,13 +1,15 @@
+import { Button } from '@sommhai/ui/components/ui/button';
 import React from 'react';
 
 import HeaderBurgur from '@/components/HeaderBurgur';
 
-function HomePage(): React.ReactElement {
+function page() {
   return (
     <div className='bg-g flex h-full w-screen flex-col'>
-      <HeaderBurgur name='Home' />
+      <HeaderBurgur name='History' />
+      <Button></Button>
     </div>
   );
 }
 
-export default HomePage;
+export default page;
