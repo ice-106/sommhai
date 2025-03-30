@@ -1,4 +1,4 @@
-import { faker } from '@faker-js/faker';
+import { faker } from '@faker-js/faker/locale/en';
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
@@ -6,17 +6,15 @@ const prisma = new PrismaClient();
 async function main() {
   console.log('Seeding database...');
 
-  // pnpm dlx prisma db seed
-
   // Create Users
   const users = await prisma.user.createMany({
-    data: Array.from({ length: 5 }, () => ({
-      uid: faker.string.uuid(),
+    data: Array.from({ length: 10 }, () => ({
       phone: faker.phone.number(),
       email: faker.internet.email(),
       dob: faker.date.birthdate(),
       first_name: faker.person.firstName(),
       last_name: faker.person.lastName(),
+      pref_name: faker.person.fullName(),
       payment_method: faker.helpers.arrayElement(['Credit Card', 'PayPal', 'Bank Transfer']),
       subscription_plan: faker.helpers.arrayElement(['Free', 'Basic', 'Premium']),
     })),
@@ -28,64 +26,204 @@ async function main() {
   // Create Events
   const events = await prisma.event.createMany({
     data: userList.map((user) => ({
-      eid: faker.string.uuid(),
       name: faker.lorem.words(3),
-      time: faker.date.anytime(),
+      date: faker.date.future(),
+      time: faker.date.soon(),
       place: faker.location.city(),
       description: faker.lorem.sentence(),
-      number_of_attendees: faker.number.int({ min: 1, max: 999 }),
+      invite_list: faker.number.int({ min: 1, max: 99 }),
       memory: faker.lorem.sentence(),
-      feedbacks: faker.lorem.paragraph(),
-      hostId: user.uid,
+      host: user.pref_name,
+      host_uid: user.uid,
     })),
   });
 
   // Fetch created events
   const eventList = await prisma.event.findMany();
 
+  // Create Histories
+  for (const event of eventList) {
+    for (let i = 0; i < 2; i++) {
+      const user = faker.helpers.arrayElement(userList);
+      try {
+        await prisma.history.create({
+          data: {
+            eid: event.eid,
+            uid: user.uid,
+          },
+        });
+      } catch (error) {
+        // Skip if this user-event combination already exists
+        console.log(`History already exists for user ${user.uid} and event ${event.eid}`);
+      }
+    }
+  }
+
   // Create Attendees
   for (const event of eventList) {
-    await prisma.attendee.create({
-      data: {
-        uid: faker.helpers.arrayElement(userList).uid,
-        eid: event.eid,
-      },
-    });
+    for (let i = 0; i < 3; i++) {
+      const user = faker.helpers.arrayElement(userList);
+      try {
+        await prisma.attendee.create({
+          data: {
+            uid: user.uid,
+            eid: event.eid,
+          },
+        });
+      } catch (error) {
+        // Skip if this user-event combination already exists
+        console.log(`Attendee already exists for user ${user.uid} and event ${event.eid}`);
+      }
+    }
+  }
+
+  // Create Attending
+  for (const event of eventList) {
+    for (let i = 0; i < 2; i++) {
+      const user = faker.helpers.arrayElement(userList);
+      try {
+        await prisma.attending.create({
+          data: {
+            uid: user.uid,
+            eid: event.eid,
+          },
+        });
+      } catch (error) {
+        // Skip if this user-event combination already exists
+        console.log(`Attending already exists for user ${user.uid} and event ${event.eid}`);
+      }
+    }
   }
 
   // Create Organizers
   for (const event of eventList) {
-    await prisma.organizer.create({
-      data: {
-        uid: faker.helpers.arrayElement(userList).uid,
-        eid: event.eid,
-      },
-    });
+    const user = faker.helpers.arrayElement(userList);
+    try {
+      await prisma.organizer.create({
+        data: {
+          uid: user.uid,
+          eid: event.eid,
+        },
+      });
+    } catch (error) {
+      // Skip if this user-event combination already exists
+      console.log(`Organizer already exists for user ${user.uid} and event ${event.eid}`);
+    }
   }
 
   // Create Media
   for (const event of eventList) {
     await prisma.media.create({
       data: {
-        media_id: faker.string.uuid(),
         source: faker.image.urlPicsumPhotos(),
-        taken_by_id: faker.helpers.arrayElement(userList).uid,
+        uid: faker.helpers.arrayElement(userList).uid,
         eid: event.eid,
       },
     });
   }
 
-  // Create Updates
+  // Create Updates (now called Update in the schema)
   for (const event of eventList) {
-    await prisma.updates.create({
+    await prisma.update.create({
       data: {
-        log_id: faker.string.uuid(),
         message: faker.lorem.sentence(),
-        acknowledge: faker.datatype.boolean(),
         date_of_message: faker.date.recent(),
         eid: event.eid,
       },
     });
+  }
+
+  // Create InvitationLetters
+  const invitationLetters = await prisma.invitationLetter.createMany({
+    data: Array.from({ length: 5 }, () => ({
+      accept: faker.datatype.boolean(),
+      description: faker.lorem.paragraph(),
+    })),
+  });
+
+  // Fetch created invitation letters
+  const invitationLetterList = await prisma.invitationLetter.findMany();
+
+  // Create Receives
+  for (const letter of invitationLetterList) {
+    const user = faker.helpers.arrayElement(userList);
+    try {
+      await prisma.receive.create({
+        data: {
+          uid: user.uid,
+          letter_id: letter.letter_id,
+        },
+      });
+    } catch (error) {
+      console.log(`Receive already exists for user ${user.uid} and letter ${letter.letter_id}`);
+    }
+  }
+
+  // Create EventInvitations
+  for (const letter of invitationLetterList) {
+    const event = faker.helpers.arrayElement(eventList);
+    try {
+      await prisma.eventInvitation.create({
+        data: {
+          eid: event.eid,
+          letter_id: letter.letter_id,
+        },
+      });
+    } catch (error) {
+      console.log(`EventInvitation already exists for event ${event.eid} and letter ${letter.letter_id}`);
+    }
+  }
+
+  // Create Preferences
+  for (const letter of invitationLetterList) {
+    await prisma.preference.create({
+      data: {
+        preference_id: faker.string.alphanumeric(7),
+        letter_id: letter.letter_id,
+        notes: faker.lorem.sentence(),
+        seat: `Table ${faker.number.int({ min: 1, max: 20 })}`,
+        food: faker.helpers.arrayElement(['Vegetarian', 'Vegan', 'No restrictions', 'Gluten-free']),
+      },
+    });
+  }
+
+  // Create Questions
+  for (const letter of invitationLetterList) {
+    await prisma.questions.create({
+      data: {
+        question_id: faker.string.uuid(),
+        letter_id: letter.letter_id,
+        question: faker.lorem.sentence() + '?',
+        answer: faker.datatype.boolean() ? faker.lorem.sentence() : null,
+      },
+    });
+  }
+
+  // Create Leaderboards
+  for (const event of eventList) {
+    await prisma.leaderboard.create({
+      data: {
+        name: faker.lorem.words(2),
+        uid: faker.helpers.arrayElement(userList).uid,
+        eid: event.eid,
+        score: faker.number.int({ min: 0, max: 1000 }),
+      },
+    });
+  }
+
+  // Create Creates
+  for (const event of eventList) {
+    const user = faker.helpers.arrayElement(userList);
+    try {
+      await prisma.create.create({
+        data: {
+          uid: user.uid,
+          eid: event.eid,
+        },
+      });
+    } catch (error) {
+      console.log(`Create already exists for user ${user.uid} and event ${event.eid}`);
+    }
   }
 
   console.log('Seeding completed.');

@@ -1,6 +1,6 @@
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["typedSql"]
+  previewFeatures = ["driverAdapters"]
 }
 
 datasource db {
@@ -9,42 +9,73 @@ datasource db {
 }
 
 model User {
-  uid               String      @id @default(cuid())
+  uid               String        @id @default(cuid())
   phone             String
-  email             String      @unique
+  email             String        @unique
   dob               DateTime
+  pref_name         String
   first_name        String
   last_name         String
   payment_method    String?
-  subscription_plan String?
+  subscription_plan String
+  eventsHosted      Event[]
+  histories         History[]
   attendees         Attendee[]
-  eventsHosted      Event[]     @relation("EventHost")
-  mediaTaken        Media[]
+  attendings        Attending[]
   organizers        Organizer[]
+  creates           Create[]
+  mediaTaken        Media[]
+  receives          Receive[]
+  leaderboards      Leaderboard[]
 }
 
 model Event {
-  eid                 String      @id @default(cuid())
-  name                String
-  time                DateTime
-  place               String
-  description         String?
-  number_of_attendees Int
-  memory              String?
-  feedbacks           String?
-  hostId              String
-  attendees           Attendee[]
-  host                User        @relation("EventHost", fields: [hostId], references: [uid], onDelete: Cascade)
-  Media               Media[]
-  organizers          Organizer[]
-  Updates             Updates[]
+  eid              String            @id @default(cuid())
+  name             String
+  date             DateTime
+  time             DateTime
+  place            String
+  description      String?
+  invite_list      Int
+  memory           String?
+  host             String
+  host_uid         String
+  hostUser         User              @relation(fields: [host_uid], references: [uid], onDelete: Cascade)
+  histories        History[]
+  attendees        Attendee[]
+  attendings       Attending[]
+  organizers       Organizer[]
+  creates          Create[]
+  media            Media[]
+  updates          Update[]
+  eventInvitations EventInvitation[]
+
+  Leaderboard Leaderboard[]
+}
+
+model History {
+  eid   String
+  uid   String
+  event Event  @relation(fields: [eid], references: [eid], onDelete: Cascade)
+  user  User   @relation(fields: [uid], references: [uid], onDelete: Cascade)
+
+  @@id([eid, uid])
 }
 
 model Attendee {
   uid   String
   eid   String
-  event Event  @relation(fields: [eid], references: [eid], onDelete: Cascade)
   user  User   @relation(fields: [uid], references: [uid], onDelete: Cascade)
+  event Event  @relation(fields: [eid], references: [eid], onDelete: Cascade)
+
+  @@id([uid, eid])
+}
+
+model Attending {
+  uid   String
+  eid   String
+  user  User   @relation(fields: [uid], references: [uid], onDelete: Cascade)
+  event Event  @relation(fields: [eid], references: [eid], onDelete: Cascade)
 
   @@id([uid, eid])
 }
@@ -52,26 +83,92 @@ model Attendee {
 model Organizer {
   uid   String
   eid   String
-  event Event  @relation(fields: [eid], references: [eid], onDelete: Cascade)
   user  User   @relation(fields: [uid], references: [uid], onDelete: Cascade)
+  event Event  @relation(fields: [eid], references: [eid], onDelete: Cascade)
+
+  @@id([uid, eid])
+}
+
+model Create {
+  uid   String
+  eid   String
+  user  User   @relation(fields: [uid], references: [uid], onDelete: Cascade)
+  event Event  @relation(fields: [eid], references: [eid], onDelete: Cascade)
 
   @@id([uid, eid])
 }
 
 model Media {
-  media_id    String  @id @default(cuid())
-  source      String
-  taken_by_id String?
-  eid         String
-  event       Event   @relation(fields: [eid], references: [eid], onDelete: Cascade)
-  taken_by    User?   @relation(fields: [taken_by_id], references: [uid])
+  media_id String @id @default(cuid())
+  uid      String
+  eid      String
+  source   String
+  user     User   @relation(fields: [uid], references: [uid], onDelete: Cascade)
+  event    Event  @relation(fields: [eid], references: [eid], onDelete: Cascade)
 }
 
-model Updates {
+model Update {
   log_id          String   @id @default(cuid())
-  message         String
-  acknowledge     Boolean
-  date_of_message DateTime
   eid             String
+  message         String
+  date_of_message DateTime
   event           Event    @relation(fields: [eid], references: [eid], onDelete: Cascade)
+}
+
+model InvitationLetter {
+  letter_id        String            @id @default(cuid())
+  accept           Boolean?
+  description      String?
+  receives         Receive[]
+  eventInvitations EventInvitation[]
+  preferences      Preference[]
+  questions        Questions[]
+}
+
+model Receive {
+  uid              String
+  letter_id        String
+  user             User             @relation(fields: [uid], references: [uid], onDelete: Cascade)
+  invitationLetter InvitationLetter @relation(fields: [letter_id], references: [letter_id], onDelete: Cascade)
+
+  @@id([uid, letter_id])
+}
+
+model EventInvitation {
+  eid              String
+  letter_id        String
+  event            Event            @relation(fields: [eid], references: [eid], onDelete: Cascade)
+  invitationLetter InvitationLetter @relation(fields: [letter_id], references: [letter_id], onDelete: Cascade)
+
+  @@id([eid, letter_id])
+}
+
+model Preference {
+  preference_id    String
+  letter_id        String
+  notes            String?
+  seat             String?
+  food             String?
+  invitationLetter InvitationLetter @relation(fields: [letter_id], references: [letter_id], onDelete: Cascade)
+
+  @@id([preference_id, letter_id])
+}
+
+model Questions {
+  question_id      String           @default(cuid())
+  letter_id        String
+  question         String?
+  answer           String?
+  invitationLetter InvitationLetter @relation(fields: [letter_id], references: [letter_id], onDelete: Cascade)
+
+  @@id([question_id, letter_id])
+}
+
+model Leaderboard {
+  name  String @id
+  uid   String
+  eid   String
+  score Int?
+  user  User   @relation(fields: [uid], references: [uid], onDelete: Cascade)
+  event Event  @relation(fields: [eid], references: [eid], onDelete: Cascade)
 }
