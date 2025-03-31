@@ -3,7 +3,8 @@ import React from 'react';
 import { Suspense } from 'react';
 
 import HeaderBurgur from '@/components/HeaderBurgur';
-import CreateEventButton from '@/components/landing/organizer/button';
+import { CreateEventButton } from '@/components/ui/organizer/button';
+import { EventCardTestStatic } from '@/components/ui/organizer/EventCard';
 
 const SearchContainer = () => {
   // Using dynamic import with React.lazy for the component using useSearchParams
