@@ -24,6 +24,7 @@
     "clsx": "^2.1.1",
     "jest-worker": "^29.7.0",
     "lucide-react": "^0.475.0",
+    "motion": "^12.6.2",
     "next": "15.1.6",
     "next13-progressbar": "^1.2.2",
     "react": "^18.3.1",
