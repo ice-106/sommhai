@@ -2,8 +2,8 @@ import { SlidersHorizontal } from 'lucide-react';
 import React from 'react';
 
 import HeaderBurgur from '@/components/HeaderBurgur';
-import CreateEventButton from '@/components/landing/organizer/button';
 import Search from '@/components/Search';
+import CreateEventButton from '@/components/ui/organizer/button';
 
 function page() {
   return (
