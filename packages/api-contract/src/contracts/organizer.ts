@@ -1,47 +1,81 @@
-import { organizer } from '@sommhai/shared-type';
+import { Event } from '@sommhai/shared-type';
 import { initContract } from '@ts-rest/core';
 import { z } from 'zod';
 
 const c = initContract();
 
-export const userContract = c.router({
-  createUser: {
-    method: 'POST',
-    path: '/users/create',
-    body: z.object({
-      user: z.string(),
-      email: z.string(),
-      description: z.string().optional(),
+export const organizerContract = c.router({
+  getEvents: {
+    method: 'GET',
+    path: '/org/events',
+    query: z.object({
+      type: z.string().optional(),
+      date: z.string().optional(),
+      before: z.string().optional(),
+      status: z.string().optional(),
+      take: z.string().regex(/^\d+$/).transform(Number).optional(),
+      skip: z.string().regex(/^\d+$/).transform(Number).optional(),
     }),
     responses: {
-      201: z.object({ organizer }),
+      200: z.array(Event),
       500: z.object({ message: z.string() }),
     },
   },
-  getUser: {
+  getEvent: {
     method: 'GET',
-    path: '/users/:userId',
-    pathParams: z.object({ userId: z.string().regex(/^\d+$/).transform(Number) }),
+    path: '/org/events/:eventId',
+    pathParams: z.object({
+      eventId: z.string(),
+    }),
     responses: {
-      200: z.object({ organizer }),
+      200: z.object({ Event }),
       404: z.object({ message: z.string() }),
       500: z.object({ message: z.string() }),
     },
   },
-  getUsers: {
+  createEvent: {
+    method: 'POST',
+    path: '/orgs/events',
+    body: z.object({
+      name: z.string(),
+    }),
+    responses: {
+      200: z.object({ Event }),
+      500: z.object({ message: z.string() }),
+    },
+  },
+  getEventDetails: {
     method: 'GET',
-    path: '/users',
-    query: z.object({
-      userIds: z.array(z.string().regex(/^\d+$/).transform(Number)),
-      take: z.string().regex(/^\d+$/).transform(Number).optional(),
-      skip: z.string().regex(/^\d+$/).transform(Number).optional(),
-      search: z.string().optional(),
+    path: '/org/events/:eventId/details',
+    pathParams: z.object({
+      eventId: z.string(),
     }),
     responses: {
       200: z.object({
-        users: z.array(organizer),
-        total: z.number(),
+        Event,
       }),
+      404: z.object({ message: z.string() }),
+      500: z.object({ message: z.string() }),
+    },
+  },
+  updateEventDetails: {
+    method: 'PUT',
+    path: '/org/events/:eventId/details',
+    pathParams: z.object({
+      eventId: z.string(),
+    }),
+    body: z.object({
+      name: z.string().optional(),
+      date: z.string().optional(),
+      time: z.string().optional(),
+      location: z.string().optional(),
+      description: z.string().optional(),
+      invite_list: z.number().optional(),
+      memory: z.string().optional(),
+      picture: z.string().optional(),
+    }),
+    responses: {
+      200: z.object({ Event }),
       404: z.object({ message: z.string() }),
       500: z.object({ message: z.string() }),
     },

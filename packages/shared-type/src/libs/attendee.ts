@@ -1,9 +1,9 @@
 import { z } from 'zod';
 
+import { user } from './user';
+
 export const attendee = z.object({
-  id: z.number(),
-  title: z.string(),
-  content: z.string(),
-  published: z.boolean().optional(),
-  description: z.string().optional(),
+  uid: z.string(),
+  eid: z.string(),
+  user: user.optional(),
 });
