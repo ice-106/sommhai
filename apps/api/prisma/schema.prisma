@@ -34,7 +34,8 @@ model Event {
   name             String
   date             DateTime
   time             DateTime
-  place            String
+  picture          String?
+  location         String
   description      String?
   invite_list      Int
   memory           String?
