@@ -1,4 +1,21 @@
 services:
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    ports:
+      - '8080:8080'
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgres://postgres:password@sommhai-db:5432/sommhai
+    env_file:
+      - ./apps/api/.env
+    depends_on:
+      - sommhai-db
+    networks:
+      - sommhai-network
+    restart: unless-stopped
+
   sommhai-db:
     image: postgres:latest
     environment:
@@ -9,6 +26,15 @@ services:
       - '5432:5432'
     volumes:
       - ./data/postgresql:/var/lib/postgresql/data
+    networks:
+      - sommhai-network
+    restart: unless-stopped
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   liff:
     build:
       context: .
@@ -17,3 +43,12 @@ services:
       - '3000:3000'
     env_file:
       - ./apps/liff/.env
+
+networks:
+  sommhai-network:
+    driver: bridge
+    attachable: true
+
+volumes:
+  postgres-data:
+    name: sommhai-postgres-data
