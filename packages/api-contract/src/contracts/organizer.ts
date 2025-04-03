@@ -10,7 +10,7 @@ export const organizerContract = c.router({
     path: '/org/events',
     query: z.object({
       type: z.string().optional(),
-      date: z.string().optional(),
+      date: z.date().optional(),
       before: z.string().optional(),
       status: z.string().optional(),
       take: z.string().regex(/^\d+$/).transform(Number).optional(),
@@ -66,13 +66,13 @@ export const organizerContract = c.router({
     }),
     body: z.object({
       name: z.string().optional(),
-      date: z.string().optional(),
-      time: z.string().optional(),
+      date: z.date().optional(),
+      time: z.date().optional(),
       location: z.string().optional(),
       description: z.string().optional(),
       invite_list: z.number().optional(),
       memory: z.string().optional(),
-      picture: z.string().optional(),
+      picture: z.array(z.string()),
     }),
     responses: {
       200: z.object({ Event }),

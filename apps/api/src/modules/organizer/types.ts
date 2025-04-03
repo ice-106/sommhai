@@ -4,7 +4,7 @@ export interface GetEventOptions {
 
 export interface GetManyEventsOptions {
   type?: string;
-  date?: string;
+  date?: Date;
   before?: string;
   status?: string;
   take?: number;
@@ -16,14 +16,15 @@ export interface CreateEventOptions {
 }
 
 export interface UpdateEventDetailsOptions {
+  eventId: string;
   name?: string;
-  date?: string;
-  time?: string;
+  date?: Date;
+  time?: Date;
   location?: string;
   description?: string;
   invite_list?: number;
   memory?: string;
-  picture?: string;
+  picture: string[];
 }
 
 export interface GetEventDetailsOptions {
