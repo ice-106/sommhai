@@ -16,7 +16,6 @@ export const UserController: RouterImplementation<typeof contract.user> = {
   },
   getUsers: async ({ query: { userIds, search, skip, take } }) => {
     try {
-      // Replace the hardcoded return with actual data that matches your schema
       const users = (await UserService.getManyUsers({ userIds, search, skip, take })) as Array<{
         uid?: string;
         id?: number;
@@ -37,7 +36,7 @@ export const UserController: RouterImplementation<typeof contract.user> = {
             uid: user.uid || String(user.id), // Convert id to uid if needed
             user: user.user,
             email: user.email,
-            dob: user.dob || new Date().toISOString(), // Provide defaults for required fields
+            dob: user.dob || undefined, // Provide defaults for required fields
             pref_name: user.pref_name || user.user,
             first_name: user.first_name || '',
             last_name: user.last_name || '',

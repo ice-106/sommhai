@@ -50,9 +50,13 @@ export const OrganizerController: RouterImplementation<typeof contract.organizer
       };
     }
   },
-  updateEventDetails: async ({ body: { name, date, description, invite_list, memory, location, time, picture } }) => {
+  updateEventDetails: async ({
+    params: { eventId },
+    body: { name, date, description, invite_list, memory, location, time, picture },
+  }) => {
     try {
       const event = await OrganizerService.updateEventDetails({
+        eventId,
         name,
         date,
         description,
@@ -83,6 +87,12 @@ export const OrganizerController: RouterImplementation<typeof contract.organizer
       };
     } catch (error) {
       console.error('Error fetching event details:', error);
+      if (error === 'NotFoundException') {
+        return {
+          status: 404,
+          body: { message: error },
+        };
+      }
       return {
         status: 500,
         body: { message: 'Failed to fetch event details' },
