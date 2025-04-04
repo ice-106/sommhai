@@ -112,12 +112,14 @@ const config: Pick<Config, 'content' | 'presets' | 'theme'> = {
           'monospace',
         ],
         poppins: ['Poppins', 'sans-serif'],
+        inter: ['Inter', 'sans-serif'],
       },
       fontSize: {
         // Custom typography system
         'bold-40': ['40px', { lineHeight: '56px', fontWeight: '700' }],
         'bold-26': ['26px', { lineHeight: '38px', fontWeight: '700' }],
         'bold-24': ['24px', { lineHeight: '32px', fontWeight: '700' }],
+        'bold-20': ['20px', { lineHeight: '32px', fontWeight: '700' }],
         'semi-24': ['32px', { lineHeight: '44px', fontWeight: '600' }],
         'medium-24': ['24px', { lineHeight: '32px', fontWeight: '400' }],
         'semi-20': ['20px', { lineHeight: '30px', fontWeight: '600' }],
@@ -126,6 +128,7 @@ const config: Pick<Config, 'content' | 'presets' | 'theme'> = {
         'medium-18': ['18px', { lineHeight: '26px', fontWeight: '500' }],
         'medium-16': ['16px', { lineHeight: '24px', fontWeight: '500' }],
         'regular-16': ['16px', { lineHeight: '24px', fontWeight: '500' }],
+        'regular-16-low': ['16px', { lineHeight: '24px', fontWeight: '400' }],
         'regular-14': ['14px', { lineHeight: '22px', fontWeight: '400' }],
         'regular-12': ['12px', { lineHeight: '18px', fontWeight: '400' }],
 
