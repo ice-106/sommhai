@@ -1,5 +1,5 @@
-import React from 'react';
 import Link from 'next/link';
+import React from 'react';
 
 import CreateEvent from '@/components/CreateEvent';
 import EventCard from '@/components/EventCard';

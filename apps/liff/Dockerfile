@@ -6,7 +6,7 @@
 
 # Want to help us make this template better? Share your feedback here: https://forms.gle/ybq9Krt8jtBL3iCk7
 
-ARG NODE_VERSION=22
+ARG NODE_VERSION=20.17.0
 
 ################################################################################
 # Use node image for base image for all stages.
@@ -34,11 +34,15 @@ RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
 COPY --from=builder /app/out/json/ .
-RUN npm install -g pnpm@9
-RUN pnpm install --ignore-scripts
+COPY --from=builder /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
 
-# Run the build script.
+# Install dependencies with pnpm
+RUN npm install -g pnpm@9
+RUN pnpm install --frozen-lockfile --ignore-scripts
+
+# Copy source code from pruned workspace
 COPY --from=builder /app/out/full/ .
+
 RUN pnpm build --filter=liff
 
 ################################################################################
@@ -58,6 +62,8 @@ COPY --from=installer --chown=nextjs:nodejs /app/apps/liff/.next/standalone ./
 COPY --from=installer --chown=nextjs:nodejs /app/apps/liff/.next/static ./apps/liff/.next/static
 COPY --from=installer --chown=nextjs:nodejs /app/apps/liff/public ./apps/liff/public
 RUN npm install -g turbo@^2
+
+RUN chmod -R 755 ./apps/liff/.next/static
 # Run the application as a non-root user.
 USER nextjs
 
@@ -65,6 +71,8 @@ USER nextjs
 EXPOSE 3000
 
 ENV PORT = 3000
+ENV NODE_ENV=production
+ENV HOSTNAME="0.0.0.0"
 
 # ENV HOSTNAME="0.0.0.0"
 # Run the application.
