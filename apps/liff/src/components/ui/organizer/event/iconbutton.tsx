@@ -64,7 +64,7 @@ export function IconButtonGroup() {
   };
 
   return (
-    <div className='flex h-1/2 w-full flex-col items-center overflow-hidden'>
+    <div className='flex h-full w-full flex-col items-center overflow-hidden'>
       {/* Button List with Animation */}
       <div className=''>
         <AnimatePresence custom={direction} mode='wait'>
