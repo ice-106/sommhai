@@ -10,7 +10,7 @@ export default function HeaderBurgur({ name }: { name: string }) {
   };
 
   return (
-    <nav className=''>
+    <nav className='sticky'>
       <div className='flex h-[4rem] w-dvw justify-between shadow-md'>
         <div className='h-full w-[70%] items-center'>
           <p className='mx-7 truncate text-[2.5rem] font-bold'>{name}</p>
