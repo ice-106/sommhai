@@ -29,6 +29,15 @@ function OrganizerPage() {
       <div className='my-5 flex w-full items-center gap-2 px-7'>
         <CreateEventButton />
       </div>
+      <div className='mx-24 flex h-[69%] flex-col gap-16 overflow-y-auto'>
+        <EventCardTestStatic />
+        <EventCardTestStatic />
+        <EventCardTestStatic />
+        <EventCardTestStatic />
+        <EventCardTestStatic />
+        <EventCardTestStatic />
+        <EventCardTestStatic />
+      </div>
     </div>
   );
 }
