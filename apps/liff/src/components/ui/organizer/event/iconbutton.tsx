@@ -64,7 +64,7 @@ export function IconButtonGroup() {
   };
 
   return (
-    <div className='flex h-1/2 w-full flex-col items-center overflow-hidden'>
+    <div className='flex h-full w-full flex-col items-center overflow-hidden'>
       {/* Button List with Animation */}
       <div className=''>
         <AnimatePresence custom={direction} mode='wait'>
@@ -84,7 +84,7 @@ export function IconButtonGroup() {
       </div>
 
       {/* Pagination Controls */}
-      <div className='mt-auto flex gap-4'>
+      <div className='mt-16 flex gap-4'>
         <button
           className='rounded-md bg-gray-300 px-4 py-2 disabled:opacity-50'
           disabled={page === 1}
