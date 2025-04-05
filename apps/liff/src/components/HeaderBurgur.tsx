@@ -10,7 +10,7 @@ export default function HeaderBurgur({ name }: { name: string }) {
   };
 
   return (
-    <nav className='sticky'>
+    <nav className=''>
       <div className='flex h-[4rem] w-dvw justify-between shadow-md'>
         <div className='h-full w-[70%] items-center'>
           <p className='mx-7 text-[2.5rem] font-bold'>{name}</p>
@@ -20,7 +20,7 @@ export default function HeaderBurgur({ name }: { name: string }) {
         </div>
       </div>
       <div
-        className={menuOpen ? 'fixed left-0 top-0 h-screen w-screen' : 'fixed left-[-100%]'}
+        className={menuOpen ? 'fixed left-0 top-0 z-[10] h-screen w-screen' : 'fixed left-[-100%]'}
         onClick={handleOpenmenu}
       >
         <div
