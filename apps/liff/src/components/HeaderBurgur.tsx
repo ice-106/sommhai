@@ -20,7 +20,7 @@ export default function HeaderBurgur({ name }: { name: string }) {
         </div>
       </div>
       <div
-        className={menuOpen ? 'fixed left-0 top-0 h-screen w-screen' : 'fixed left-[-100%]'}
+        className={menuOpen ? 'fixed left-0 top-0 z-[10] h-screen w-screen' : 'fixed left-[-100%]'}
         onClick={handleOpenmenu}
       >
         <div
