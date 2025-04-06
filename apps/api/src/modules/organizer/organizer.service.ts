@@ -70,6 +70,23 @@ export const OrganizerService = {
   },
   createEvent: async ({ name }: CreateEventOptions) => {
     try {
+      let testUser = await prisma.user.findFirst();
+
+      if (!testUser) {
+        // Create a test user if none exists
+        testUser = await prisma.user.create({
+          data: {
+            phone: '1234567890',
+            email: 'test@example.com',
+            dob: new Date(),
+            pref_name: 'Test User',
+            first_name: 'Test',
+            last_name: 'User',
+            subscription_plan: 'free',
+          },
+        });
+      }
+
       const event = await prisma.event.create({
         data: {
           name: name,
@@ -80,8 +97,8 @@ export const OrganizerService = {
           description: '',
           invite_list: 0,
           memory: '',
-          host: '',
-          host_uid: '',
+          host: testUser.pref_name,
+          host_uid: testUser.uid,
         },
       });
 
