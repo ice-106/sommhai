@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { InternalServerErrorException, NotFoundException } from '../../common/exception/http';
 import prisma from '../../common/libs/prisma';
 import {
@@ -55,7 +56,7 @@ export const OrganizerService = {
       });
 
       if (!event) {
-        throw new InternalServerErrorException(`Event with ID ${eventId} not found`);
+        throw new NotFoundException(`Event with ID ${eventId} not found`);
       }
 
       return { Event: event };
@@ -71,7 +72,7 @@ export const OrganizerService = {
     try {
       const event = await prisma.event.create({
         data: {
-          name,
+          name: name,
           date: new Date(),
           time: new Date(),
           picture: [],

@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable unused-imports/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { faker } from '@faker-js/faker/locale/en';
 import { PrismaClient } from '@prisma/client';
 
@@ -35,7 +38,7 @@ async function main() {
       memory: faker.lorem.sentence(),
       host: user.pref_name,
       host_uid: user.uid,
-      picture: faker.image.urlPicsumPhotos(),
+      picture: [faker.image.urlPicsumPhotos()],
     })),
   });
 
@@ -56,6 +59,7 @@ async function main() {
       } catch (error) {
         // Skip if this user-event combination already exists
         console.log(`History already exists for user ${user.uid} and event ${event.eid}`);
+        console.log(error);
       }
     }
   }
@@ -74,6 +78,7 @@ async function main() {
       } catch (error) {
         // Skip if this user-event combination already exists
         console.log(`Attendee already exists for user ${user.uid} and event ${event.eid}`);
+        console.log(error);
       }
     }
   }
@@ -92,6 +97,7 @@ async function main() {
       } catch (error) {
         // Skip if this user-event combination already exists
         console.log(`Attending already exists for user ${user.uid} and event ${event.eid}`);
+        console.log(error);
       }
     }
   }
@@ -109,6 +115,7 @@ async function main() {
     } catch (error) {
       // Skip if this user-event combination already exists
       console.log(`Organizer already exists for user ${user.uid} and event ${event.eid}`);
+      console.log(error);
     }
   }
 
@@ -157,6 +164,7 @@ async function main() {
       });
     } catch (error) {
       console.log(`Receive already exists for user ${user.uid} and letter ${letter.letter_id}`);
+      console.log(error);
     }
   }
 
@@ -172,6 +180,7 @@ async function main() {
       });
     } catch (error) {
       console.log(`EventInvitation already exists for event ${event.eid} and letter ${letter.letter_id}`);
+      console.log(error);
     }
   }
 
@@ -224,6 +233,7 @@ async function main() {
       });
     } catch (error) {
       console.log(`Create already exists for user ${user.uid} and event ${event.eid}`);
+      console.log(error);
     }
   }
 
