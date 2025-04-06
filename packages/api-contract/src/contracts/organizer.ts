@@ -72,7 +72,7 @@ export const organizerContract = c.router({
       description: z.string().optional(),
       invite_list: z.number().optional(),
       memory: z.string().optional(),
-      picture: z.array(z.string()),
+      picture: z.array(z.string()).optional(),
     }),
     responses: {
       200: z.object({ Event }),
