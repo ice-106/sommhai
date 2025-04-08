@@ -31,7 +31,7 @@ function SearchContent() {
     <div className='flex flex-1'>
       <Input
         defaultValue={searchParams.get('query')?.toString()}
-        placeholder='Search...'
+        placeholder={placeholder}
         onChange={(e) => handleSearch(e.target.value)}
       />
     </div>
