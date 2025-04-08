@@ -22,7 +22,20 @@ export const OrganizerController: RouterImplementation<typeof contract.organizer
     };
   },
   createEvent: async ({ body: { name } }) => {
-    const newEvent = await OrganizerService.createEvent({ name });
+    const newEvent = await OrganizerService.createEvent({
+      event: {
+        name,
+        date: new Date(),
+        time: new Date(),
+        location: '',
+        description: '',
+        invite_list: 0,
+        memory: '',
+        picture: [],
+        host: 'John Doe',
+        host_uid: '1234567890',
+      },
+    });
 
     const event = await OrganizerService.getEvent({ eventId: newEvent.eid });
     return {
@@ -37,14 +50,16 @@ export const OrganizerController: RouterImplementation<typeof contract.organizer
   }) => {
     await OrganizerService.updateEventDetails({
       eventId,
-      name,
-      date,
-      description,
-      invite_list,
-      memory,
-      location,
-      time,
-      picture: picture ?? [],
+      event: {
+        name,
+        date,
+        description,
+        invite_list,
+        memory,
+        location,
+        time,
+        picture: picture ?? [],
+      },
     });
 
     const event = await OrganizerService.getEvent({ eventId });

@@ -17,14 +17,16 @@ export interface CreateEventOptions {
 
 export interface UpdateEventDetailsOptions {
   eventId: string;
-  name?: string;
-  date?: Date;
-  time?: Date;
-  location?: string;
-  description?: string;
-  invite_list?: number;
-  memory?: string;
-  picture: string[];
+  event: {
+    name?: string;
+    date?: Date;
+    time?: Date;
+    location?: string;
+    description?: string;
+    invite_list?: number;
+    memory?: string;
+    picture?: string[];
+  };
 }
 
 export interface GetEventDetailsOptions {

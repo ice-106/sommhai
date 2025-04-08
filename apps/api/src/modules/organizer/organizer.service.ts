@@ -1,13 +1,8 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Prisma } from '@prisma/client';
+
 import { InternalServerErrorException, NotFoundException } from '../../common/exception/http';
 import prisma from '../../common/libs/prisma';
-import {
-  CreateEventOptions,
-  GetEventDetailsOptions,
-  GetEventOptions,
-  GetManyEventsOptions,
-  UpdateEventDetailsOptions,
-} from './types';
+import { GetEventDetailsOptions, GetEventOptions, GetManyEventsOptions } from './types';
 
 export const OrganizerService = {
   getEvents: async ({ search, date, take, skip }: GetManyEventsOptions) => {
@@ -58,7 +53,7 @@ export const OrganizerService = {
 
     return event;
   },
-  createEvent: async ({ name }: CreateEventOptions) => {
+  createEvent: async ({ event }: { event: Prisma.EventUncheckedCreateInput }) => {
     try {
       let testUser = await prisma.user.findFirst();
 
@@ -79,16 +74,14 @@ export const OrganizerService = {
 
       return await prisma.event.create({
         data: {
-          name: name,
-          date: new Date(),
-          time: new Date(),
-          picture: [],
-          location: '',
-          description: '',
-          invite_list: 0,
-          memory: '',
-          host: testUser.pref_name,
-          host_uid: testUser.uid,
+          ...event,
+          attendees: {
+            create: [
+              {
+                uid: testUser.uid,
+              },
+            ],
+          },
         },
       });
     } catch (error) {
@@ -96,47 +89,14 @@ export const OrganizerService = {
       throw new InternalServerErrorException('Failed to create event');
     }
   },
-  updateEventDetails: async ({
-    eventId,
-    name,
-    date,
-    description,
-    invite_list,
-    memory,
-    location,
-    time,
-    picture,
-  }: UpdateEventDetailsOptions) => {
+  updateEventDetails: async ({ eventId, event }: { eventId: string; event: Prisma.EventUncheckedUpdateInput }) => {
     try {
-      const existingEvent = await prisma.event.findUnique({
+      return await prisma.event.update({
         where: {
           eid: eventId,
         },
+        data: { ...event },
       });
-
-      if (!existingEvent) {
-        throw new NotFoundException(`Event with ID ${eventId} not found`);
-      }
-
-      const updateData: any = {};
-
-      if (name !== undefined) updateData.name = name;
-      if (date !== undefined) updateData.date.toLocaleDateString = date;
-      if (description !== undefined) updateData.description = description;
-      if (invite_list !== undefined) updateData.invite_list = invite_list;
-      if (memory !== undefined) updateData.memory = memory;
-      if (location !== undefined) updateData.location = location;
-      if (time !== undefined) updateData.time = time;
-      if (picture !== undefined) updateData.picture = picture;
-
-      const updatedEvent = await prisma.event.update({
-        where: {
-          eid: eventId,
-        },
-        data: updateData,
-      });
-
-      return { Event: updatedEvent };
     } catch (error) {
       if (error instanceof NotFoundException) {
         throw error;
