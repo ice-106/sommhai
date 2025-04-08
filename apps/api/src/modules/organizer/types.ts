@@ -10,25 +10,6 @@ export interface GetManyEventsOptions {
   take?: number;
   skip?: number;
 }
-
-export interface CreateEventOptions {
-  name: string;
-}
-
-export interface UpdateEventDetailsOptions {
-  eventId: string;
-  event: {
-    name?: string;
-    date?: Date;
-    time?: Date;
-    location?: string;
-    description?: string;
-    invite_list?: number;
-    memory?: string;
-    picture?: string[];
-  };
-}
-
 export interface GetEventDetailsOptions {
   eventId: string;
 }
