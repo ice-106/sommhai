@@ -10,53 +10,63 @@ import {
 } from './types';
 
 export const OrganizerService = {
-  getEvents: async ({ search, date, take, skip }: GetManyEventsOptions) => {
-    const events = await prisma.event.findMany({
-      take,
-      skip,
-      where: {
-        date,
-        AND: {
-          name: {
-            contains: search,
-            mode: 'insensitive',
-          },
-          description: {
-            contains: search,
-            mode: 'insensitive',
-          },
+  getEvents: async ({ type, date, before, status, take = 10, skip = 0 }: GetManyEventsOptions) => {
+    try {
+      const filter: any = {};
+
+      if (type) {
+        filter.type = type;
+      }
+
+      if (date) {
+        filter.date = date;
+      }
+
+      if (status) {
+        filter.status = status;
+      }
+
+      if (before) {
+        filter.date = {
+          lt: before,
+        };
+      }
+
+      const events = await prisma.event.findMany({
+        where: filter,
+        take,
+        skip,
+        orderBy: {
+          date: 'desc',
         },
-      },
-      include: {
-        attendees: true,
-        attendings: true,
-        organizers: true,
-      },
+      });
 
-      orderBy: {
-        date: 'desc',
-      },
-    });
-
-    return events;
+      return events;
+    } catch (error) {
+      console.error('Error fetching events:', error);
+      throw new InternalServerErrorException('Failed to fetch events');
+    }
   },
   getEvent: async ({ eventId }: GetEventOptions) => {
-    const event = await prisma.event.findUnique({
-      where: {
-        eid: eventId,
-      },
-      include: {
-        attendees: true,
-        attendings: true,
-        organizers: true,
-      },
-    });
+    try {
+      const event = await prisma.event.findUnique({
+        where: {
+          eid: eventId,
+        },
+      });
 
-    if (!event) {
-      throw new NotFoundException(`Event not found`);
+      if (!event) {
+        throw new NotFoundException(`Event with ID ${eventId} not found`);
+      }
+
+      return { Event: event };
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      console.error('Error fetching unique event:', error);
+      throw new InternalServerErrorException('Failed to fetch event');
     }
-
-    return event;
   },
   createEvent: async ({ name }: CreateEventOptions) => {
     try {
@@ -77,7 +87,7 @@ export const OrganizerService = {
         });
       }
 
-      return await prisma.event.create({
+      const event = await prisma.event.create({
         data: {
           name: name,
           date: new Date(),
@@ -91,6 +101,8 @@ export const OrganizerService = {
           host_uid: testUser.uid,
         },
       });
+
+      return { Event: event };
     } catch (error) {
       console.error('Error creating event:', error);
       throw new InternalServerErrorException('Failed to create event');
