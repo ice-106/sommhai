@@ -1,12 +1,12 @@
+import { Prisma } from '@prisma/client';
+
 export interface GetEventOptions {
   eventId: string;
 }
 
 export interface GetManyEventsOptions {
-  type?: string;
+  search?: string;
   date?: Date;
-  before?: string;
-  status?: string;
   take?: number;
   skip?: number;
 }
@@ -30,3 +30,11 @@ export interface UpdateEventDetailsOptions {
 export interface GetEventDetailsOptions {
   eventId: string;
 }
+
+export type EventEntity = Prisma.EventGetPayload<{
+  include: {
+    attendees: true;
+    attendings: true;
+    organizers: true;
+  };
+}>;

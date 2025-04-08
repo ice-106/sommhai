@@ -1,4 +1,4 @@
-import { Event } from '@sommhai/shared-type';
+import { eventOrganizerInfo } from '@sommhai/shared-type';
 import { initContract } from '@ts-rest/core';
 import { z } from 'zod';
 
@@ -9,15 +9,14 @@ export const organizerContract = c.router({
     method: 'GET',
     path: '/org/events',
     query: z.object({
-      type: z.string().optional(),
+      search: z.string().optional(),
       date: z.date().optional(),
-      before: z.string().optional(),
-      status: z.string().optional(),
       take: z.string().regex(/^\d+$/).transform(Number).optional(),
       skip: z.string().regex(/^\d+$/).transform(Number).optional(),
     }),
     responses: {
-      200: z.array(Event),
+      200: z.array(eventOrganizerInfo),
+      404: z.object({ message: z.string() }),
       500: z.object({ message: z.string() }),
     },
   },
@@ -28,7 +27,7 @@ export const organizerContract = c.router({
       eventId: z.string(),
     }),
     responses: {
-      200: z.object({ Event }),
+      200: eventOrganizerInfo,
       404: z.object({ message: z.string() }),
       500: z.object({ message: z.string() }),
     },
@@ -40,25 +39,11 @@ export const organizerContract = c.router({
       name: z.string(),
     }),
     responses: {
-      200: z.object({ Event }),
+      201: eventOrganizerInfo,
       500: z.object({ message: z.string() }),
     },
   },
-  getEventDetails: {
-    method: 'GET',
-    path: '/org/events/:eventId/details',
-    pathParams: z.object({
-      eventId: z.string(),
-    }),
-    responses: {
-      200: z.object({
-        Event,
-      }),
-      404: z.object({ message: z.string() }),
-      500: z.object({ message: z.string() }),
-    },
-  },
-  updateEventDetails: {
+  updateEvent: {
     method: 'PUT',
     path: '/org/events/:eventId/details',
     pathParams: z.object({
@@ -75,8 +60,7 @@ export const organizerContract = c.router({
       picture: z.array(z.string()).optional(),
     }),
     responses: {
-      200: z.object({ Event }),
-      404: z.object({ message: z.string() }),
+      201: eventOrganizerInfo,
       500: z.object({ message: z.string() }),
     },
   },
