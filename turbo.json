@@ -2,9 +2,10 @@
   "$schema": "https://turbo.build/schema.json",
   "tasks": {
     "build": {
+      "cache": false,
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
-      "outputs": ["dist/**", ".next/**", "!.next/cache/**", ".next/standalone/**", ".next/static/**"]
+      "outputs": [".next/**", "!.next/cache/**", ".next/standalone/**", ".next/static/**"]
     },
     "lint": {
       "dependsOn": ["^lint"]
@@ -16,9 +17,6 @@
       "cache": false,
       "dependsOn": ["^build"],
       "persistent": true
-    },
-    "clean": {
-      "cache": false
     }
   }
 }

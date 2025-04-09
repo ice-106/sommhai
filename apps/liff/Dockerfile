@@ -61,7 +61,6 @@ RUN adduser --system --uid 1001 nextjs
 COPY --from=installer --chown=nextjs:nodejs /app/apps/liff/.next/standalone ./
 COPY --from=installer --chown=nextjs:nodejs /app/apps/liff/.next/static ./apps/liff/.next/static
 COPY --from=installer --chown=nextjs:nodejs /app/apps/liff/public ./apps/liff/public
-RUN npm install -g turbo@^2
 
 RUN chmod -R 755 ./apps/liff/.next/static
 # Run the application as a non-root user.
