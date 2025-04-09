@@ -36,7 +36,7 @@ COPY --from=builder /app/out/json/ .
 
 # Install pnpm and project dependencies
 RUN npm install -g pnpm@9
-RUN pnpm install --ignore-scripts
+RUN pnpm install --frozen-lockfile --ignore-scripts
 
 # Copy the pruned source code
 COPY --from=builder /app/out/full/ .
@@ -58,7 +58,7 @@ COPY --from=installer /app/node_modules ./node_modules
 COPY --from=installer /app/packages ./packages
 
 # Install production dependencies only
-RUN pnpm install -r --filter=api --prod --ignore-scripts
+# RUN pnpm install -r --filter=api --prod --ignore-scripts
 
 # Create and use non-root user for security
 RUN addgroup --system --gid 1001 nodejs
