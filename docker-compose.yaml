@@ -10,30 +10,9 @@ services:
       - DATABASE_URL=postgres://postgres:password@localhost:5432/sommhai
     env_file:
       - ./apps/api/.env
-    depends_on:
-      - sommhai-db
     networks:
       - sommhai-network
     restart: unless-stopped
-
-  sommhai-db:
-    image: postgres:15-alpine
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: sommhai
-    ports:
-      - '5432:5432'
-    volumes:
-      - ./data/postgresql:/var/lib/postgresql/data
-    networks:
-      - sommhai-network
-    restart: unless-stopped
-    healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U postgres']
-      interval: 10s
-      timeout: 5s
-      retries: 5
 
   liff:
     build:
@@ -44,7 +23,7 @@ services:
     env_file:
       - ./apps/liff/.env
     depends_on:
-      - sommhai-db
+      - api
     networks:
       - sommhai-network
     restart: unless-stopped

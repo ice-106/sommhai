@@ -7,17 +7,17 @@ import { useDebouncedCallback } from 'use-debounce';
 function Search({ placeholder }: { placeholder: string }) {
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <SearchContent />
+      <SearchContent placeholder={placeholder} />
     </Suspense>
   );
 }
 
-function SearchContent() {
+function SearchContent({ placeholder }: { placeholder: string }) {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { replace } = useRouter();
 
-  const handleSearch = useDebouncedCallback((term) => {
+  const handleSearch = useDebouncedCallback((term: any) => {
     const params = new URLSearchParams(searchParams.toString());
     if (term) {
       params.set('query', term);
