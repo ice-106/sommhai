@@ -6,12 +6,12 @@ import * as swaggerUi from 'swagger-ui-express';
 
 import { sommhaiSwaggerHandler } from './common/libs/swagger';
 import { exceptionHandler } from './common/middleware/exceptionHandler';
+import { CORS_ORIGIN, PORT } from './env';
 import { router } from './router';
 
 const app = express();
-const port = 8080;
 
-app.use(cors());
+app.use(cors({ origin: CORS_ORIGIN }));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
@@ -27,6 +27,6 @@ app.get('/', (req, res) => {
   res.send('SomMhai is up! 🚀');
 });
 
-app.listen(port, () => {
-  console.log(`SomMhai app listening on port ${port}`);
+app.listen(PORT, () => {
+  console.log(`SomMhai app listening on port ${PORT}`);
 });

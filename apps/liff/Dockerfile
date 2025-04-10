@@ -66,13 +66,6 @@ RUN chmod -R 755 ./apps/liff/.next/static
 # Run the application as a non-root user.
 USER nextjs
 
-# Expose the port that the application listens on.
-EXPOSE 3000
-
-ENV PORT = 3000
-ENV NODE_ENV=production
-ENV HOSTNAME="0.0.0.0"
-
 # ENV HOSTNAME="0.0.0.0"
 # Run the application.
-CMD node apps/liff/server.js
+CMD ["node", "apps/liff/server.js"]

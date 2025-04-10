@@ -1,0 +1,73 @@
+name: Deploy SomMhai API (dev)
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - dev
+    paths:
+      - 'apps/api/**'
+
+jobs:
+  migration:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            migrations:
+              - 'apps/api/prisma/migrations/**'
+
+      - name: Setup Node
+        if: steps.filter.outputs.migrations == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install prisma
+        if: steps.filter.outputs.migrations == 'true'
+        run: npm install -g prisma@^6
+
+      - name: Shutdown sommhai-api
+        if: steps.filter.outputs.migrations == 'true'
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USERNAME }}
+          key: ${{ secrets.VM_SSH_KEY }}
+          script: |
+            docker compose -f /app/deployment/development/docker-compose.api.yaml down
+
+      - name: Apply migrations
+        id: migrate
+        if: steps.filter.outputs.migrations == 'true'
+        run: prisma migrate deploy --schema apps/api/prisma/schema.prisma
+        continue-on-error: true
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
+      - name: Recover sommhai-api on migration failed
+        if: steps.filter.outputs.migrations == 'true' && steps.migrate.outcome == 'failure'
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USERNAME }}
+          key: ${{ secrets.VM_SSH_KEY }}
+          script: |
+            docker compose -f /app/deployment/development/docker-compose.api.yaml up -d
+
+      - name: Terminate deployment on migration failed
+        if: steps.filter.outputs.migrations == 'true' && steps.migrate.outcome == 'failure'
+        run: exit 1
+  deploy:
+    needs: migration
+    uses: ./.github/workflows/deploy-dev-template.yaml
+    with:
+      IMAGE: ghcr.io/ice-106/sommhai-api:dev
+      DOCKERFILE_PATH: apps/api/Dockerfile
+      COMPOSE_FILE_LOCATION: /app/deployment/development/docker-compose.api.yaml
+    secrets: inherit

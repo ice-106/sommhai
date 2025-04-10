@@ -1,0 +1,18 @@
+name: Deploy SomMhai LIFF (dev)
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - dev
+    paths:
+      - 'apps/liff/**'
+
+jobs:
+  deploy:
+    uses: ./.github/workflows/deploy-template.yaml
+    with:
+      IMAGE: ghcr.io/ice-106/sommhai-liff:dev
+      DOCKERFILE_PATH: apps/liff/Dockerfile
+      COMPOSE_FILE_LOCATION: /app/deployment/development/docker-compose.liff.yaml
+    secrets: inherit

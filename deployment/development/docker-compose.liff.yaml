@@ -1,0 +1,17 @@
+services:
+  web:
+    container_name: sommhai-liff-dev
+    image: ghcr.io/ice-106/sommhai-liff:dev
+    restart: always
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.sommhai-dev-liff.rule=Host(`sommhai-dev.p-def.xyz`)
+      - traefik.http.routers.sommhai-dev-liff.tls=true
+      - traefik.http.routers.sommhai-dev-liff.tls.certresolver=letsencrypt
+    networks:
+      - sommhai-network
+
+networks:
+  sommhai-network:
+    name: sommhai-network
+    external: true
