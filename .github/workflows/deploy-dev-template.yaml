@@ -25,7 +25,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup .env
-        run: cd apps/web && cp .env.development.template .env
+        run: cd apps/liff && cp .env.development.template .env
 
       - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@v3
