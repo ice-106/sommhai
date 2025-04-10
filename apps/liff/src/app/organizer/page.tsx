@@ -1,16 +1,29 @@
 import { SlidersHorizontal } from 'lucide-react';
 import React from 'react';
+import { Suspense } from 'react';
 
 import HeaderBurgur from '@/components/HeaderBurgur';
 import CreateEventButton from '@/components/landing/organizer/button';
-import Search from '@/components/Search';
 
-function page() {
+const SearchContainer = () => {
+  // Using dynamic import with React.lazy for the component using useSearchParams
+  const Search = React.lazy(() => import('@/components/Search'));
+
+  return (
+    <Suspense fallback={<div className='h-10 flex-1 animate-pulse rounded bg-gray-100'>Loading...</div>}>
+      <Search placeholder='Search...' />
+    </Suspense>
+  );
+};
+
+function OrganizerPage() {
   return (
     <div className='bg-g flex h-screen w-screen flex-col'>
       <HeaderBurgur name='Home' />
       <div className='my-5 flex w-full items-center gap-2 px-7'>
-        <Search placeholder='Search...' />
+        <Suspense fallback={<div className='flex-1'>Loading search...</div>}>
+          <SearchContainer />
+        </Suspense>
         <SlidersHorizontal />
       </div>
       <div className='my-5 flex w-full items-center gap-2 px-7'>
@@ -20,4 +33,4 @@ function page() {
   );
 }
 
-export default page;
+export default OrganizerPage;

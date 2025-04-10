@@ -1,11 +1,38 @@
 services:
-  sommhai-db:
-    image: postgres:latest
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: sommhai
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
     ports:
-      - '5432:5432'
-    volumes:
-      - ./data/postgresql:/var/lib/postgresql/data
+      - '8080:8080'
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgres://postgres:password@localhost:5432/sommhai
+    env_file:
+      - ./apps/api/.env
+    networks:
+      - sommhai-network
+    restart: unless-stopped
+
+  liff:
+    build:
+      context: .
+      dockerfile: apps/liff/Dockerfile
+    ports:
+      - '3000:3000'
+    env_file:
+      - ./apps/liff/.env
+    depends_on:
+      - api
+    networks:
+      - sommhai-network
+    restart: unless-stopped
+
+networks:
+  sommhai-network:
+    driver: bridge
+    attachable: true
+
+volumes:
+  postgres-data:
+    name: sommhai-postgres-data
