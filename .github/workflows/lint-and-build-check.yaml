@@ -18,17 +18,20 @@ jobs:
         with:
           node-version: 20
 
+      - name: Install pnpm
+        run: npm install -g pnpm@9
+
       - name: Install dependencies
-        run: npm install
+        run: pnpm install
 
       - name: Run TypeScript Compiler
-        run: npm run check-types
+        run: pnpm check-types
 
       - name: Run ESLint
-        run: npm run lint
+        run: pnpm lint
 
       - name: Check Formatting with Prettier
-        run: npx prettier --write --check "**/*.{js,jsx,ts,tsx,json,css,scss,html,md}" --ignore-path .gitignore
+        run: pnpm dlx prettier --write --check "**/*.{js,jsx,ts,tsx,json,css,scss,html,md}" --ignore-path .gitignore
   build:
     runs-on: ubuntu-latest
     needs: lint
@@ -42,8 +45,11 @@ jobs:
         with:
           node-version: 20
 
+      - name: Install pnpm
+        run: npm install -g pnpm@9
+
       - name: Install dependencies
-        run: npm install
+        run: pnpm install
 
       - name: Build the project
-        run: npm run build
+        run: pnpm build
