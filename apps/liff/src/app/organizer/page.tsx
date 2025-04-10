@@ -2,8 +2,8 @@ import { SlidersHorizontal } from 'lucide-react';
 import React from 'react';
 import { Suspense } from 'react';
 
+import CreateEvent from '@/components/CreateEvent';
 import HeaderBurgur from '@/components/HeaderBurgur';
-import CreateEventButton from '@/components/landing/organizer/button';
 
 const SearchContainer = () => {
   // Using dynamic import with React.lazy for the component using useSearchParams
@@ -18,16 +18,16 @@ const SearchContainer = () => {
 
 function OrganizerPage() {
   return (
-    <div className='bg-g flex h-screen w-screen flex-col'>
+    <div className='bg-g flex h-screen w-screen flex-col justify-start'>
       <HeaderBurgur name='Home' />
-      <div className='my-5 flex w-full items-center gap-2 px-7'>
+      <div className='my-5 flex max-h-5 w-full items-center gap-2 px-7'>
         <Suspense fallback={<div className='flex-1'>Loading search...</div>}>
           <SearchContainer />
         </Suspense>
         <SlidersHorizontal />
       </div>
       <div className='my-5 flex w-full items-center gap-2 px-7'>
-        <CreateEventButton />
+        <CreateEvent />
       </div>
     </div>
   );
