@@ -1,0 +1,49 @@
+name: Lint and Build Check
+
+on:
+  pull_request:
+    branches:
+      - dev
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run TypeScript Compiler
+        run: npm run check-types
+
+      - name: Run ESLint
+        run: npm run lint
+
+      - name: Check Formatting with Prettier
+        run: npx prettier --write --check "**/*.{js,jsx,ts,tsx,json,css,scss,html,md}" --ignore-path .gitignore
+  build:
+    runs-on: ubuntu-latest
+    needs: lint
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build the project
+        run: npm run build

@@ -30,6 +30,7 @@ async function main() {
       date: faker.date.future(),
       time: faker.date.soon(),
       place: faker.location.city(),
+      location: faker.location.streetAddress(),
       description: faker.lorem.sentence(),
       invite_list: faker.number.int({ min: 1, max: 99 }),
       memory: faker.lorem.sentence(),
