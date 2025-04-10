@@ -8,7 +8,7 @@ import { MdNavigateNext } from 'react-icons/md';
 export function EventCardTestStatic() {
   const pathName = usePathname();
   return (
-    <Link href={`${pathName}/123/event`}>
+    <Link href={`${pathName}/event/123`}>
       <div className='bg-white-bg flex w-[345px] max-w-[100%] flex-col justify-between gap-4 rounded-[25px] p-16 shadow-lg'>
         <div className='flex justify-between'>
           <h1 className='text-bold-20 font-inter truncate'>Badminton Competition.........................</h1>
