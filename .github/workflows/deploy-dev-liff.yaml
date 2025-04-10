@@ -10,7 +10,7 @@ on:
 
 jobs:
   deploy:
-    uses: ./.github/workflows/deploy-template.yaml
+    uses: ./.github/workflows/deploy-dev-template.yaml
     with:
       IMAGE: ghcr.io/ice-106/sommhai-liff:dev
       DOCKERFILE_PATH: apps/liff/Dockerfile
