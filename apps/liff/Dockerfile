@@ -66,6 +66,6 @@ RUN chmod -R 755 ./apps/liff/.next/static
 # Run the application as a non-root user.
 USER nextjs
 
-# ENV HOSTNAME="0.0.0.0"
+ENV HOSTNAME="0.0.0.0"
 # Run the application.
 CMD ["node", "apps/liff/server.js"]
