@@ -49,7 +49,7 @@ RUN pnpm build --filter=api
 FROM base as production
 WORKDIR /app
 ENV NODE_ENV production
-RUN npm install -g pnpm@9
+# RUN npm install -g pnpm@9
 
 # Copy built application and necessary files
 COPY --from=installer /app/apps/api/package.json ./apps/api/package.json
