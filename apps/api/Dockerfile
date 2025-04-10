@@ -48,7 +48,7 @@ RUN pnpm build --filter=api
 # Production stage with minimal dependencies
 FROM base as production
 WORKDIR /app
-ENV NODE_ENV production
+
 # RUN npm install -g pnpm@9
 
 # Copy built application and necessary files
@@ -64,9 +64,6 @@ COPY --from=installer /app/packages ./packages
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 apiuser
 USER apiuser
-
-# Expose the port that the application listens on
-EXPOSE 8080
 
 # Run the application
 CMD ["node", "apps/api/build/index.js"]

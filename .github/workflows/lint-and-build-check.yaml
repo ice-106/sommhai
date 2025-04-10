@@ -3,6 +3,10 @@ name: Lint and Build Check
 on:
   pull_request:
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   lint:
     runs-on: ubuntu-latest
