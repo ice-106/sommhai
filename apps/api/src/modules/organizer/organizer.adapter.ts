@@ -17,6 +17,7 @@ export const OrganizerAdapter = {
       attendees: event.attendees,
       attendings: event.attendings,
       organizers: event.organizers,
+      status: event.status,
     };
   },
 };

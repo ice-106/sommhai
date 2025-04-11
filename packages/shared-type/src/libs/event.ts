@@ -18,6 +18,7 @@ export const eventBaseInfo = z.object({
   attendees: z.array(attendee),
   attendings: z.array(attendee),
   organizers: z.array(organizer),
+  status: z.string(),
 });
 
 export const eventOrganizerInfo = eventBaseInfo;

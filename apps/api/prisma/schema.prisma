@@ -41,6 +41,7 @@ model Event {
   memory           String?
   host             String
   host_uid         String
+  status           String
   hostUser         User              @relation(fields: [host_uid], references: [uid], onDelete: Cascade)
   histories        History[]
   attendees        Attendee[]

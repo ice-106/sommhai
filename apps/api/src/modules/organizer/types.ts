@@ -9,9 +9,7 @@ export interface GetManyEventsOptions {
   date?: Date;
   take?: number;
   skip?: number;
-}
-export interface GetEventDetailsOptions {
-  eventId: string;
+  status?: string;
 }
 
 export type EventEntity = Prisma.EventGetPayload<{

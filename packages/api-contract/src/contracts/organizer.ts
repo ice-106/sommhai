@@ -13,6 +13,7 @@ export const organizerContract = c.router({
       date: z.date().optional(),
       take: z.string().regex(/^\d+$/).transform(Number).optional(),
       skip: z.string().regex(/^\d+$/).transform(Number).optional(),
+      status: z.string().optional(),
     }),
     responses: {
       200: z.array(eventOrganizerInfo),
@@ -58,6 +59,7 @@ export const organizerContract = c.router({
       invite_list: z.number().optional(),
       memory: z.string().optional(),
       picture: z.array(z.string()).optional(),
+      status: z.string().optional(),
     }),
     responses: {
       201: eventOrganizerInfo,

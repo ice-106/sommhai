@@ -13,8 +13,8 @@ export const OrganizerController: RouterImplementation<typeof contract.organizer
       body: OrganizerAdapter.toEventOrganizerInfo(event),
     };
   },
-  getEvents: async ({ query: { search, date, take, skip } }) => {
-    const events = await OrganizerService.getEvents({ search, date, take, skip });
+  getEvents: async ({ query: { search, date, take, skip, status } }) => {
+    const events = await OrganizerService.getEvents({ search, date, take, skip, status });
 
     return {
       status: 200,
@@ -32,8 +32,9 @@ export const OrganizerController: RouterImplementation<typeof contract.organizer
         invite_list: 0,
         memory: '',
         picture: [],
-        host: 'John Doe',
-        host_uid: '1234567890',
+        host: '',
+        host_uid: '',
+        status: 'Upcoming',
       },
     });
 

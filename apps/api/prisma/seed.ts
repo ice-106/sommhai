@@ -39,6 +39,7 @@ async function main() {
       host: user.pref_name,
       host_uid: user.uid,
       picture: [faker.image.urlPicsumPhotos()],
+      status: faker.helpers.arrayElement(['Upcoming', 'Ongoing', 'Completed']),
     })),
   });
 

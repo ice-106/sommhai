@@ -2,7 +2,7 @@ import { Prisma } from '@prisma/client';
 
 import { InternalServerErrorException, NotFoundException } from '../../common/exception/http';
 import prisma from '../../common/libs/prisma';
-import { GetEventDetailsOptions, GetEventOptions, GetManyEventsOptions } from './types';
+import { GetEventOptions, GetManyEventsOptions } from './types';
 
 export const OrganizerService = {
   getEvents: async ({ search, date, take, skip }: GetManyEventsOptions) => {
@@ -75,6 +75,9 @@ export const OrganizerService = {
       return await prisma.event.create({
         data: {
           ...event,
+          host: testUser.pref_name,
+          host_uid: testUser.uid,
+          status: 'Upcoming',
           attendees: {
             create: [
               {
@@ -103,32 +106,6 @@ export const OrganizerService = {
       }
       console.error('Error updating event details:', error);
       throw new InternalServerErrorException('Failed to update event details');
-    }
-  },
-
-  getEventDetails: async ({ eventId }: GetEventDetailsOptions) => {
-    try {
-      const event = await prisma.event.findUnique({
-        where: {
-          eid: eventId,
-        },
-        include: {
-          attendees: true,
-          organizers: true,
-        },
-      });
-
-      if (!event) {
-        throw new NotFoundException(`Event with ID ${eventId} not found`);
-      }
-
-      return { Event: event };
-    } catch (error) {
-      if (error instanceof NotFoundException) {
-        throw error;
-      }
-      console.error('Error fetching event details:', error);
-      throw new InternalServerErrorException('Failed to fetch event details');
     }
   },
 };
