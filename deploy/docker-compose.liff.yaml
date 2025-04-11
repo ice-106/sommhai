@@ -1,0 +1,19 @@
+services:
+  liff:
+    build:
+      context: .
+      dockerfile: apps/liff/Dockerfile
+    ports:
+      - '3000:3000'
+    env_file:
+      - ./apps/liff/.env
+    depends_on:
+      - api
+    networks:
+      - sommhai-network
+    restart: unless-stopped
+
+networks:
+  sommhai-network:
+    driver: bridge
+    attachable: true
