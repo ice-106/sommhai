@@ -12,9 +12,8 @@ import { router } from './router';
 const app = express();
 
 app.use(cors({ origin: CORS_ORIGIN }));
-app.use(express.urlencoded({ extended: false }));
-app.use(express.json());
-
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: true }));
 app.use('/docs', swaggerUi.serve, sommhaiSwaggerHandler);
 
 createExpressEndpoints(contract, router, app, {
