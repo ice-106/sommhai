@@ -1,4 +1,4 @@
-import { user } from '@sommhai/shared-type';
+import { userInfo } from '@sommhai/shared-type';
 import { initContract } from '@ts-rest/core';
 import { z } from 'zod';
 
@@ -11,19 +11,18 @@ export const userContract = c.router({
     body: z.object({
       user: z.string(),
       email: z.string(),
-      description: z.string().optional(),
     }),
     responses: {
-      201: z.object({ user }),
+      201: userInfo,
       500: z.object({ message: z.string() }),
     },
   },
   getUser: {
     method: 'GET',
     path: '/users/:userId',
-    pathParams: z.object({ userId: z.string().regex(/^\d+$/).transform(Number) }),
+    pathParams: z.object({ userId: z.string() }),
     responses: {
-      200: z.object({ user }),
+      200: userInfo,
       404: z.object({ message: z.string() }),
       500: z.object({ message: z.string() }),
     },
@@ -32,14 +31,13 @@ export const userContract = c.router({
     method: 'GET',
     path: '/users',
     query: z.object({
-      userIds: z.array(z.string().regex(/^\d+$/).transform(Number)),
       take: z.string().regex(/^\d+$/).transform(Number).optional(),
       skip: z.string().regex(/^\d+$/).transform(Number).optional(),
       search: z.string().optional(),
     }),
     responses: {
       200: z.object({
-        users: z.array(user),
+        users: z.array(userInfo),
         total: z.number(),
       }),
       404: z.object({ message: z.string() }),

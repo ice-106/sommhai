@@ -4,7 +4,7 @@ import { z } from 'zod';
 
 const c = initContract();
 
-export const userContract = c.router({
+export const attendeeContract = c.router({
   createUser: {
     method: 'POST',
     path: '/users/create',
