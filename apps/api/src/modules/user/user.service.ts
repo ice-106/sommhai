@@ -1,6 +1,6 @@
 import { Prisma } from '@prisma/client';
 
-import { InternalServerErrorException, NotFoundException } from '../../common/exception/http';
+import { ConflictException, InternalServerErrorException, NotFoundException } from '../../common/exception/http';
 import prisma from '../../common/libs/prisma';
 import { GetManyUsersOptions, GetUserOptions } from './types';
 
@@ -14,7 +14,7 @@ export const UserService = {
       });
 
       if (existingUser) {
-        throw new InternalServerErrorException('User with this email already exists');
+        throw new ConflictException('User with this email already exists');
       }
 
       const userData: Prisma.UserCreateInput = {
@@ -34,7 +34,7 @@ export const UserService = {
 
       return newUser;
     } catch (error) {
-      if (error instanceof InternalServerErrorException) {
+      if (error instanceof ConflictException) {
         throw error;
       }
       console.error('Error creating user:', error);
