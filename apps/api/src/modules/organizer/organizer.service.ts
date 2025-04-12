@@ -2,7 +2,12 @@ import { Prisma } from '@prisma/client';
 
 import { InternalServerErrorException, NotFoundException } from '../../common/exception/http';
 import prisma from '../../common/libs/prisma';
-import { GetEventOptions, GetManyEventsOptions } from './types';
+import {
+  CreateAttendeeInviteOptions,
+  CreateOrganizerInviteOptions,
+  GetEventOptions,
+  GetManyEventsOptions,
+} from './types';
 
 export const OrganizerService = {
   getEvents: async ({ search, date, take, skip }: GetManyEventsOptions) => {
@@ -106,6 +111,212 @@ export const OrganizerService = {
       }
       console.error('Error updating event details:', error);
       throw new InternalServerErrorException('Failed to update event details');
+    }
+  },
+  inviteAttendees: async ({ eventId, uids }: CreateAttendeeInviteOptions) => {
+    try {
+      const event = await prisma.event.findUnique({
+        where: { eid: eventId },
+      });
+
+      if (!event) {
+        throw new NotFoundException('Event not found');
+      }
+
+      const createdInvitations = await Promise.all(
+        uids.map(async (uid) => {
+          try {
+            const user = await prisma.user.findUnique({
+              where: { uid },
+            });
+
+            if (!user) {
+              return {
+                success: false,
+                uid,
+                error: 'User not found',
+              };
+            }
+
+            const existingAttendee = await prisma.attendee.findUnique({
+              where: {
+                uid_eid: {
+                  uid,
+                  eid: eventId,
+                },
+              },
+            });
+
+            if (existingAttendee) {
+              return {
+                success: false,
+                uid,
+                error: 'User is already an attendee',
+              };
+            }
+
+            const existingInvitation = await prisma.attendeeInvitation.findUnique({
+              where: {
+                eid_uid: {
+                  eid: eventId,
+                  uid,
+                },
+              },
+            });
+
+            if (existingInvitation) {
+              await prisma.attendeeInvitation.update({
+                where: { id: existingInvitation.id },
+                data: {
+                  accept: null,
+                  updated_at: new Date(),
+                },
+              });
+
+              return {
+                success: true,
+                uid,
+                invitationId: existingInvitation.id,
+              };
+            }
+
+            const invitation = await prisma.attendeeInvitation.create({
+              data: {
+                eid: eventId,
+                uid,
+                accept: null,
+              },
+            });
+
+            return {
+              success: true,
+              uid,
+              invitationId: invitation.id,
+            };
+          } catch (error) {
+            console.error(`Error inviting user ${uid}:`, error);
+            return {
+              success: false,
+              uid,
+              error: 'Failed to create invitation',
+            };
+          }
+        }),
+      );
+
+      return {
+        eventId,
+        invitations: createdInvitations,
+      };
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      console.error('Error inviting attendees:', error);
+      throw new InternalServerErrorException('Failed to invite attendees');
+    }
+  },
+  inviteOrganizers: async ({ eventId, uids }: CreateOrganizerInviteOptions) => {
+    try {
+      const event = await prisma.event.findUnique({
+        where: { eid: eventId },
+      });
+
+      if (!event) {
+        throw new NotFoundException('Event not found');
+      }
+
+      const createdInvitations = await Promise.all(
+        uids.map(async (uid) => {
+          try {
+            const user = await prisma.user.findUnique({
+              where: { uid },
+            });
+
+            if (!user) {
+              return {
+                success: false,
+                uid,
+                error: 'User not found',
+              };
+            }
+
+            const existingOrganizer = await prisma.organizer.findUnique({
+              where: {
+                uid_eid: {
+                  uid,
+                  eid: eventId,
+                },
+              },
+            });
+
+            if (existingOrganizer) {
+              return {
+                success: false,
+                uid,
+                error: 'User is already an organizer',
+              };
+            }
+
+            const existingInvitation = await prisma.organizerInvitation.findUnique({
+              where: {
+                eid_uid: {
+                  eid: eventId,
+                  uid,
+                },
+              },
+            });
+
+            if (existingInvitation) {
+              await prisma.organizerInvitation.update({
+                where: { id: existingInvitation.id },
+                data: {
+                  accept: null,
+                  updated_at: new Date(),
+                },
+              });
+
+              return {
+                success: true,
+                uid,
+                invitationId: existingInvitation.id,
+              };
+            }
+
+            const invitation = await prisma.organizerInvitation.create({
+              data: {
+                eid: eventId,
+                uid,
+                accept: null,
+              },
+            });
+
+            return {
+              success: true,
+              uid,
+              invitationId: invitation.id,
+            };
+          } catch (error) {
+            console.error(`Error inviting user ${uid}:`, error);
+            return {
+              success: false,
+              uid,
+              error: 'Failed to create invitation',
+            };
+          }
+        }),
+      );
+
+      return {
+        eventId,
+        invitations: createdInvitations,
+      };
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      console.error('Error inviting organizers:', error);
+      throw new InternalServerErrorException('Failed to invite organizers');
     }
   },
 };

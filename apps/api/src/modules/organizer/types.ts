@@ -19,3 +19,13 @@ export type EventEntity = Prisma.EventGetPayload<{
     organizers: true;
   };
 }>;
+
+export interface CreateOrganizerInviteOptions {
+  eventId: string;
+  uids: string[];
+}
+
+export interface CreateAttendeeInviteOptions {
+  eventId: string;
+  uids: string[];
+}

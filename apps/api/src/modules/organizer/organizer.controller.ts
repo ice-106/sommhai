@@ -70,4 +70,21 @@ export const OrganizerController: RouterImplementation<typeof contract.organizer
       body: OrganizerAdapter.toEventOrganizerInfo(event),
     };
   },
+  inviteAttendees: async ({ params: { eventId }, body: { uids } }) => {
+    const attendeeInvitation = await OrganizerService.inviteAttendees({ eventId, uids });
+
+    return {
+      status: 201,
+      body: attendeeInvitation,
+    };
+  },
+
+  inviteOrganizers: async ({ params: { eventId }, body: { uids } }) => {
+    const organizerInvitation = await OrganizerService.inviteOrganizers({ eventId, uids });
+
+    return {
+      status: 201,
+      body: organizerInvitation,
+    };
+  },
 };

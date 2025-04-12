@@ -21,4 +21,19 @@ export const eventBaseInfo = z.object({
   status: z.string(),
 });
 
+export const eventInvInfo = z.object({
+  eventId: z.string(),
+  invitations: z.array(
+    z.object({
+      success: z.boolean(),
+      uid: z.string(),
+      invitationId: z.string().optional(),
+      error: z.string().optional(),
+    }),
+  ),
+});
+
 export const eventOrganizerInfo = eventBaseInfo;
+export const eventAttendeeInfo = eventBaseInfo;
+export const eventOrganizerInvInfo = eventInvInfo;
+export const eventAttendeeInvInfo = eventInvInfo;
