@@ -5,9 +5,10 @@ services:
     restart: always
     labels:
       - traefik.enable=true
-      - traefik.http.routers.sommhai-dev-liff.rule=Host(`sommhai-dev.p-def.xyz`)
-      - traefik.http.routers.sommhai-dev-liff.tls=true
-      - traefik.http.routers.sommhai-dev-liff.tls.certresolver=letsencrypt
+      - traefik.http.routers.sommhai-liff-dev.rule=Host(`sommhai-dev.p-def.xyz`)
+      - traefik.http.routers.sommhai-liff-dev.tls=true
+      - traefik.http.routers.sommhai-liff-dev.tls.certresolver=letsencrypt
+      - traefik.http.services.sommhai-liff-dev.loadbalancer.server.port=80
     networks:
       - sommhai-network
 

@@ -10,11 +10,11 @@ services:
     labels:
       - traefik.enable=true
       - traefik.http.middlewares.stripprefix-api.stripprefix.prefixes=/api
-      - traefik.http.routers.sommhai-dev-api.rule=Host(`api.sommhai-dev.p-def.xyz`) || (Host(`sommhai-dev.p-def.xyz`) && PathPrefix(`/api`))
-      - traefik.http.routers.sommhai-dev-api.middlewares=stripprefix-api@docker
-      - traefik.http.routers.sommhai-dev-api.tls=true
-      - traefik.http.routers.sommhai-dev-api.tls.certresolver=letsencrypt
-      - traefik.http.services.sommhai-dev-api.loadbalancer.server.port=5001
+      - traefik.http.routers.sommhai-api-dev.rule=Host(`api.sommhai-dev.p-def.xyz`) || (Host(`sommhai-dev.p-def.xyz`) && PathPrefix(`/api`))
+      - traefik.http.routers.sommhai-api-dev.middlewares=stripprefix-api@docker
+      - traefik.http.routers.sommhai-api-dev.tls=true
+      - traefik.http.routers.sommhai-api-dev.tls.certresolver=letsencrypt
+      - traefik.http.services.sommhai-api-dev.loadbalancer.server.port=80
     networks:
       - sommhai-network
 
