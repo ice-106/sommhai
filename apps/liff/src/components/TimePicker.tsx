@@ -9,7 +9,7 @@ interface TimePickerProps {
   is24Hour: boolean;
 }
 
-function TimePicker({ onChange, initialHour, initialMinute, is24Hour }: TimePickerProps) {
+function TimePickerSelect({ onChange, initialHour, initialMinute, is24Hour }: TimePickerProps) {
   const [selectedHour, setSelectedHour] = useState(initialHour);
   const [selectedMinute, setSelectedMinute] = useState(initialMinute);
   const [ampm, setAmPm] = useState(initialHour >= 12 ? 'PM' : 'AM');
@@ -165,7 +165,7 @@ function TimePicker({ onChange, initialHour, initialMinute, is24Hour }: TimePick
   }, []);
 
   return (
-    <div className='flex w-full flex-col items-center justify-center px-20 py-10'>
+    <div className='flex w-full flex-col items-center justify-center py-10'>
       <div className='relative mx-8 flex w-full items-center justify-between rounded-2xl bg-white px-20 shadow-lg'>
         {/* Hours Column */}
         <div className='scrollbar-hide h-[200px] w-full overflow-auto' ref={hourRef} onScroll={handleHourScroll}>
@@ -181,7 +181,7 @@ function TimePicker({ onChange, initialHour, initialMinute, is24Hour }: TimePick
               {hour.toString().padStart(2, '0')}
             </div>
           ))}
-          <div className='h-80' /> {/* Bottom padding */}
+          <div className='h-80' />
         </div>
 
         <div className='mx-1 text-xl font-bold'>:</div>
@@ -245,62 +245,59 @@ const ScrollbarHideStyles = () => (
   `}</style>
 );
 
-// Example usage component with both 12h and 24h options with outout of the selected time
-function TimePickerSelect() {
-  const [selectedTime, setSelectedTime] = useState({
-    hour: new Date().getHours() as number,
-    minute: new Date().getMinutes() as number,
+interface SelectedTime {
+  hour: number;
+  minute: number;
+}
+interface TimePickerSelectProps {
+  onChange: (time: SelectedTime) => void;
+}
+function TimePicker({ onChange }: TimePickerSelectProps) {
+  const [selectedTime, setSelectedTime] = useState<SelectedTime>({
+    hour: new Date().getHours(),
+    minute: new Date().getMinutes(),
   });
-  const [is24Hour, setIs24Hour] = useState(true);
+  const [is24Hour, setIs24Hour] = useState<boolean>(true);
 
-  const handleTimeChange = (time: any) => {
-    setSelectedTime(time);
-  };
+  // const handleTimeChange = (time: { hour: number; minute: number }) => {
+  //   setSelectedTime(time);
+  // };
 
   return (
-    <div className='bg-white-bg flex min-h-screen flex-col items-center p-6'>
+    <div className='bg-white-bg flex w-full flex-col items-center p-6'>
       <ScrollbarHideStyles />
 
-      <h2 className='mb-6 text-center text-2xl font-semibold'>Time Selector</h2>
-
-      <div className='mb-6 flex flex-row justify-between'>
-        <label className='flex cursor-pointer items-center gap-4'>
+      <div className='mb-6 flex w-full flex-row'>
+        <label className='flex w-full cursor-pointer flex-col items-center justify-center gap-5'>
           <input checked={is24Hour} className='sr-only' type='checkbox' onChange={() => setIs24Hour(!is24Hour)} />
           {is24Hour ? (
             <Button onClick={() => setIs24Hour(!is24Hour)}>AM-Pm format</Button>
           ) : (
             <Button onClick={() => setIs24Hour(!is24Hour)}>24-hour format</Button>
           )}
-          <div
-            className={`h-6 w-12 rounded-full transition-colors ${is24Hour ? 'bg-orange-3' : 'bg-gray-300'} relative`}
-          >
+          <div className='flex flex-row items-center'>
             <div
-              className={`absolute top-1 h-4 w-4 rounded-full bg-white transition-transform ${is24Hour ? 'translate-x-7' : 'translate-x-1'}`}
-            ></div>
+              className={`h-6 w-12 rounded-full transition-colors ${is24Hour ? 'bg-orange-3' : 'bg-gray-300'} relative`}
+            >
+              <div
+                className={`absolute top-1 h-4 w-4 rounded-full bg-white transition-transform ${is24Hour ? 'translate-x-7' : 'translate-x-1'}`}
+              ></div>
+            </div>
+            <span className='ml-2 text-sm font-medium'>{is24Hour ? '24-hour format' : '12-hour format'}</span>
           </div>
-          <span className='ml-2 text-sm font-medium'>{is24Hour ? '24-hour format' : '12-hour format'}</span>
         </label>
       </div>
 
-      <div className='w-full max-w-xs rounded-xl bg-white p-6 shadow-lg'>
-        <TimePicker
+      <div className='w-full rounded-xl bg-white p-6 shadow-lg'>
+        <TimePickerSelect
           initialHour={selectedTime.hour}
           initialMinute={selectedTime.minute}
           is24Hour={is24Hour}
-          onChange={handleTimeChange}
+          onChange={onChange}
         />
-
-        <div className='mt-6 border-t border-gray-100 pt-4'>
-          <p className='text-center text-gray-600'>
-            Selected time:{' '}
-            <span className='font-bold text-black'>
-              {selectedTime.hour.toString().padStart(2, '0')}:{selectedTime.minute.toString().padStart(2, '0')}
-            </span>
-          </p>
-        </div>
       </div>
     </div>
   );
 }
 
-export default TimePickerSelect;
+export default TimePicker;
