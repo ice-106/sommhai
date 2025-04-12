@@ -2,7 +2,7 @@ import Link from 'next/link';
 import React from 'react';
 
 import CreateEvent from '@/components/CreateEvent';
-import EventCard from '@/components/EventCard';
+import { EventCard } from '@/components/ui/organizer/EventCard';
 
 function HomePage(): React.ReactElement {
   return (
@@ -13,7 +13,7 @@ function HomePage(): React.ReactElement {
         <CreateEvent />
       </Link>
       <div>
-        <EventCard />
+        <EventCard link='organizer' name='Organizer' />
       </div>
     </div>
   );
