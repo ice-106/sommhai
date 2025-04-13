@@ -1,0 +1,35 @@
+name: Dispose Preview (sommhai-liff)
+
+on:
+  pull_request:
+    branches:
+      - dev
+    types:
+      - closed
+    paths:
+      - 'apps/liff/**'
+
+env:
+  IMAGE: ghcr.io/ice-106/sommhai-liff
+
+jobs:
+  dispose-preview:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: preview-liff-dispose
+    steps:
+      - name: Dispose Preview from VM
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USERNAME }}
+          key: ${{ secrets.VM_SSH_KEY }}
+          script: |
+            # Remove deploy preview domain from CORS_ORIGIN
+            CORS_ORIGIN=$(grep -oP '(?<=CORS_ORIGIN=).*' /app/deployment/development/.env)
+            CORS_ORIGIN=$(echo $CORS_ORIGIN | sed "s|https://preview-pr${{ github.event.number }}.sommhai-dev.p-def.xyz||g" | sed 's/,,/,/g' | sed 's/,$//')
+            sed -i "s|CORS_ORIGIN=.*|CORS_ORIGIN=${CORS_ORIGIN}|" /app/deployment/development/.env
+            docker compose -f /app/deployment/development/docker-compose.api.yaml up -d
+
+            docker rm -f preview-web-pr${{ github.event.number }}
+            docker rmi ${{ env.IMAGE }}:pr-${{ github.event.number }}
