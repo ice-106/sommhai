@@ -1,0 +1,58 @@
+services:
+  traefik:
+    depends_on:
+      - liff
+      - api
+    image: traefik:v3.3
+    container_name: traefik
+    restart: always
+    ports:
+      - '80:80'
+      - '443:443'
+      - '8080:8080'
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./traefik/traefik.toml:/traefik.toml
+      - ./traefik/acme.json:/acme.json
+    networks:
+      - sommhai-network
+  liff:
+    container_name: sommhai-liff
+    build:
+      context: ../../
+      dockerfile: apps/liff/Dockerfile
+    environment:
+      - PORT=5000
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.sommhai-liff-dev.rule=Host(`localhost`)
+      - traefik.http.routers.sommhai-liff-dev.tls=true
+      - traefik.http.routers.sommhai-liff-dev.tls.certresolver=letsencrypt
+      - traefik.http.services.sommhai-liff-dev.loadbalancer.server.port=5000
+    networks:
+      - sommhai-network
+    restart: always
+
+  api:
+    container_name: sommhai-api
+    build:
+      context: ../../
+      dockerfile: apps/api/Dockerfile
+    environment:
+      - PORT=5001
+    labels:
+      - traefik.enable=true
+      - traefik.http.middlewares.stripprefix-api.stripprefix.prefixes=/api
+      - traefik.http.routers.sommhai-api-dev.rule=Host(`api.localhost`) || (Host(`localhost`) && PathPrefix(`/api`))
+      - traefik.http.routers.sommhai-api-dev.middlewares=stripprefix-api@docker
+      - traefik.http.routers.sommhai-api-dev.tls=true
+      - traefik.http.routers.sommhai-api-dev.tls.certresolver=letsencrypt
+      - traefik.http.services.sommhai-api-dev.loadbalancer.server.port=5001
+    networks:
+      - sommhai-network
+    restart: always
+
+networks:
+  sommhai-network:
+    driver: bridge
+    attachable: true
