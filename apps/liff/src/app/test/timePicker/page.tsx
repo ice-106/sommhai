@@ -1,12 +1,15 @@
+'use client';
 import React from 'react';
 
-import TimePickerSelect from '@/components/TimePicker';
+import SwiperTimePicker from '@/components/SwiperTimePicker';
+import TimePicker from '@/components/TimePicker';
 
 function PageTest() {
   return (
-    <div className='flex w-screen flex-col'>
+    <div className='max-w-screen flex flex-col'>
       {/* <TimePicker /> */}
-      <TimePickerSelect />
+      <SwiperTimePicker onTimeChange={() => {}} />
+      <TimePicker onChange={() => {}} />
     </div>
   );
 }
