@@ -46,7 +46,7 @@ jobs:
         id: migrate
         if: steps.filter.outputs.migrations == 'true'
         run: |
-          export DATABASE_URL=$(grep ^DATABASE_URL= /app/deployment/development/.env | cut -d '=' -f2-)
+          export DATABASE_URL=$(grep ^DATABASE_URL= /deployment/development/.env | cut -d '=' -f2-)
           prisma migrate deploy --schema apps/api/prisma/schema.prisma
         continue-on-error: true
 
