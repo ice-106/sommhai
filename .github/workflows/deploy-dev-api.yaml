@@ -45,10 +45,10 @@ jobs:
       - name: Apply migrations
         id: migrate
         if: steps.filter.outputs.migrations == 'true'
-        run: prisma migrate deploy --schema apps/api/prisma/schema.prisma
+        run: |
+          export DATABASE_URL=$(grep ^DATABASE_URL= /app/deployment/development/.env | cut -d '=' -f2-)
+          prisma migrate deploy --schema apps/api/prisma/schema.prisma
         continue-on-error: true
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
       - name: Recover sommhai-api on migration failed
         if: steps.filter.outputs.migrations == 'true' && steps.migrate.outcome == 'failure'
