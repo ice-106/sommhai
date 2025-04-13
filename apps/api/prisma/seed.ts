@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable unused-imports/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { faker } from '@faker-js/faker/locale/en';
 import { PrismaClient } from '@prisma/client';
 
@@ -29,13 +32,14 @@ async function main() {
       name: faker.lorem.words(3),
       date: faker.date.future(),
       time: faker.date.soon(),
-      place: faker.location.city(),
-      location: faker.location.streetAddress(),
+      location: faker.location.city(),
       description: faker.lorem.sentence(),
       invite_list: faker.number.int({ min: 1, max: 99 }),
       memory: faker.lorem.sentence(),
       host: user.pref_name,
       host_uid: user.uid,
+      picture: [faker.image.urlPicsumPhotos()],
+      status: faker.helpers.arrayElement(['Upcoming', 'Ongoing', 'Completed']),
     })),
   });
 
@@ -137,7 +141,6 @@ async function main() {
   // Create InvitationLetters
   const invitationLetters = await prisma.invitationLetter.createMany({
     data: Array.from({ length: 5 }, () => ({
-      accept: faker.datatype.boolean(),
       description: faker.lorem.paragraph(),
     })),
   });
@@ -157,21 +160,6 @@ async function main() {
       });
     } catch (error) {
       console.log(`Receive already exists for user ${user.uid} and letter ${letter.letter_id}`);
-    }
-  }
-
-  // Create EventInvitations
-  for (const letter of invitationLetterList) {
-    const event = faker.helpers.arrayElement(eventList) as (typeof eventList)[0];
-    try {
-      await prisma.eventInvitation.create({
-        data: {
-          eid: event.eid,
-          letter_id: letter.letter_id,
-        },
-      });
-    } catch (error) {
-      console.log(`EventInvitation already exists for event ${event.eid} and letter ${letter.letter_id}`);
     }
   }
 
@@ -224,6 +212,78 @@ async function main() {
       });
     } catch (error) {
       console.log(`Create already exists for user ${user.uid} and event ${event.eid}`);
+    }
+  }
+
+  // Create Organizer Invitations
+  console.log('Creating organizer invitations...');
+  for (const event of eventList) {
+    // Find users who are already attendees but not organizers
+    const existingOrganizers = await prisma.organizer.findMany({
+      where: { eid: event.eid },
+      select: { uid: true },
+    });
+
+    const existingOrganizerIds = existingOrganizers.map((o) => o.uid);
+
+    const attendees = await prisma.attendee.findMany({
+      where: { eid: event.eid },
+      select: { uid: true },
+    });
+
+    const eligibleAttendees = attendees.filter((a) => !existingOrganizerIds.includes(a.uid));
+
+    // Better approach: Process only the first 2 eligible attendees using slice
+    // This ensures we never try to access an element beyond the array length
+    const attendeesToInvite = eligibleAttendees.slice(0, 2);
+
+    for (const attendeeToInvite of attendeesToInvite) {
+      try {
+        await prisma.organizerInvitation.create({
+          data: {
+            eid: event.eid,
+            uid: attendeeToInvite.uid,
+            accept: null, // pending
+          },
+        });
+        console.log(`Created organizer invitation for user ${attendeeToInvite.uid} to event ${event.eid}`);
+      } catch (error) {
+        console.log(`Error creating organizer invitation for user ${attendeeToInvite.uid} to event ${event.eid}`);
+      }
+    }
+  }
+
+  // Create Attendee Invitations
+  console.log('Creating attendee invitations...');
+  for (const event of eventList) {
+    // Get an invitation letter to connect (optional)
+    const invitationLetter = await prisma.invitationLetter.findFirst();
+
+    const existingAttendees = await prisma.attendee.findMany({
+      where: { eid: event.eid },
+      select: { uid: true },
+    });
+
+    const existingAttendeeIds = existingAttendees.map((a) => a.uid);
+    const eligibleUsers = userList.filter((user) => !existingAttendeeIds.includes(user.uid));
+
+    const usersToInvite = eligibleUsers.slice(0, 2);
+
+    for (const userToInvite of usersToInvite) {
+      try {
+        // Create attendee invitation with optional letter reference
+        await prisma.attendeeInvitation.create({
+          data: {
+            eid: event.eid,
+            uid: userToInvite.uid,
+            accept: null,
+            letter_id: invitationLetter?.letter_id, // Optional connection
+          },
+        });
+        console.log(`Created attendee invitation for user ${userToInvite.uid} to event ${event.eid}`);
+      } catch (error) {
+        console.log(`Error creating attendee invitation for user ${userToInvite.uid} to event ${event.eid}:`, error);
+      }
     }
   }
 
