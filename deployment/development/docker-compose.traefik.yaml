@@ -11,9 +11,9 @@ services:
       - ./traefik/traefik.toml:/traefik.toml
       - ./traefik/acme.json:/acme.json
     networks:
-      - sommhai-network
+      - sommhai-dev-network
 
 networks:
-  sommhai-network:
+  sommhai-dev-network:
     driver: bridge
     external: true
