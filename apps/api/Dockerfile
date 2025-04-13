@@ -1,69 +1,40 @@
-# syntax=docker/dockerfile:1
-
-# Using a multi-stage build process for optimal image size and security
-ARG NODE_VERSION=20.17.0
-
-################################################################################
-# Base stage with shared configuration
-FROM node:${NODE_VERSION}-alpine as base
-
-################################################################################
-# Builder stage to prune the monorepo
-FROM base as builder
-RUN apk update
-RUN apk add --no-cache libc6-compat
+FROM node:20-alpine AS preparer
 
 WORKDIR /app
 
-# Install Turbo globally
-RUN npm install -g turbo@^2
+RUN npm install -g turbo@2
 
-# Copy the entire repository
 COPY . .
 
-# Use Turbo to prune the monorepo to only the api package and its dependencies
-RUN turbo prune api --docker
+RUN turbo prune --scope=api --docker
 
-################################################################################
-# Installer stage to install dependencies and build the application
-FROM base AS installer
-RUN apk update
-RUN apk add --no-cache libc6-compat
+#########################################################################
+
+FROM node:20-alpine AS builder
+
 WORKDIR /app
 
-# Copy the pruned lockfile and package.json files
-COPY --from=builder /app/out/json/ .
-
-# Install pnpm and project dependencies
+RUN apk add --no-cache git
 RUN npm install -g pnpm@9
+
+COPY --from=preparer /app/.git .
+COPY --from=preparer /app/out/json/ .
+COPY --from=preparer /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
+
 RUN pnpm install --frozen-lockfile --ignore-scripts
 
-# Copy the pruned source code
-COPY --from=builder /app/out/full/ .
+COPY --from=preparer /app/out/full/ .
 
-# Build the API application
 RUN pnpm build --filter=api
 
-################################################################################
-# Production stage with minimal dependencies
-FROM base as production
+RUN pnpm prune --prod
+
+#########################################################################
+
+FROM node:18-alpine3.20 AS runner
+
 WORKDIR /app
 
-# RUN npm install -g pnpm@9
+COPY --from=builder /app/apps/api/build .
 
-# Copy built application and necessary files
-COPY --from=installer /app/apps/api/package.json ./apps/api/package.json
-COPY --from=installer /app/apps/api/build ./apps/api/build
-COPY --from=installer /app/node_modules ./node_modules
-COPY --from=installer /app/packages ./packages
-
-# Install production dependencies only
-# RUN pnpm install -r --filter=api --prod --ignore-scripts
-
-# Create and use non-root user for security
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 apiuser
-USER apiuser
-
-# Run the application
-CMD ["node", "apps/api/build/index.js"]
+CMD ["node", "index.js"]
