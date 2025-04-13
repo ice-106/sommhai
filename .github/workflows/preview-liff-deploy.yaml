@@ -65,10 +65,12 @@ jobs:
             docker pull ${{ env.IMAGE }}:pr-${{ github.event.number }}
             docker rm -f preview-liff-pr${{ github.event.number }}
             docker run -d --rm --network sommhai-dev-network --name preview-liff-pr${{ github.event.number }} \
+              --env PORT=5000 \
               --label "traefik.enable=true" \
               --label "traefik.http.routers.preview-liff-pr${{ github.event.number }}.rule=Host(\`preview-pr${{ github.event.number }}.sommhai-dev.p-def.xyz\`)" \
               --label "traefik.http.routers.preview-liff-pr${{ github.event.number }}.tls=true" \
               --label "traefik.http.routers.preview-liff-pr${{ github.event.number }}.tls.certresolver=letsencrypt" \
+              --label "traefik.http.services.preview-liff-pr${{ github.event.number }}-service.loadbalancer.server.port=5000" \
               ${{ env.IMAGE }}:pr-${{ github.event.number }}
 
       - name: Comment Preview URL to PR
