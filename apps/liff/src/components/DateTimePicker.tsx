@@ -16,26 +16,17 @@ interface SelectedTime {
   minute: number;
 }
 
-// Implementation of the DateTimePicker component
 function DateTimeSelect({ onChange, initialDate = new Date(), onSave }: DateTimePickerProps) {
-  // Form state
   const [title, setTitle] = useState('');
   const [message, setMessage] = useState('');
-
-  // Date and time state
   const [date, setDate] = useState<Date>(initialDate);
-
-  // Whether we're viewing the date picker or time picker
   const [activeView, setActiveView] = useState<'date' | 'time'>('date');
-
-  // Track if we're using 24-hour format
   const [is24Hour, setIs24Hour] = useState(true);
   const [time, setTime] = useState<SelectedTime>({
     hour: initialDate.getHours(),
     minute: initialDate.getMinutes(),
   });
 
-  // Function to handle date change
   const handleDateChange = (newDate: Date | undefined) => {
     if (newDate) {
       setDate(newDate);
@@ -49,7 +40,6 @@ function DateTimeSelect({ onChange, initialDate = new Date(), onSave }: DateTime
     }
   };
 
-  // Function to handle time change
   const handleTimeChange = (newTime: SelectedTime) => {
     setTime(newTime);
     if (onChange) {
@@ -57,16 +47,10 @@ function DateTimeSelect({ onChange, initialDate = new Date(), onSave }: DateTime
     }
   };
 
-  // Handle save button click
-  const handleSave = () => {
-    if (onSave) {
-      onSave({
-        title,
-        date,
-        time,
-        message,
-      });
-    }
+  const disablePastDates = (date: Date) => {
+    const today = new Date(initialDate);
+    today.setHours(0, 0, 0, 0);
+    return date < today;
   };
 
   return (
@@ -101,7 +85,13 @@ function DateTimeSelect({ onChange, initialDate = new Date(), onSave }: DateTime
       <div className='shadow-orange-5 flex min-h-full w-full flex-col items-center justify-center py-8 shadow-sm'>
         {activeView === 'date' ? (
           <div className='shadow-orange-6 p-2 shadow-md'>
-            <Calendar initialFocus mode='single' selected={date} onSelect={handleDateChange} />
+            <Calendar
+              disabled={disablePastDates}
+              initialFocus
+              mode='single'
+              selected={date}
+              onSelect={handleDateChange}
+            />
           </div>
         ) : (
           <div className='w-full px-20'>
