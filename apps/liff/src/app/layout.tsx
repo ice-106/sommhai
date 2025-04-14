@@ -1,5 +1,6 @@
 import './globals.css';
 import '@sommhai/ui/styles.css';
+import 'leaflet/dist/leaflet.css';
 
 import type { Metadata } from 'next';
 import { Poppins } from 'next/font/google';

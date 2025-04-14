@@ -2,8 +2,9 @@ import { SlidersHorizontal } from 'lucide-react';
 import React from 'react';
 import { Suspense } from 'react';
 
+import CreateEvent from '@/components/CreateEvent';
 import HeaderBurgur from '@/components/HeaderBurgur';
-import CreateEventButton from '@/components/landing/organizer/button';
+import { EventCardTestStatic } from '@/components/ui/organizer/EventCard';
 
 const SearchContainer = () => {
   // Using dynamic import with React.lazy for the component using useSearchParams
@@ -27,7 +28,7 @@ function OrganizerPage() {
         <SlidersHorizontal />
       </div>
       <div className='my-5 flex w-full items-center gap-2 px-7'>
-        <CreateEventButton />
+        <CreateEvent />
       </div>
       <div className='mx-24 flex h-[69%] flex-col gap-16 overflow-y-auto'>
         <EventCardTestStatic />
