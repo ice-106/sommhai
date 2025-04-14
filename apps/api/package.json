@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "prebuild": "prisma generate",
-    "build": "tsc -d",
+    "build": "ts-node build.ts",
     "dev": "tsnd --files --watch .env --respawn src/index.ts",
     "lint": "eslint \"src/**/*.ts*\"",
     "clean": "rm -rf build",

@@ -4,7 +4,7 @@ services:
     image: ghcr.io/ice-106/sommhai-api:dev
     restart: always
     environment:
-      - PORT=80
+      - PORT=5001
     env_file:
       - .env
     labels:
@@ -14,11 +14,11 @@ services:
       - traefik.http.routers.sommhai-api-dev.middlewares=stripprefix-api@docker
       - traefik.http.routers.sommhai-api-dev.tls=true
       - traefik.http.routers.sommhai-api-dev.tls.certresolver=letsencrypt
-      - traefik.http.services.sommhai-api-dev.loadbalancer.server.port=80
+      - traefik.http.services.sommhai-api-dev.loadbalancer.server.port=5001
     networks:
-      - sommhai-network
+      - sommhai-dev-network
 
 networks:
-  sommhai-network:
-    name: sommhai-network
+  sommhai-dev-network:
+    name: sommhai-dev-network
     external: true

@@ -10,10 +10,26 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./traefik/traefik.toml:/traefik.toml
       - ./traefik/acme.json:/acme.json
+    env_file:
+      - ./traefik/.env
     networks:
-      - sommhai-network
+      - sommhai-dev-network
+  preview-default:
+    image: ghcr.io/tithanayut/hmci-default:latest
+    container_name: preview-default
+    restart: always
+    networks:
+      - sommhai-dev-network
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.preview-default.rule=HostRegexp(`default.sommhai-dev.p-def.xyz`, `{subdomain:.+}.sommhai-dev.p-def.xyz`)
+      - traefik.http.routers.preview-default.priority=1
+      - traefik.http.routers.preview-default.tls=true
+      - traefik.http.routers.preview-default.tls.certresolver=letsencrypt
+      - traefik.http.routers.preview-default.tls.domains[0].main=sommhai-dev.p-def.xyz
+      - traefik.http.routers.preview-default.tls.domains[0].sans=*.sommhai-dev.p-def.xyz
 
 networks:
-  sommhai-network:
+  sommhai-dev-network:
     driver: bridge
     external: true

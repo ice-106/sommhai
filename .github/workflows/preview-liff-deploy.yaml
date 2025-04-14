@@ -1,0 +1,82 @@
+name: Deploy Preview (sommhai-liff)
+
+on:
+  pull_request:
+    branches:
+      - dev
+    paths:
+      - 'apps/liff/**'
+
+env:
+  IMAGE: ghcr.io/ice-106/sommhai-liff
+
+permissions:
+  contents: read
+  packages: write
+  pull-requests: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .env
+        run: cd apps/liff && cp .env.development.template .env
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to the Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: apps/liff/Dockerfile
+          push: true
+          tags: ${{ env.IMAGE }}:pr-${{ github.event.number }}
+  deploy:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: preview-liff-deploy
+    needs: build
+    steps:
+      - name: Deploy Preview to VM
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USERNAME }}
+          key: ${{ secrets.VM_SSH_KEY }}
+          script: |
+            # Add deploy preview domain to CORS_ORIGIN
+            CORS_ORIGIN=$(grep -oP '(?<=CORS_ORIGIN=).*' /app/deployment/development/.env)
+            CORS_ORIGIN="${CORS_ORIGIN},https://preview-pr${{ github.event.number }}.sommhai-dev.p-def.xyz"
+            sed -i "s|CORS_ORIGIN=.*|CORS_ORIGIN=${CORS_ORIGIN}|" /app/deployment/development/.env
+            docker compose -f /app/deployment/development/docker-compose.api.yaml up -d
+
+            echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+            docker pull ${{ env.IMAGE }}:pr-${{ github.event.number }}
+            docker rm -f preview-liff-pr${{ github.event.number }}
+            docker run -d --rm --network sommhai-dev-network --name preview-liff-pr${{ github.event.number }} \
+              --env PORT=5000 \
+              --label "traefik.enable=true" \
+              --label "traefik.http.routers.preview-liff-pr${{ github.event.number }}.rule=Host(\`preview-pr${{ github.event.number }}.sommhai-dev.p-def.xyz\`)" \
+              --label "traefik.http.routers.preview-liff-pr${{ github.event.number }}.tls=true" \
+              --label "traefik.http.routers.preview-liff-pr${{ github.event.number }}.tls.certresolver=letsencrypt" \
+              --label "traefik.http.services.preview-liff-pr${{ github.event.number }}-service.loadbalancer.server.port=5000" \
+              ${{ env.IMAGE }}:pr-${{ github.event.number }}
+
+      - name: Comment Preview URL to PR
+        uses: thollander/actions-comment-pull-request@v2
+        with:
+          message: |
+            🤖 Preview available at https://preview-pr${{ github.event.number }}.sommhai-dev.p-def.xyz
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          comment_tag: deploy-preview-url
