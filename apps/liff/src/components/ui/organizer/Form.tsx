@@ -7,11 +7,11 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-const schema = z.object({
+const createEventSchema = z.object({
   eventName: z.string().min(1, 'Name is required'),
 });
 
-type FormData = z.infer<typeof schema>;
+type FormData = z.infer<typeof createEventSchema>;
 
 export function CreateEventForm() {
   const [step, setStep] = useState(1);
@@ -21,7 +21,7 @@ export function CreateEventForm() {
     handleSubmit,
     formState: { errors },
   } = useForm<FormData>({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(createEventSchema),
   });
 
   const onSubmit = (data: FormData) => {
