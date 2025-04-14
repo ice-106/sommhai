@@ -1,5 +1,4 @@
 'use client';
-import { AnimatePresence, motion } from 'motion/react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
@@ -21,7 +20,7 @@ export function IconButton({ icon: Icon, title: name, link: href }: IconButtonPr
 
   return (
     <Link href={`${pathName}/${href}`}>
-      <div className='bg-white-bg rounded-24 flex h-[4.75rem] w-[20.375rem] shadow-md'>
+      <div className='bg-white-bg rounded-24 flex h-[4.75rem] w-[20.375rem] shadow-lg'>
         <div className='mx-12 self-center'>
           <Icon size={45} />
         </div>
@@ -48,61 +47,30 @@ export function IconButtonGroup() {
     { icon: LuCalendarPlus, title: 'Google Calendar', link: 'google-calendar' },
     { icon: GoPersonAdd, title: 'Invite Attendees', link: 'invite' },
   ];
+  const [seeMore, setSeeMore] = useState(false);
+  const initialDisplayed = 4;
+  const displayedButtons = seeMore ? buttons : buttons.slice(0, initialDisplayed);
 
-  const [page, setPage] = useState(1);
-  const itemsPerPage = 4; //change max button per page here
-  const totalPages = Math.ceil(buttons.length / itemsPerPage);
-
-  const startIdx = (page - 1) * itemsPerPage;
-  const displayedButtons = buttons.slice(startIdx, startIdx + itemsPerPage);
-
-  const [direction, setDirection] = useState(1);
-
-  const handlePageChange = (newPage: number) => {
-    setDirection(newPage > page ? 1 : -1);
-    setPage(newPage);
+  const handleSeeMore = () => {
+    setSeeMore(true);
   };
 
   return (
-    <div className='flex h-full w-full flex-col items-center overflow-hidden'>
+    <div className='flex h-full w-full flex-col items-center'>
       {/* Button List with Animation */}
-      <div className=''>
-        <AnimatePresence custom={direction} mode='wait'>
-          <motion.div
-            animate={{ x: 0, opacity: 1 }}
-            className='grid w-full grid-cols-1 gap-8'
-            exit={{ x: direction * 100, opacity: 0 }}
-            initial={{ x: direction * 100, opacity: 0 }}
-            key={page}
-            transition={{ duration: 0.4, ease: 'easeInOut' }}
-          >
-            {displayedButtons.map(({ icon, title, link }, index) => (
-              <IconButton icon={icon} key={index} link={link} title={title} />
-            ))}
-          </motion.div>
-        </AnimatePresence>
+      <div className='flex flex-col items-center gap-[16px]'>
+        {displayedButtons.map(({ icon, title, link }, index) => (
+          <IconButton icon={icon} key={index} link={link} title={title} />
+        ))}
       </div>
-
-      {/* Pagination Controls */}
-      <div className='mt-16 flex gap-4'>
+      {!seeMore && (
         <button
-          className='rounded-md bg-gray-300 px-4 py-2 disabled:opacity-50'
-          disabled={page === 1}
-          onClick={() => handlePageChange(page - 1)}
+          className='rounded-24 border-orange-2 text-orange-2 mt-[16px] h-[56px] w-[345px] border-[3px] bg-white'
+          onClick={handleSeeMore}
         >
-          Prev
+          See more
         </button>
-        <span>
-          Page {page} / {totalPages}
-        </span>
-        <button
-          className='rounded-md bg-gray-300 px-4 py-2 disabled:opacity-50'
-          disabled={page === totalPages}
-          onClick={() => handlePageChange(page + 1)}
-        >
-          Next
-        </button>
-      </div>
+      )}
     </div>
   );
 }

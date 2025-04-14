@@ -6,7 +6,7 @@ export default function page() {
   return (
     <div className='flex h-screen w-screen flex-col'>
       <HeaderBurgur name='Event Title' />
-      <div className='flex flex-1 flex-col justify-between px-24 py-16'>
+      <div className='mt-[10px] flex flex-1 flex-col justify-between px-24 py-16'>
         <IconButtonGroup />
         <div className='mb-10 w-full'>
           <DeleteEventButton />
