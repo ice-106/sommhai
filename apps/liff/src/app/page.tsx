@@ -1,8 +1,7 @@
+import { Button } from '@sommhai/ui/components/ui/button';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
-
-import Button from '@/components/landing/organizer/button';
 
 const Landing = () => {
   return (
@@ -17,10 +16,10 @@ const Landing = () => {
           <p className='mt-[5vw] text-center text-black'>Select your role</p>
         </div>
         <Link href='/organizer'>
-          <Button />
+          <Button variant={'orange'}> Organizer </Button>
         </Link>
         <Link href='/attendee'>
-          <Button />
+          <Button variant={'orange'}> Attendee </Button>
         </Link>
       </div>
     </div>
