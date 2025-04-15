@@ -33,7 +33,17 @@ export const eventInvInfo = z.object({
   ),
 });
 
+export const eventInvResponse = z.object({
+  iid: z.string(),
+  eventId: z.string(),
+  accepted: z.boolean(),
+});
+
 export const eventOrganizerInfo = eventBaseInfo;
 export const eventAttendeeInfo = eventBaseInfo;
+
 export const eventOrganizerInvInfo = eventInvInfo;
 export const eventAttendeeInvInfo = eventInvInfo;
+
+export const eventOrganizerInvResponse = eventInvResponse;
+export const eventAttendeeInvResponse = eventInvResponse;

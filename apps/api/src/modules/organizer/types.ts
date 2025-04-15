@@ -29,3 +29,8 @@ export interface CreateAttendeeInviteOptions {
   eventId: string;
   uids: string[];
 }
+
+export interface RespondOrganizerInviteOptions {
+  invitationId: string;
+  accept: boolean;
+}
