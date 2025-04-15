@@ -1,9 +1,11 @@
-import Iconbutton from '@/components/landing/organizer/event/iconbutton';
+import HeaderBurgur from '@/components/HeaderBurgur';
+import ParticipantCard from '@/components/ui/organizer/event/dashboard/ParticipantCard';
 
 export default function page() {
   return (
-    <div className='flex h-screen w-screen items-center justify-center bg-blue-400'>
-      <Iconbutton />
+    <div className='flex h-screen w-screen flex-col'>
+      <HeaderBurgur name='Dashboard' />
+      <ParticipantCard />
     </div>
   );
 }
