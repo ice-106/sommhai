@@ -15,7 +15,7 @@ export default function HeaderBurgur({ name }: { name: string }) {
         <div className='h-full w-[70%] items-center'>
           <p className='mx-7 truncate text-[2.5rem] font-bold'>{name}</p>
         </div>
-        <div className='mx-4 my-4 h-full' onClick={handleOpenmenu}>
+        <div className='mx-6 flex h-full items-center' onClick={handleOpenmenu}>
           <AiOutlineMenu size='2rem' />
         </div>
       </div>
