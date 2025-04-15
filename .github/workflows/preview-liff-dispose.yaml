@@ -31,5 +31,5 @@ jobs:
             sed -i "s|CORS_ORIGIN=.*|CORS_ORIGIN=${CORS_ORIGIN}|" /app/deployment/development/.env
             docker compose -f /app/deployment/development/docker-compose.api.yaml up -d
 
-            docker rm -f preview-web-pr${{ github.event.number }}
+            docker rm -f preview-liff-pr${{ github.event.number }}
             docker rmi ${{ env.IMAGE }}:pr-${{ github.event.number }}
