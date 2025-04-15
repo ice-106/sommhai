@@ -40,7 +40,7 @@ export function EventCard({ name: name, link: link }: EventCardProp) {
           <MdNavigateNext className='self-center' size={25} />
         </div>
         <div className='flex'>
-          <IoIosTimer className='mt-[4px]' color='orange' />
+          <IoIosTimer className='text-orange-2 mt-[4px]' />
           <p className='text-regular-16 text-orange-2'>Timer</p>
         </div>
         <p className='font-inter text-regular-16-low'>Event Details</p>
