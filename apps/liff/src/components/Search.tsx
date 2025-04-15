@@ -2,6 +2,7 @@
 import { Input } from '@sommhai/ui/components/ui/input';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
+import React from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 
 function Search({ placeholder }: { placeholder: string }) {
@@ -38,3 +39,14 @@ function SearchContent({ placeholder }: { placeholder: string }) {
   );
 }
 export default Search;
+
+export function SearchContainer({ placeholder }: { placeholder: string }) {
+  // Using dynamic import with React.lazy for the component using useSearchParams
+  const Search = React.lazy(() => import('@/components/Search'));
+
+  return (
+    <Suspense fallback={<div className='h-10 flex-1 animate-pulse rounded bg-gray-100'>Loading...</div>}>
+      <Search placeholder={placeholder} />
+    </Suspense>
+  );
+}
