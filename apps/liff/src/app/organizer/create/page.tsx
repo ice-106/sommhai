@@ -1,4 +1,4 @@
-import { CreateEventForm } from '@/components/ui/organizer/Form';
+import { CreateEventForm } from '@/components/organizer/event/detail/Form';
 
 export default function page() {
   return (

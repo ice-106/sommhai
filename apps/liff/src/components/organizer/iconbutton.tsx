@@ -48,27 +48,33 @@ export function IconButtonGroup() {
     { icon: GoPersonAdd, title: 'Invite Attendees', link: 'invite' },
   ];
   const [seeMore, setSeeMore] = useState(false);
-  const initialDisplayed = 4;
+  const initialDisplayed = 3;
   const displayedButtons = seeMore ? buttons : buttons.slice(0, initialDisplayed);
 
   const handleSeeMore = () => {
-    setSeeMore(true);
+    setSeeMore((prev) => !prev);
   };
 
   return (
     <div className='flex h-full w-full flex-col items-center'>
-      {/* Button List with Animation */}
       <div className='flex flex-col items-center gap-[16px]'>
         {displayedButtons.map(({ icon, title, link }, index) => (
           <IconButton icon={icon} key={index} link={link} title={title} />
         ))}
       </div>
-      {!seeMore && (
+      {!seeMore ? (
         <button
           className='rounded-24 border-orange-2 text-orange-2 mt-[16px] h-[56px] w-[345px] border-[3px] bg-white'
           onClick={handleSeeMore}
         >
           See more
+        </button>
+      ) : (
+        <button
+          className='rounded-24 border-orange-2 text-orange-2 mt-[16px] h-[56px] w-[345px] border-[3px] bg-white'
+          onClick={handleSeeMore}
+        >
+          Hide
         </button>
       )}
     </div>

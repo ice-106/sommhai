@@ -69,7 +69,7 @@ export function CreateEventForm() {
                 Click on your new event to manage and customize your event invitation.
               </p>
             </div>
-            <Image alt={'sommhai-logo'} height='200' src={'/logo-sommhai.svg'} width='200' />
+            <Image alt={'sommhai-logo'} className='pb-56' height='200' src={'/create-finsih.png'} width='200' />
           </div>
         )}
       </div>

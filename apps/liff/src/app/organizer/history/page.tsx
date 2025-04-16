@@ -1,9 +1,9 @@
 import { Button } from '@sommhai/ui/components/ui/button';
 import React from 'react';
 
-import HeaderBurgur from '@/components/HeaderBurgur';
+import HeaderBurgur from '@/components/common/HeaderBurgur';
 
-function page() {
+function HistoryPage() {
   return (
     <div className='bg-g flex h-full w-screen flex-col'>
       <HeaderBurgur name='History' />
@@ -12,4 +12,4 @@ function page() {
   );
 }
 
-export default page;
+export default HistoryPage;

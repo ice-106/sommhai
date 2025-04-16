@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Component, DonutChart } from '@/components/ui/organizer/event/dashboard/DonutChart';
+import { Component, DonutChart } from '@/components/organizer/dashboard/DonutChart';
 
 function ParticipantCard() {
   return (
