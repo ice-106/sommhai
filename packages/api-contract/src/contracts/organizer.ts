@@ -1,4 +1,9 @@
-import { eventAttendeeInvInfo, eventOrganizerInfo, eventOrganizerInvInfo } from '@sommhai/shared-type';
+import {
+  eventAttendeeInvInfo,
+  eventOrganizerInfo,
+  eventOrganizerInvInfo,
+  eventOrganizerInvResponse,
+} from '@sommhai/shared-type';
 import { initContract } from '@ts-rest/core';
 import { z } from 'zod';
 
@@ -35,7 +40,7 @@ export const organizerContract = c.router({
   },
   createEvent: {
     method: 'POST',
-    path: '/orgs/events',
+    path: '/org/events',
     body: z.object({
       name: z.string(),
     }),
@@ -92,6 +97,21 @@ export const organizerContract = c.router({
     }),
     responses: {
       201: eventAttendeeInvInfo,
+      404: z.object({ message: z.string() }),
+      500: z.object({ message: z.string() }),
+    },
+  },
+  respondOrganizerInvite: {
+    method: 'PUT',
+    path: '/org/events/:invitationId/respond',
+    pathParams: z.object({
+      invitationId: z.string(),
+    }),
+    body: z.object({
+      accept: z.boolean(),
+    }),
+    responses: {
+      200: eventOrganizerInvResponse,
       404: z.object({ message: z.string() }),
       500: z.object({ message: z.string() }),
     },

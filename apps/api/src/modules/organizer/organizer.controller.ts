@@ -87,4 +87,11 @@ export const OrganizerController: RouterImplementation<typeof contract.organizer
       body: organizerInvitation,
     };
   },
+  respondOrganizerInvite: async ({ params: { invitationId }, body: { accept } }) => {
+    const response = await OrganizerService.respondOrganizerInvite({ invitationId, accept });
+    return {
+      status: 200,
+      body: response,
+    };
+  },
 };

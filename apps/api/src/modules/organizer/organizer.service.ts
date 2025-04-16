@@ -7,6 +7,7 @@ import {
   CreateOrganizerInviteOptions,
   GetEventOptions,
   GetManyEventsOptions,
+  RespondOrganizerInviteOptions,
 } from './types';
 
 export const OrganizerService = {
@@ -317,6 +318,71 @@ export const OrganizerService = {
       }
       console.error('Error inviting organizers:', error);
       throw new InternalServerErrorException('Failed to invite organizers');
+    }
+  },
+  respondOrganizerInvite: async ({ invitationId, accept }: RespondOrganizerInviteOptions) => {
+    try {
+      const invitation = await prisma.organizerInvitation.findUnique({
+        where: { id: invitationId },
+      });
+
+      if (!invitation) {
+        throw new NotFoundException('Invitation not found');
+      }
+
+      await prisma.organizerInvitation.update({
+        where: { id: invitationId },
+        data: { accept },
+      });
+
+      if (accept) {
+        const existingOrganizer = await prisma.organizer.findUnique({
+          where: {
+            uid_eid: {
+              uid: invitation.uid,
+              eid: invitation.eid,
+            },
+          },
+        });
+
+        if (!existingOrganizer) {
+          await prisma.organizer.create({
+            data: {
+              uid: invitation.uid,
+              eid: invitation.eid,
+            },
+          });
+        }
+
+        const existingAttendee = await prisma.attendee.findUnique({
+          where: {
+            uid_eid: {
+              uid: invitation.uid,
+              eid: invitation.eid,
+            },
+          },
+        });
+
+        if (!existingAttendee) {
+          await prisma.attendee.create({
+            data: {
+              uid: invitation.uid,
+              eid: invitation.eid,
+            },
+          });
+        }
+      }
+      return {
+        iid: invitation.id,
+        eventId: invitation.eid,
+        accepted: accept,
+      };
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      console.error('Error responding to organizer invite:', error);
+      throw new InternalServerErrorException('Failed to respond to organizer invitation');
     }
   },
 };
