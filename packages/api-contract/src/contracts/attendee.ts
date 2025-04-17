@@ -1,47 +1,34 @@
-import { attendee } from '@sommhai/shared-type';
+import { eventAttendeeInfo } from '@sommhai/shared-type';
 import { initContract } from '@ts-rest/core';
 import { z } from 'zod';
 
 const c = initContract();
 
 export const attendeeContract = c.router({
-  createUser: {
-    method: 'POST',
-    path: '/users/create',
-    body: z.object({
-      user: z.string(),
-      email: z.string(),
-      description: z.string().optional(),
+  getAtdEvents: {
+    method: 'GET',
+    path: '/atd/events',
+    query: z.object({
+      search: z.string().optional(),
+      date: z.date().optional(),
+      take: z.string().regex(/^\d+$/).transform(Number).optional(),
+      skip: z.string().regex(/^\d+$/).transform(Number).optional(),
+      status: z.string().optional(),
     }),
     responses: {
-      201: z.object({ attendee }),
-      500: z.object({ message: z.string() }),
-    },
-  },
-  getAttendee: {
-    method: 'GET',
-    path: '/users/:userId',
-    pathParams: z.object({ userId: z.string().regex(/^\d+$/).transform(Number) }),
-    responses: {
-      200: z.object({ attendee }),
+      200: z.array(eventAttendeeInfo),
       404: z.object({ message: z.string() }),
       500: z.object({ message: z.string() }),
     },
   },
-  getUsers: {
+  getAtdEvent: {
     method: 'GET',
-    path: '/users',
-    query: z.object({
-      userIds: z.array(z.string().regex(/^\d+$/).transform(Number)),
-      take: z.string().regex(/^\d+$/).transform(Number).optional(),
-      skip: z.string().regex(/^\d+$/).transform(Number).optional(),
-      search: z.string().optional(),
+    path: '/atd/events/:eventId',
+    pathParams: z.object({
+      eventId: z.string(),
     }),
     responses: {
-      200: z.object({
-        users: z.array(attendee),
-        total: z.number(),
-      }),
+      200: eventAttendeeInfo,
       404: z.object({ message: z.string() }),
       500: z.object({ message: z.string() }),
     },
