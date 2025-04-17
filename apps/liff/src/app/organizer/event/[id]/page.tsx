@@ -1,6 +1,6 @@
-import HeaderBurgur from '@/components/HeaderBurgur';
-import { DeleteEventButton } from '@/components/ui/organizer/button';
-import { IconButtonGroup } from '@/components/ui/organizer/event/iconbutton';
+import HeaderBurgur from '@/components/common/HeaderBurgur';
+import { DeleteEventButton } from '@/components/organizer/buttons';
+import { IconButtonGroup } from '@/components/organizer/iconbutton';
 
 export default function page() {
   return (

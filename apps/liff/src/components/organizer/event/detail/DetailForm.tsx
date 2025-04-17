@@ -1,8 +1,7 @@
-import EletterForm from '@/components/ui/organizer/event/detail/EletterForm';
-import EventTextForm from '@/components/ui/organizer/event/detail/EventTextForm';
-import MessageForm from '@/components/ui/organizer/event/detail/MessageForm';
-
-import { SlidePopUpX, SlidePopupY } from './SlidePopup';
+import EletterForm from '@/components/organizer/event/detail/EletterForm';
+import EventTextForm from '@/components/organizer/event/detail/EventTextForm';
+import MessageForm from '@/components/organizer/event/detail/MessageForm';
+import { SlidePopUpX, SlidePopupY } from '@/components/organizer/event/detail/SlidePopup';
 
 interface DetailFormProp {
   page: number;

@@ -1,3 +1,4 @@
-export default function page() {
-  return <div>page</div>;
+function ReminderPage() {
+  return <div>Reminder</div>;
 }
+export default ReminderPage;

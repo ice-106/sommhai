@@ -1,3 +1,4 @@
-export default function page() {
-  return <div>page</div>;
+function QuestionPage() {
+  return <div>Questionaire</div>;
 }
+export default QuestionPage;

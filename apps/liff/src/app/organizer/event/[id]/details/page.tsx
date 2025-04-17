@@ -2,10 +2,10 @@
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
-import HeaderBurgur from '@/components/HeaderBurgur';
-import DetailForm from '@/components/ui/organizer/event/detail/DetailForm';
+import HeaderBurgur from '@/components/common/HeaderBurgur';
+import DetailForm from '@/components/organizer/event/detail/DetailForm';
 
-export default function page() {
+function DetailPage() {
   const params = useParams();
   const id = params.id as string;
   const [currentPage, setCurrentPage] = useState(0);
@@ -64,3 +64,4 @@ export default function page() {
     </div>
   );
 }
+export default DetailPage;

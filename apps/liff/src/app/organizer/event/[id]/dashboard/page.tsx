@@ -1,7 +1,7 @@
-import HeaderBurgur from '@/components/HeaderBurgur';
-import ParticipantCard from '@/components/ui/organizer/event/dashboard/ParticipantCard';
+import HeaderBurgur from '@/components/common/HeaderBurgur';
+import ParticipantCard from '@/components/organizer/dashboard/ParticipantCard';
 
-export default function page() {
+function DashboardPage() {
   return (
     <div className='flex h-screen w-screen flex-col'>
       <HeaderBurgur name='Dashboard' />
@@ -9,3 +9,5 @@ export default function page() {
     </div>
   );
 }
+
+export default DashboardPage;

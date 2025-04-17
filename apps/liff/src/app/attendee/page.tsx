@@ -1,6 +1,6 @@
 import React from 'react';
 
-import HeaderBurgur from '@/components/HeaderBurgur';
+import HeaderBurgur from '@/components/common/HeaderBurgur';
 
 function page() {
   return (

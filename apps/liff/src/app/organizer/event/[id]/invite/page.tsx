@@ -1,3 +1,4 @@
-export default function page() {
-  return <div>page</div>;
+function InvitePage() {
+  return <div>invite</div>;
 }
+export default InvitePage;

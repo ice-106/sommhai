@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import LocationPicker from '@/components/LocationPicker';
+import LocationPicker from '@/components/organizer/event/detail/LocationPicker';
 
 const ELetterformSchema = z.object({
   Title: z.string().min(1, 'Title is required'),
