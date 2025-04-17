@@ -3,7 +3,7 @@ import prisma from '../../common/libs/prisma';
 import { GetEventOptions, GetManyEventsOptions } from './types';
 
 export const AttendeeService = {
-  getatdEvents: async ({ search, date, take, skip }: GetManyEventsOptions) => {
+  getAtdEvents: async ({ search, date, take, skip }: GetManyEventsOptions) => {
     const events = await prisma.event.findMany({
       take,
       skip,
@@ -33,7 +33,7 @@ export const AttendeeService = {
 
     return events;
   },
-  getatdEvent: async ({ eventId }: GetEventOptions) => {
+  getAtdEvent: async ({ eventId }: GetEventOptions) => {
     const event = await prisma.event.findUnique({
       where: {
         eid: eventId,

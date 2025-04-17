@@ -5,7 +5,7 @@ import { z } from 'zod';
 const c = initContract();
 
 export const attendeeContract = c.router({
-  getatdEvents: {
+  getAtdEvents: {
     method: 'GET',
     path: '/atd/events',
     query: z.object({
@@ -21,7 +21,7 @@ export const attendeeContract = c.router({
       500: z.object({ message: z.string() }),
     },
   },
-  getatdEvent: {
+  getAtdEvent: {
     method: 'GET',
     path: '/atd/events/:eventId',
     pathParams: z.object({
