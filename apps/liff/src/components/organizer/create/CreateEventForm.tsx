@@ -7,13 +7,17 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
+import Loading from '@/components/common/loading';
+import { SERVER_URL } from '@/env';
+
 const createEventSchema = z.object({
   eventName: z.string().min(1, 'Name is required'),
 });
 
 type FormData = z.infer<typeof createEventSchema>;
 
-export function CreateEventForm() {
+function CreateEventForm() {
+  const [loading, setLoading] = useState(true);
   const [step, setStep] = useState(1);
   const [eventName, setEventName] = useState('');
   const {
@@ -24,8 +28,23 @@ export function CreateEventForm() {
     resolver: zodResolver(createEventSchema),
   });
 
+  function createEvent(name: string) {
+    const res = fetch(`${SERVER_URL}/org/events`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name: name,
+      }),
+    });
+    console.log('Event created successfully with name' + name);
+  }
+
   const onSubmit = (data: FormData) => {
     setEventName(data.eventName);
+    createEvent(data.eventName);
+    setLoading(false);
     setStep(2);
   };
 
@@ -33,18 +52,21 @@ export function CreateEventForm() {
     // Move this to server action ASAP!!!!
     redirect('/organizer');
   };
+  if (loading === true && step === 2) {
+    return <Loading />;
+  }
 
   return (
-    <div className='bg-orange-4 flex h-screen w-screen flex-col items-center justify-between bg-[url(/vector-BG.svg)] py-[24px]'>
-      <div className='flex gap-[4px]'>
-        <div className='h-[8px] w-[175px] rounded-[24px] bg-gray-50'></div>
-        {step === 1 && <div className='h-[8px] w-[175px] rounded-[24px] bg-gray-300'></div>}
-        {step === 2 && <div className='h-[8px] w-[175px] rounded-[24px] bg-gray-50'></div>}
+    <div className='bg-orange-4 flex h-full w-full flex-col items-center justify-between bg-[url(/create-bg.svg)] bg-cover py-[24px]'>
+      <div className='flex w-full justify-between gap-[4px] px-16'>
+        <div className='w-full rounded-[24px] bg-gray-50 px-20'></div>
+        {step === 1 && <div className='h-[8px] w-full rounded-[24px] bg-gray-300'></div>}
+        {step === 2 && <div className='h-[8px] w-full rounded-[24px] bg-gray-50'></div>}
       </div>
-      <div>
+      <div className='px-16'>
         {step === 1 && (
           <form
-            className='bg-white-bg rounded-12 flex h-[155px] w-[370px] flex-col justify-between px-[24px] py-[24px]'
+            className='bg-white-bg rounded-12 flex h-[155px] w-full flex-col justify-between px-24 py-[24px]'
             id='Create-event-form'
             onSubmit={handleSubmit(onSubmit)}
           >
@@ -69,7 +91,13 @@ export function CreateEventForm() {
                 Click on your new event to manage and customize your event invitation.
               </p>
             </div>
-            <Image alt={'sommhai-logo'} height='200' src={'/logo-sommhai.svg'} width='200' />
+            <Image
+              alt={'sommhai-logo'}
+              className='h-[30vh] w-[60vw] pb-8'
+              height='200'
+              src={'/create-finsih.png'}
+              width='200'
+            />
           </div>
         )}
       </div>
@@ -95,3 +123,5 @@ export function CreateEventForm() {
     </div>
   );
 }
+
+export default CreateEventForm;
