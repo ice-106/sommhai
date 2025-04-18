@@ -59,6 +59,7 @@
     "dotenv-cli": "^8.0.0",
     "esbuild": "^0.24.2",
     "esbuild-plugin-copy": "^2.1.1",
-    "typescript": "^5.7.3"
+    "typescript": "^5.7.3",
+    "prisma": "^6.5.0"
   }
 }

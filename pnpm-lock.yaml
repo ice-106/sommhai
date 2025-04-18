@@ -4,6 +4,11 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+overrides:
+  next: ^15.1.6
+  prisma: ^6.5.0
+  '@prisma/client': ^6.5.0
+
 importers:
 
   .:
@@ -54,7 +59,7 @@ importers:
         specifier: ^6.5.0
         version: 6.5.0(@neondatabase/serverless@0.10.4)
       '@prisma/client':
-        specifier: 6.5.0
+        specifier: ^6.5.0
         version: 6.5.0(prisma@6.5.0(typescript@5.7.3))(typescript@5.7.3)
       '@sommhai/api-contract':
         specifier: workspace:*
@@ -193,7 +198,7 @@ importers:
         specifier: ^12.6.2
         version: 12.6.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       next:
-        specifier: 15.1.6
+        specifier: ^15.1.6
         version: 15.1.6(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       next13-progressbar:
         specifier: ^1.2.2
@@ -6225,7 +6230,7 @@ packages:
   next13-progressbar@1.2.2:
     resolution: {integrity: sha512-ljZs7L/3Pr+E0eaeUAqu/6suraJghpyUgU1MylgFb0lG0bJ3ABf9Xqx0WIZqCHUjzxFZOSd6+JIfsbhHVTXu5w==}
     peerDependencies:
-      next: '>= 13.0.0'
+      next: ^15.1.6
       react: '>= 18.0.0'
 
   next@15.1.6:
