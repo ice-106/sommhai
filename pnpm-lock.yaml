@@ -2412,7 +2412,7 @@ packages:
     resolution: {integrity: sha512-M6w1Ql/BeiGoZmhMdAZUXHu5sz5HubyVcKukbLs3l0ELcQb8hTUJxtGEChhv4SVJ0QJlwtLnwOLgIRQhpsm9dw==}
     engines: {node: '>=18.18'}
     peerDependencies:
-      prisma: '*'
+      prisma: ^6.5.0
       typescript: '>=5.1.0'
     peerDependenciesMeta:
       prisma:
