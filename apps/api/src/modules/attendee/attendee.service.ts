@@ -57,7 +57,6 @@ export const AttendeeService = {
   },
   getAtdEventLeaderboard: async ({ eventId }: GetEventLeaderboardOptions) => {
     try {
-      // Check if event exists
       const event = await prisma.event.findUnique({
         where: { eid: eventId },
       });
@@ -66,7 +65,6 @@ export const AttendeeService = {
         throw new NotFoundException(`Event with ID ${eventId} not found`);
       }
 
-      // Get all leaderboard entries for this event
       const leaderboardEntries = await prisma.leaderboard.findMany({
         where: { eid: eventId },
         orderBy: { score: 'desc' },

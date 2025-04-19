@@ -395,7 +395,6 @@ export const OrganizerService = {
   },
   getEventLeaderboard: async ({ eventId }: GetEventLeaderboardOptions) => {
     try {
-      // Check if event exists
       const event = await prisma.event.findUnique({
         where: { eid: eventId },
       });
@@ -404,7 +403,6 @@ export const OrganizerService = {
         throw new NotFoundException(`Event with ID ${eventId} not found`);
       }
 
-      // Get all leaderboard entries for this event
       const leaderboardEntries = await prisma.leaderboard.findMany({
         where: { eid: eventId },
         orderBy: { score: 'desc' },
@@ -422,7 +420,6 @@ export const OrganizerService = {
 
   createLeaderboardEntry: async ({ eventId, name, uid, score = 0 }: CreateLeaderboardEntryOptions) => {
     try {
-      // Check if event exists
       const event = await prisma.event.findUnique({
         where: { eid: eventId },
       });
@@ -431,7 +428,6 @@ export const OrganizerService = {
         throw new NotFoundException(`Event with ID ${eventId} not found`);
       }
 
-      // Check if user exists
       const user = await prisma.user.findUnique({
         where: { uid },
       });
@@ -440,16 +436,17 @@ export const OrganizerService = {
         throw new NotFoundException(`User with ID ${uid} not found`);
       }
 
-      // Check if leaderboard entry with this name already exists for this event
-      const existingEntry = await prisma.leaderboard.findUnique({
-        where: { name },
+      const existingEntry = await prisma.leaderboard.findFirst({
+        where: {
+          name,
+          eid: eventId,
+        },
       });
 
       if (existingEntry) {
         throw new ConflictException(`Leaderboard entry with name '${name}' already exists`);
       }
 
-      // Create new leaderboard entry
       const newEntry = await prisma.leaderboard.create({
         data: {
           name,
@@ -471,7 +468,6 @@ export const OrganizerService = {
 
   updateLeaderboardEntry: async ({ eventId, name, updates }: UpdateLeaderboardEntryOptions) => {
     try {
-      // Check if event exists
       const event = await prisma.event.findUnique({
         where: { eid: eventId },
       });
@@ -480,7 +476,6 @@ export const OrganizerService = {
         throw new NotFoundException(`Event with ID ${eventId} not found`);
       }
 
-      // Check if leaderboard entry exists
       const existingEntry = await prisma.leaderboard.findFirst({
         where: {
           name,
@@ -492,7 +487,6 @@ export const OrganizerService = {
         throw new NotFoundException(`Leaderboard entry '${name}' not found for this event`);
       }
 
-      // If trying to update the name, check if the new name is already taken
       if (updates.name && updates.name !== name) {
         const entryWithNewName = await prisma.leaderboard.findUnique({
           where: { name: updates.name },
@@ -503,9 +497,11 @@ export const OrganizerService = {
         }
       }
 
-      // Update the leaderboard entry
       const updatedEntry = await prisma.leaderboard.update({
-        where: { name },
+        where: {
+          name,
+          eid: eventId,
+        },
         data: updates,
       });
 
@@ -521,7 +517,6 @@ export const OrganizerService = {
 
   deleteLeaderboardEntry: async ({ eventId, name }: DeleteLeaderboardEntryOptions) => {
     try {
-      // Check if event exists
       const event = await prisma.event.findUnique({
         where: { eid: eventId },
       });
@@ -530,7 +525,6 @@ export const OrganizerService = {
         throw new NotFoundException(`Event with ID ${eventId} not found`);
       }
 
-      // Check if leaderboard entry exists for this event
       const existingEntry = await prisma.leaderboard.findFirst({
         where: {
           name,
@@ -542,9 +536,11 @@ export const OrganizerService = {
         throw new NotFoundException(`Leaderboard entry '${name}' not found for this event`);
       }
 
-      // Delete the leaderboard entry
       await prisma.leaderboard.delete({
-        where: { name },
+        where: {
+          name,
+          eid: eventId,
+        },
       });
 
       return null;
