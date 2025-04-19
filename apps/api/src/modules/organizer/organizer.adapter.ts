@@ -1,4 +1,6 @@
-import { EventEntity, LeaderboardEntity } from './types';
+import { EventQuestion } from '@prisma/client';
+
+import { EventEntity, InviteEntity, LeaderboardEntity } from './types';
 
 export const OrganizerAdapter = {
   toEventOrganizerInfo: (event: EventEntity) => {
@@ -26,6 +28,27 @@ export const OrganizerAdapter = {
       uid: entry.uid,
       eid: entry.eid,
       score: entry.score,
+    };
+  },
+  toEventInviteInfo: (invite: InviteEntity) => {
+    return {
+      inviteId: invite.id,
+      eventId: invite.eventId,
+      userId: invite.userId,
+      role: invite.role,
+      accept: invite.accept,
+    };
+  },
+  toEventQuestionInfo: (question: EventQuestion) => {
+    return {
+      qid: question.id,
+      eventId: question.eventId,
+      question: question.question,
+      type: question.type,
+      required: question.required,
+      options: question.options,
+      createdAt: question.createdAt,
+      updatedAt: question.updatedAt,
     };
   },
 };

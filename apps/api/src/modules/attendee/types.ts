@@ -25,3 +25,15 @@ export interface GetEventLeaderboardOptions {
 }
 
 export type LeaderboardEntity = Prisma.LeaderboardGetPayload<object>;
+
+export interface RespondToEventInviteOptions {
+  inviteId: string;
+  accept: boolean;
+}
+
+export type InviteEntity = Prisma.InviteGetPayload<{
+  include: {
+    event: true;
+    user: true;
+  };
+}>;

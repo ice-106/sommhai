@@ -9,52 +9,112 @@ datasource db {
 }
 
 model User {
-  uid                  String                @id @default(cuid())
-  phone                String
-  email                String                @unique
-  dob                  DateTime
-  pref_name            String
-  first_name           String
-  last_name            String
-  payment_method       String?
-  subscription_plan    String
-  eventsHosted         Event[]
-  histories            History[]
-  attendees            Attendee[]
-  attendings           Attending[]
-  organizers           Organizer[]
-  creates              Create[]
-  mediaTaken           Media[]
-  receives             Receive[]
-  leaderboards         Leaderboard[]
-  attendeeInvitations  AttendeeInvitation[]
-  organizerInvitations OrganizerInvitation[]
+  uid               String             @id @default(cuid())
+  phone             String
+  email             String             @unique
+  dob               DateTime
+  pref_name         String
+  first_name        String
+  last_name         String
+  payment_method    String?
+  subscription_plan String
+  eventsHosted      Event[]
+  histories         History[]
+  attendees         Attendee[]
+  attendings        Attending[]
+  organizers        Organizer[]
+  creates           Create[]
+  mediaTaken        Media[]
+  invites           Invite[]
+  responses         QuestionResponse[]
+  leaderboard       Leaderboard[]
 }
 
 model Event {
-  eid                  String                @id @default(cuid())
-  name                 String
-  date                 DateTime
-  time                 DateTime
-  picture              String[]
-  location             String
-  description          String?
-  invite_list          Int
-  memory               String?
-  host                 String
-  host_uid             String
-  status               String
-  hostUser             User                  @relation(fields: [host_uid], references: [uid], onDelete: Cascade)
-  histories            History[]
-  attendees            Attendee[]
-  attendings           Attending[]
-  organizers           Organizer[]
-  creates              Create[]
-  media                Media[]
-  updates              Update[]
-  attendeeInvitations  AttendeeInvitation[]
-  organizerInvitations OrganizerInvitation[]
-  Leaderboard          Leaderboard[]
+  eid         String          @id @default(cuid())
+  name        String
+  date        DateTime
+  time        DateTime
+  picture     String[]
+  location    String
+  description String?
+  invite_list Int
+  memory      String?
+  host        String
+  host_uid    String
+  status      String
+  hostUser    User            @relation(fields: [host_uid], references: [uid], onDelete: Cascade)
+  histories   History[]
+  attendees   Attendee[]
+  attendings  Attending[]
+  organizers  Organizer[]
+  creates     Create[]
+  media       Media[]
+  updates     Update[]
+  invites     Invite[]
+  questions   EventQuestion[]
+
+  Leaderboard Leaderboard[]
+}
+
+model Invite {
+  id        String     @id @default(cuid())
+  eventId   String
+  userId    String
+  role      InviteRole
+  accept    Boolean?
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  event Event @relation(fields: [eventId], references: [eid], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [uid], onDelete: Cascade)
+
+  @@unique([eventId, userId, role])
+  @@index([eventId])
+  @@index([userId])
+}
+
+enum InviteRole {
+  ATTENDEE
+  ORGANIZER
+}
+
+model EventQuestion {
+  id        String       @id @default(cuid())
+  eventId   String
+  question  String
+  type      QuestionType
+  required  Boolean      @default(false)
+  options   String[]
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  event     Event              @relation(fields: [eventId], references: [eid], onDelete: Cascade)
+  responses QuestionResponse[]
+
+  @@index([eventId])
+}
+
+enum QuestionType {
+  SHORT_ANSWER
+  MULTIPLE_CHOICE
+  CHECKBOX
+}
+
+model QuestionResponse {
+  id         String   @id @default(cuid())
+  questionId String
+  userId     String
+  answer     String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  question EventQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  user     User          @relation(fields: [userId], references: [uid], onDelete: Cascade)
+
+  @@unique([questionId, userId])
+  @@index([questionId])
+  @@index([userId])
 }
 
 model History {
@@ -119,80 +179,19 @@ model Update {
   event           Event    @relation(fields: [eid], references: [eid], onDelete: Cascade)
 }
 
-model InvitationLetter {
-  letter_id           String               @id @default(cuid())
-  description         String?
-  receives            Receive[]
-  attendeeInvitations AttendeeInvitation[]
-  preferences         Preference[]
-  questions           Questions[]
-}
-
-model Receive {
-  uid              String
-  letter_id        String
-  user             User             @relation(fields: [uid], references: [uid], onDelete: Cascade)
-  invitationLetter InvitationLetter @relation(fields: [letter_id], references: [letter_id], onDelete: Cascade)
-
-  @@id([uid, letter_id])
-}
-
-model AttendeeInvitation {
-  id         String   @id @default(cuid())
-  eid        String
-  uid        String
-  letter_id  String?
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-  accept     Boolean?
-
-  event            Event              @relation(fields: [eid], references: [eid], onDelete: Cascade)
-  user             User               @relation(fields: [uid], references: [uid], onDelete: Cascade)
-  invitationLetter InvitationLetter? @relation(fields: [letter_id], references: [letter_id], onDelete: Cascade)
-
-  @@unique([eid, uid])
-}
-
-model OrganizerInvitation {
-  id         String   @id @default(cuid())
-  eid        String
-  uid        String
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-  accept     Boolean?
-
-  event Event @relation(fields: [eid], references: [eid], onDelete: Cascade)
-  user  User  @relation(fields: [uid], references: [uid], onDelete: Cascade)
-
-  @@unique([eid, uid])
-}
-
-model Preference {
-  preference_id    String
-  letter_id        String
-  notes            String?
-  seat             String?
-  food             String?
-  invitationLetter InvitationLetter @relation(fields: [letter_id], references: [letter_id], onDelete: Cascade)
-
-  @@id([preference_id, letter_id])
-}
-
-model Questions {
-  question_id      String           @default(cuid())
-  letter_id        String
-  question         String?
-  answer           String?
-  invitationLetter InvitationLetter @relation(fields: [letter_id], references: [letter_id], onDelete: Cascade)
-
-  @@id([question_id, letter_id])
-}
-
 model Leaderboard {
-  name  String @id
-  uid   String
-  eid   String
-  score Int?
-  user  User   @relation(fields: [uid], references: [uid], onDelete: Cascade)
-  event Event  @relation(fields: [eid], references: [eid], onDelete: Cascade)
+  id        String   @id @default(cuid())
+  name      String
+  uid       String
+  eid       String
+  score     Int?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user  User  @relation(fields: [uid], references: [uid], onDelete: Cascade)
+  event Event @relation(fields: [eid], references: [eid], onDelete: Cascade)
+
+  @@unique([uid, eid])
+  @@index([uid])
+  @@index([eid])
 }

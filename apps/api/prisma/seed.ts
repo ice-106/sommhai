@@ -138,55 +138,55 @@ async function main() {
     });
   }
 
-  // Create InvitationLetters
-  const invitationLetters = await prisma.invitationLetter.createMany({
-    data: Array.from({ length: 5 }, () => ({
-      description: faker.lorem.paragraph(),
-    })),
-  });
+  // // Create InvitationLetters
+  // const invitationLetters = await prisma.invitationLetter.createMany({
+  //   data: Array.from({ length: 5 }, () => ({
+  //     description: faker.lorem.paragraph(),
+  //   })),
+  // });
 
-  // Fetch created invitation letters
-  const invitationLetterList = await prisma.invitationLetter.findMany();
+  // // Fetch created invitation letters
+  // const invitationLetterList = await prisma.invitationLetter.findMany();
 
-  // Create Receives
-  for (const letter of invitationLetterList) {
-    const user = faker.helpers.arrayElement(userList) as (typeof userList)[0];
-    try {
-      await prisma.receive.create({
-        data: {
-          uid: user.uid,
-          letter_id: letter.letter_id,
-        },
-      });
-    } catch (error) {
-      console.log(`Receive already exists for user ${user.uid} and letter ${letter.letter_id}`);
-    }
-  }
+  // // Create Receives
+  // for (const letter of invitationLetterList) {
+  //   const user = faker.helpers.arrayElement(userList) as (typeof userList)[0];
+  //   try {
+  //     await prisma.receive.create({
+  //       data: {
+  //         uid: user.uid,
+  //         letter_id: letter.letter_id,
+  //       },
+  //     });
+  //   } catch (error) {
+  //     console.log(`Receive already exists for user ${user.uid} and letter ${letter.letter_id}`);
+  //   }
+  // }
 
-  // Create Preferences
-  for (const letter of invitationLetterList) {
-    await prisma.preference.create({
-      data: {
-        preference_id: faker.string.alphanumeric(7),
-        letter_id: letter.letter_id,
-        notes: faker.lorem.sentence(),
-        seat: `Table ${faker.number.int({ min: 1, max: 20 })}`,
-        food: faker.helpers.arrayElement(['Vegetarian', 'Vegan', 'No restrictions', 'Gluten-free']),
-      },
-    });
-  }
+  // // Create Preferences
+  // for (const letter of invitationLetterList) {
+  //   await prisma.preference.create({
+  //     data: {
+  //       preference_id: faker.string.alphanumeric(7),
+  //       letter_id: letter.letter_id,
+  //       notes: faker.lorem.sentence(),
+  //       seat: `Table ${faker.number.int({ min: 1, max: 20 })}`,
+  //       food: faker.helpers.arrayElement(['Vegetarian', 'Vegan', 'No restrictions', 'Gluten-free']),
+  //     },
+  //   });
+  // }
 
-  // Create Questions
-  for (const letter of invitationLetterList) {
-    await prisma.questions.create({
-      data: {
-        question_id: faker.string.uuid(),
-        letter_id: letter.letter_id,
-        question: faker.lorem.sentence() + '?',
-        answer: faker.datatype.boolean() ? faker.lorem.sentence() : null,
-      },
-    });
-  }
+  // // Create Questions
+  // for (const letter of invitationLetterList) {
+  //   await prisma.questions.create({
+  //     data: {
+  //       question_id: faker.string.uuid(),
+  //       letter_id: letter.letter_id,
+  //       question: faker.lorem.sentence() + '?',
+  //       answer: faker.datatype.boolean() ? faker.lorem.sentence() : null,
+  //     },
+  //   });
+  // }
 
   // Create Leaderboards
   for (const event of eventList) {
@@ -233,58 +233,58 @@ async function main() {
 
     const eligibleAttendees = attendees.filter((a) => !existingOrganizerIds.includes(a.uid));
 
-    // Better approach: Process only the first 2 eligible attendees using slice
-    // This ensures we never try to access an element beyond the array length
-    const attendeesToInvite = eligibleAttendees.slice(0, 2);
+    //   // Better approach: Process only the first 2 eligible attendees using slice
+    //   // This ensures we never try to access an element beyond the array length
+    //   const attendeesToInvite = eligibleAttendees.slice(0, 2);
 
-    for (const attendeeToInvite of attendeesToInvite) {
-      try {
-        await prisma.organizerInvitation.create({
-          data: {
-            eid: event.eid,
-            uid: attendeeToInvite.uid,
-            accept: null, // pending
-          },
-        });
-        console.log(`Created organizer invitation for user ${attendeeToInvite.uid} to event ${event.eid}`);
-      } catch (error) {
-        console.log(`Error creating organizer invitation for user ${attendeeToInvite.uid} to event ${event.eid}`);
-      }
-    }
-  }
+    //   for (const attendeeToInvite of attendeesToInvite) {
+    //     try {
+    //       await prisma.organizerInvitation.create({
+    //         data: {
+    //           eid: event.eid,
+    //           uid: attendeeToInvite.uid,
+    //           accept: null, // pending
+    //         },
+    //       });
+    //       console.log(`Created organizer invitation for user ${attendeeToInvite.uid} to event ${event.eid}`);
+    //     } catch (error) {
+    //       console.log(`Error creating organizer invitation for user ${attendeeToInvite.uid} to event ${event.eid}`);
+    //     }
+    //   }
+    // }
 
-  // Create Attendee Invitations
-  console.log('Creating attendee invitations...');
-  for (const event of eventList) {
-    // Get an invitation letter to connect (optional)
-    const invitationLetter = await prisma.invitationLetter.findFirst();
+    // // Create Attendee Invitations
+    // console.log('Creating attendee invitations...');
+    // for (const event of eventList) {
+    //   // Get an invitation letter to connect (optional)
+    //   const invitationLetter = await prisma.invitationLetter.findFirst();
 
-    const existingAttendees = await prisma.attendee.findMany({
-      where: { eid: event.eid },
-      select: { uid: true },
-    });
+    //   const existingAttendees = await prisma.attendee.findMany({
+    //     where: { eid: event.eid },
+    //     select: { uid: true },
+    //   });
 
-    const existingAttendeeIds = existingAttendees.map((a) => a.uid);
-    const eligibleUsers = userList.filter((user) => !existingAttendeeIds.includes(user.uid));
+    //   const existingAttendeeIds = existingAttendees.map((a) => a.uid);
+    //   const eligibleUsers = userList.filter((user) => !existingAttendeeIds.includes(user.uid));
 
-    const usersToInvite = eligibleUsers.slice(0, 2);
+    //   const usersToInvite = eligibleUsers.slice(0, 2);
 
-    for (const userToInvite of usersToInvite) {
-      try {
-        // Create attendee invitation with optional letter reference
-        await prisma.attendeeInvitation.create({
-          data: {
-            eid: event.eid,
-            uid: userToInvite.uid,
-            accept: null,
-            letter_id: invitationLetter?.letter_id, // Optional connection
-          },
-        });
-        console.log(`Created attendee invitation for user ${userToInvite.uid} to event ${event.eid}`);
-      } catch (error) {
-        console.log(`Error creating attendee invitation for user ${userToInvite.uid} to event ${event.eid}:`, error);
-      }
-    }
+    //   for (const userToInvite of usersToInvite) {
+    //     try {
+    //       // Create attendee invitation with optional letter reference
+    //       await prisma.attendeeInvitation.create({
+    //         data: {
+    //           eid: event.eid,
+    //           uid: userToInvite.uid,
+    //           accept: null,
+    //           letter_id: invitationLetter?.letter_id, // Optional connection
+    //         },
+    //       });
+    //       console.log(`Created attendee invitation for user ${userToInvite.uid} to event ${event.eid}`);
+    //     } catch (error) {
+    //       console.log(`Error creating attendee invitation for user ${userToInvite.uid} to event ${event.eid}:`, error);
+    //     }
+    //   }
   }
 
   console.log('Seeding completed.');

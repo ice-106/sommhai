@@ -1,8 +1,9 @@
 import { InternalServerErrorException, NotFoundException } from '../../common/exception/http';
 import prisma from '../../common/libs/prisma';
-import { GetEventLeaderboardOptions, GetEventOptions, GetManyEventsOptions } from './types';
+import { GetEventLeaderboardOptions, GetEventOptions, GetManyEventsOptions, RespondToEventInviteOptions } from './types';
 
 export const AttendeeService = {
+  getAtdEvents: async ({ search, date, take, skip, status }: GetManyEventsOptions) => {
   getAtdEvents: async ({ search, date, take, skip, status }: GetManyEventsOptions) => {
     const events = await prisma.event.findMany({
       take,
@@ -16,6 +17,10 @@ export const AttendeeService = {
           },
           description: {
             contains: search,
+            mode: 'insensitive',
+          },
+          status: {
+            contains: status,
             mode: 'insensitive',
           },
           status: {
@@ -78,5 +83,17 @@ export const AttendeeService = {
       console.error('Error getting event leaderboard:', error);
       throw new InternalServerErrorException(error, 'Failed to get event leaderboard');
     }
+  },
+  respondToInvite: async ({ inviteId, accept }: RespondToEventInviteOptions) => {
+    const response = await prisma.invite.update({
+      where: {
+        id: inviteId,
+      },
+      data: {
+        accept,
+      },
+    });
+
+    return response;
   },
 };

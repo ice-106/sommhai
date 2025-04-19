@@ -21,13 +21,21 @@ export const eventBaseInfo = z.object({
   status: z.string(),
 });
 
-export const eventInvInfo = z.object({
+export const eventInviteBaseInfo = z.object({
+  inviteId: z.string(),
   eventId: z.string(),
-  invitations: z.array(
+  userId: z.string(),
+  role: z.enum(['ORGANIZER', 'ATTENDEE']),
+  accept: z.boolean().optional().nullable(),
+});
+
+export const eventInvSend = z.object({
+  eventId: z.string(),
+  invites: z.array(
     z.object({
       success: z.boolean(),
       uid: z.string(),
-      invitationId: z.string().optional(),
+      inviteId: z.string().optional(),
       error: z.string().optional(),
     }),
   ),
@@ -36,7 +44,27 @@ export const eventInvInfo = z.object({
 export const eventInvResponse = z.object({
   iid: z.string(),
   eventId: z.string(),
-  accepted: z.boolean(),
+  accepted: z.boolean().nullable(),
+});
+
+export const questionBaseInfo = z.object({
+  qid: z.string(),
+  eventId: z.string(),
+  question: z.string(),
+  type: z.enum(['SHORT_ANSWER', 'MULTIPLE_CHOICE', 'CHECKBOX']),
+  required: z.boolean(),
+  options: z.array(z.string()).optional(),
+  createdAt: z.date(),
+  updatedAt: z.date(),
+});
+
+export const userResponseBaseInfo = z.object({
+  id: z.string(),
+  questionId: z.string(),
+  userId: z.string(),
+  answer: z.string().nullable(),
+  createdAt: z.date(),
+  updatedAt: z.date(),
 });
 
 export const leaderboardEntry = z.object({
@@ -50,9 +78,3 @@ export const leaderboardData = z.array(leaderboardEntry);
 
 export const eventOrganizerInfo = eventBaseInfo;
 export const eventAttendeeInfo = eventBaseInfo;
-
-export const eventOrganizerInvInfo = eventInvInfo;
-export const eventAttendeeInvInfo = eventInvInfo;
-
-export const eventOrganizerInvResponse = eventInvResponse;
-export const eventAttendeeInvResponse = eventInvResponse;
