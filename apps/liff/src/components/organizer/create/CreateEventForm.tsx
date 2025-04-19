@@ -13,7 +13,7 @@ const createEventSchema = z.object({
 
 type FormData = z.infer<typeof createEventSchema>;
 
-export function CreateEventForm() {
+function CreateEventForm() {
   const [step, setStep] = useState(1);
   const [eventName, setEventName] = useState('');
   const {
@@ -37,9 +37,9 @@ export function CreateEventForm() {
   return (
     <div className='bg-orange-4 flex h-screen w-screen flex-col items-center justify-between bg-[url(/vector-BG.svg)] py-[24px]'>
       <div className='flex gap-[4px]'>
-        <div className='h-[8px] w-[175px] rounded-[24px] bg-gray-50'></div>
-        {step === 1 && <div className='h-[8px] w-[175px] rounded-[24px] bg-gray-300'></div>}
-        {step === 2 && <div className='h-[8px] w-[175px] rounded-[24px] bg-gray-50'></div>}
+        <div className='h-[8px] w-[175px] rounded-[24px] bg-gray-50' data-testid='progressbar'></div>
+        {step === 1 && <div className='h-[8px] w-[175px] rounded-[24px] bg-gray-300' data-testid='progressbar'></div>}
+        {step === 2 && <div className='h-[8px] w-[175px] rounded-[24px] bg-gray-50' data-testid='progressbar'></div>}
       </div>
       <div>
         {step === 1 && (
@@ -61,10 +61,9 @@ export function CreateEventForm() {
         {step === 2 && (
           <div className='bg-white-bg rounded-12 flex h-[532px] w-[328px] flex-col items-center justify-between px-[24px] py-[24px] text-center'>
             <div className='flex h-[180px] max-w-[100%] flex-col justify-between overflow-hidden'>
-              <h2 className='text-medium-20 font-semibold'>
-                {eventName} <br />
-                is created!
-              </h2>
+              <h2 className='text-medium-20 font-semibold'>{eventName}</h2>
+              <br />
+              <h2 className='text-medium-20 font-semibold'>is created!</h2>
               <p className='text-medium-20 font-semibol'>
                 Click on your new event to manage and customize your event invitation.
               </p>
@@ -95,3 +94,4 @@ export function CreateEventForm() {
     </div>
   );
 }
+export default CreateEventForm;
