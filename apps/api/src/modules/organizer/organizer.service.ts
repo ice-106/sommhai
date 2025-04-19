@@ -11,7 +11,7 @@ import {
 } from './types';
 
 export const OrganizerService = {
-  getEvents: async ({ search, date, take, skip }: GetManyEventsOptions) => {
+  getEvents: async ({ search, date, take, skip, status }: GetManyEventsOptions) => {
     const events = await prisma.event.findMany({
       take,
       skip,
@@ -24,6 +24,10 @@ export const OrganizerService = {
           },
           description: {
             contains: search,
+            mode: 'insensitive',
+          },
+          status: {
+            contains: status,
             mode: 'insensitive',
           },
         },

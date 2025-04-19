@@ -3,7 +3,7 @@ import prisma from '../../common/libs/prisma';
 import { GetEventOptions, GetManyEventsOptions } from './types';
 
 export const AttendeeService = {
-  getAtdEvents: async ({ search, date, take, skip }: GetManyEventsOptions) => {
+  getAtdEvents: async ({ search, date, take, skip, status }: GetManyEventsOptions) => {
     const events = await prisma.event.findMany({
       take,
       skip,
@@ -16,6 +16,10 @@ export const AttendeeService = {
           },
           description: {
             contains: search,
+            mode: 'insensitive',
+          },
+          status: {
+            contains: status,
             mode: 'insensitive',
           },
         },
