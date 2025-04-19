@@ -147,10 +147,10 @@ export const organizerContract = c.router({
   },
   updateLeaderboardEntry: {
     method: 'PUT',
-    path: '/org/events/:eventId/leaderboard/:lbname',
+    path: '/org/events/:eventId/leaderboard/:name',
     pathParams: z.object({
       eventId: z.string(),
-      lbname: z.string(),
+      name: z.string(),
     }),
     body: updateLeaderboardEntry,
     responses: {
@@ -161,10 +161,10 @@ export const organizerContract = c.router({
   },
   deleteLeaderboardEntry: {
     method: 'DELETE',
-    path: '/org/events/:eventId/leaderboard/:lbname',
+    path: '/org/events/:eventId/leaderboard/:name',
     pathParams: z.object({
       eventId: z.string(),
-      lbname: z.string(),
+      name: z.string(),
     }),
     responses: {
       204: z.null(),

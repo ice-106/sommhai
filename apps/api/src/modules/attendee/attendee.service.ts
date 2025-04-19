@@ -1,6 +1,6 @@
-import { NotFoundException } from '../../common/exception/http';
+import { InternalServerErrorException, NotFoundException } from '../../common/exception/http';
 import prisma from '../../common/libs/prisma';
-import { GetEventOptions, GetManyEventsOptions } from './types';
+import { GetEventLeaderboardOptions, GetEventOptions, GetManyEventsOptions } from './types';
 
 export const AttendeeService = {
   getAtdEvents: async ({ search, date, take, skip, status }: GetManyEventsOptions) => {
@@ -54,5 +54,31 @@ export const AttendeeService = {
     }
 
     return event;
+  },
+  getAtdEventLeaderboard: async ({ eventId }: GetEventLeaderboardOptions) => {
+    try {
+      // Check if event exists
+      const event = await prisma.event.findUnique({
+        where: { eid: eventId },
+      });
+
+      if (!event) {
+        throw new NotFoundException(`Event with ID ${eventId} not found`);
+      }
+
+      // Get all leaderboard entries for this event
+      const leaderboardEntries = await prisma.leaderboard.findMany({
+        where: { eid: eventId },
+        orderBy: { score: 'desc' },
+      });
+
+      return leaderboardEntries;
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      console.error('Error getting event leaderboard:', error);
+      throw new InternalServerErrorException(error, 'Failed to get event leaderboard');
+    }
   },
 };

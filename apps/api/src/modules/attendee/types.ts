@@ -19,3 +19,9 @@ export type EventEntity = Prisma.EventGetPayload<{
     organizers: true;
   };
 }>;
+
+export interface GetEventLeaderboardOptions {
+  eventId: string;
+}
+
+export type LeaderboardEntity = Prisma.LeaderboardGetPayload<object>;

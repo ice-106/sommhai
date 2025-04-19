@@ -34,7 +34,7 @@ export const attendeeContract = c.router({
       500: z.object({ message: z.string() }),
     },
   },
-  getAtdLeaderboard: {
+  getAtdEventLeaderboard: {
     method: 'GET',
     path: '/atd/events/:eventId/leaderboard',
     pathParams: z.object({

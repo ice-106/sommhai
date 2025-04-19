@@ -34,3 +34,30 @@ export interface RespondOrganizerInviteOptions {
   invitationId: string;
   accept: boolean;
 }
+
+export interface GetEventLeaderboardOptions {
+  eventId: string;
+}
+
+export interface CreateLeaderboardEntryOptions {
+  eventId: string;
+  name: string;
+  uid: string;
+  score?: number;
+}
+
+export interface UpdateLeaderboardEntryOptions {
+  eventId: string;
+  name: string;
+  updates: {
+    name?: string;
+    score?: number;
+  };
+}
+
+export interface DeleteLeaderboardEntryOptions {
+  eventId: string;
+  name: string;
+}
+
+export type LeaderboardEntity = Prisma.LeaderboardGetPayload<object>;
