@@ -1,9 +1,13 @@
 import { InternalServerErrorException, NotFoundException } from '../../common/exception/http';
 import prisma from '../../common/libs/prisma';
-import { GetEventLeaderboardOptions, GetEventOptions, GetManyEventsOptions, RespondToEventInviteOptions } from './types';
+import {
+  GetEventLeaderboardOptions,
+  GetEventOptions,
+  GetManyEventsOptions,
+  RespondToEventInviteOptions,
+} from './types';
 
 export const AttendeeService = {
-  getAtdEvents: async ({ search, date, take, skip, status }: GetManyEventsOptions) => {
   getAtdEvents: async ({ search, date, take, skip, status }: GetManyEventsOptions) => {
     const events = await prisma.event.findMany({
       take,
@@ -17,10 +21,6 @@ export const AttendeeService = {
           },
           description: {
             contains: search,
-            mode: 'insensitive',
-          },
-          status: {
-            contains: status,
             mode: 'insensitive',
           },
           status: {

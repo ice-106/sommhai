@@ -68,7 +68,7 @@ export const userResponseBaseInfo = z.object({
 });
 
 export const leaderboardEntry = z.object({
-  name: z.string(),
+  entryId: z.string(),
   uid: z.string(),
   eid: z.string(),
   score: z.number().nullable(),

@@ -53,25 +53,24 @@ export interface GetEventLeaderboardOptions {
   eventId: string;
 }
 
-export interface createLeaderboardOptions {
+export interface CreateLeaderboardOptions {
   eventId: string;
-  name: string;
   uid: string;
   score?: number;
 }
 
-export interface updateLeaderboardOptions {
+export interface UpdateLeaderboardOptions {
   eventId: string;
-  name: string;
+  entryId: string;
   updates: {
-    name?: string;
+    uid?: string;
     score?: number;
   };
 }
 
 export interface DeleteLeaderboardEntryOptions {
   eventId: string;
-  name: string;
+  entryId: string;
 }
 
 export type LeaderboardEntity = Prisma.LeaderboardGetPayload<object>;
@@ -123,6 +122,6 @@ export interface DeleteManyEventQuestionOptions {
   questionIds: string[];
 }
 
-export interface deleteAllEventQuestionOptions {
+export interface DeleteAllEventQuestionOptions {
   eventId: string;
 }

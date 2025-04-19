@@ -24,7 +24,7 @@ export const OrganizerAdapter = {
   },
   toLeaderboardEntry: (entry: LeaderboardEntity) => {
     return {
-      name: entry.name,
+      entryId: entry.id,
       uid: entry.uid,
       eid: entry.eid,
       score: entry.score,

@@ -230,10 +230,9 @@ export const OrganizerController: RouterImplementation<typeof contract.organizer
     };
   },
 
-  createLeaderboard: async ({ params: { eventId }, body: { name, uid, score } }) => {
+  createLeaderboard: async ({ params: { eventId }, body: { uid, score } }) => {
     const newEntry = await OrganizerService.createLeaderboard({
       eventId,
-      name,
       uid,
       score,
     });
@@ -244,12 +243,12 @@ export const OrganizerController: RouterImplementation<typeof contract.organizer
     };
   },
 
-  updateLeaderboard: async ({ params: { eventId, name }, body: { name: newName, score } }) => {
+  updateLeaderboard: async ({ params: { eventId, entryId }, body: { uid, score } }) => {
     const updatedEntry = await OrganizerService.updateLeaderboard({
       eventId,
-      name,
+      entryId,
       updates: {
-        name: newName,
+        uid,
         score,
       },
     });
@@ -260,12 +259,12 @@ export const OrganizerController: RouterImplementation<typeof contract.organizer
     };
   },
 
-  deleteLeaderboardEntry: async ({ params: { eventId, name } }) => {
-    await OrganizerService.deleteLeaderboardEntry({ eventId, name });
+  deleteLeaderboardEntry: async ({ params: { eventId, entryId } }) => {
+    const deletedEntry = await OrganizerService.deleteLeaderboardEntry({ eventId, entryId });
 
     return {
       status: 204,
-      body: null,
+      body: OrganizerAdapter.toLeaderboardEntry(deletedEntry),
     };
   },
 };
