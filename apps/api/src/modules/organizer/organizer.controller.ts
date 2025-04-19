@@ -103,8 +103,8 @@ export const OrganizerController: RouterImplementation<typeof contract.organizer
     };
   },
 
-  createLeaderboardEntry: async ({ params: { eventId }, body: { name, uid, score } }) => {
-    const newEntry = await OrganizerService.createLeaderboardEntry({
+  createLeaderboard: async ({ params: { eventId }, body: { name, uid, score } }) => {
+    const newEntry = await OrganizerService.createLeaderboard({
       eventId,
       name,
       uid,
@@ -117,8 +117,8 @@ export const OrganizerController: RouterImplementation<typeof contract.organizer
     };
   },
 
-  updateLeaderboardEntry: async ({ params: { eventId, name }, body: { name: newName, score } }) => {
-    const updatedEntry = await OrganizerService.updateLeaderboardEntry({
+  updateLeaderboard: async ({ params: { eventId, name }, body: { name: newName, score } }) => {
+    const updatedEntry = await OrganizerService.updateLeaderboard({
       eventId,
       name,
       updates: {

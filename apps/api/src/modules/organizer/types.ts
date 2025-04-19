@@ -39,14 +39,14 @@ export interface GetEventLeaderboardOptions {
   eventId: string;
 }
 
-export interface CreateLeaderboardEntryOptions {
+export interface createLeaderboardOptions {
   eventId: string;
   name: string;
   uid: string;
   score?: number;
 }
 
-export interface UpdateLeaderboardEntryOptions {
+export interface updateLeaderboardOptions {
   eventId: string;
   name: string;
   updates: {

@@ -4,14 +4,14 @@ import { ConflictException, InternalServerErrorException, NotFoundException } fr
 import prisma from '../../common/libs/prisma';
 import {
   CreateAttendeeInviteOptions,
-  CreateLeaderboardEntryOptions,
+  createLeaderboardOptions,
   CreateOrganizerInviteOptions,
   DeleteLeaderboardEntryOptions,
   GetEventLeaderboardOptions,
   GetEventOptions,
   GetManyEventsOptions,
   RespondOrganizerInviteOptions,
-  UpdateLeaderboardEntryOptions,
+  updateLeaderboardOptions,
 } from './types';
 
 export const OrganizerService = {
@@ -418,7 +418,7 @@ export const OrganizerService = {
     }
   },
 
-  createLeaderboardEntry: async ({ eventId, name, uid, score = 0 }: CreateLeaderboardEntryOptions) => {
+  createLeaderboard: async ({ eventId, name, uid, score = 0 }: createLeaderboardOptions) => {
     try {
       const event = await prisma.event.findUnique({
         where: { eid: eventId },
@@ -466,7 +466,7 @@ export const OrganizerService = {
     }
   },
 
-  updateLeaderboardEntry: async ({ eventId, name, updates }: UpdateLeaderboardEntryOptions) => {
+  updateLeaderboard: async ({ eventId, name, updates }: updateLeaderboardOptions) => {
     try {
       const event = await prisma.event.findUnique({
         where: { eid: eventId },

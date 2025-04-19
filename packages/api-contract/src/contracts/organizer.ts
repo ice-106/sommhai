@@ -1,12 +1,10 @@
 import {
-  createLeaderboardEntry,
   eventAttendeeInvInfo,
   eventOrganizerInfo,
   eventOrganizerInvInfo,
   eventOrganizerInvResponse,
   leaderboardData,
   leaderboardEntry,
-  updateLeaderboardEntry,
 } from '@sommhai/shared-type';
 import { initContract } from '@ts-rest/core';
 import { z } from 'zod';
@@ -132,27 +130,34 @@ export const organizerContract = c.router({
       500: z.object({ message: z.string() }),
     },
   },
-  createLeaderboardEntry: {
+  createLeaderboard: {
     method: 'POST',
     path: '/org/events/:eventId/leaderboard',
     pathParams: z.object({
       eventId: z.string(),
     }),
-    body: createLeaderboardEntry,
+    body: z.object({
+      name: z.string(),
+      uid: z.string(),
+      score: z.number().optional(),
+    }),
     responses: {
       201: leaderboardEntry,
       404: z.object({ message: z.string() }),
       500: z.object({ message: z.string() }),
     },
   },
-  updateLeaderboardEntry: {
+  updateLeaderboard: {
     method: 'PUT',
     path: '/org/events/:eventId/leaderboard/:name',
     pathParams: z.object({
       eventId: z.string(),
       name: z.string(),
     }),
-    body: updateLeaderboardEntry,
+    body: z.object({
+      name: z.string().optional(),
+      score: z.number().optional(),
+    }),
     responses: {
       200: leaderboardEntry,
       404: z.object({ message: z.string() }),
