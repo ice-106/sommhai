@@ -21,4 +21,11 @@ export const AttendeeController: RouterImplementation<typeof contract.attendee> 
       body: events.map((event) => AttendeeAdapter.toEventAttendeeInfo(event)),
     };
   },
+  getAtdEventLeaderboard: async ({ params: { eventId } }) => {
+    const leaderboard = await AttendeeService.getAtdEventLeaderboard({ eventId });
+    return {
+      status: 200,
+      body: leaderboard.map((entry) => AttendeeAdapter.toLeaderboardEntry(entry)),
+    };
+  },
 };

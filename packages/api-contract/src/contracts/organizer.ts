@@ -3,6 +3,8 @@ import {
   eventOrganizerInfo,
   eventOrganizerInvInfo,
   eventOrganizerInvResponse,
+  leaderboardData,
+  leaderboardEntry,
 } from '@sommhai/shared-type';
 import { initContract } from '@ts-rest/core';
 import { z } from 'zod';
@@ -112,6 +114,65 @@ export const organizerContract = c.router({
     }),
     responses: {
       200: eventOrganizerInvResponse,
+      404: z.object({ message: z.string() }),
+      500: z.object({ message: z.string() }),
+    },
+  },
+  getLeaderboard: {
+    method: 'GET',
+    path: '/org/events/:eventId/leaderboard',
+    pathParams: z.object({
+      eventId: z.string(),
+    }),
+    responses: {
+      200: leaderboardData,
+      404: z.object({ message: z.string() }),
+      500: z.object({ message: z.string() }),
+    },
+  },
+  createLeaderboard: {
+    method: 'POST',
+    path: '/org/events/:eventId/leaderboard',
+    pathParams: z.object({
+      eventId: z.string(),
+    }),
+    body: z.object({
+      name: z.string(),
+      uid: z.string(),
+      score: z.number().optional(),
+    }),
+    responses: {
+      201: leaderboardEntry,
+      404: z.object({ message: z.string() }),
+      500: z.object({ message: z.string() }),
+    },
+  },
+  updateLeaderboard: {
+    method: 'PUT',
+    path: '/org/events/:eventId/leaderboard/:name',
+    pathParams: z.object({
+      eventId: z.string(),
+      name: z.string(),
+    }),
+    body: z.object({
+      name: z.string().optional(),
+      score: z.number().optional(),
+    }),
+    responses: {
+      200: leaderboardEntry,
+      404: z.object({ message: z.string() }),
+      500: z.object({ message: z.string() }),
+    },
+  },
+  deleteLeaderboardEntry: {
+    method: 'DELETE',
+    path: '/org/events/:eventId/leaderboard/:name',
+    pathParams: z.object({
+      eventId: z.string(),
+      name: z.string(),
+    }),
+    responses: {
+      204: z.null(),
       404: z.object({ message: z.string() }),
       500: z.object({ message: z.string() }),
     },

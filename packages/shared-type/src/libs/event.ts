@@ -39,6 +39,15 @@ export const eventInvResponse = z.object({
   accepted: z.boolean(),
 });
 
+export const leaderboardEntry = z.object({
+  name: z.string(),
+  uid: z.string(),
+  eid: z.string(),
+  score: z.number().nullable(),
+});
+
+export const leaderboardData = z.array(leaderboardEntry);
+
 export const eventOrganizerInfo = eventBaseInfo;
 export const eventAttendeeInfo = eventBaseInfo;
 
