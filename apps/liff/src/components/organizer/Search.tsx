@@ -19,7 +19,7 @@ function SearchContent({ placeholder }: { placeholder: string }) {
   const { replace } = useRouter();
 
   const handleSearch = useDebouncedCallback((term: any) => {
-    const params = new URLSearchParams(searchParams.toString());
+    const params = new URLSearchParams(searchParams?.toString());
     if (term) {
       params.set('query', term);
     } else {
@@ -31,7 +31,7 @@ function SearchContent({ placeholder }: { placeholder: string }) {
   return (
     <div className='bg-white-pure flex flex-1'>
       <Input
-        defaultValue={searchParams.get('query')?.toString()}
+        defaultValue={searchParams?.get('query')?.toString()}
         placeholder={placeholder}
         onChange={(e) => handleSearch(e.target.value)}
       />
