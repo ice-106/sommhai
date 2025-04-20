@@ -29,7 +29,7 @@ function SearchContent({ placeholder }: { placeholder: string }) {
   }, 300);
 
   return (
-    <div className='flex flex-1'>
+    <div className='bg-white-pure flex flex-1'>
       <Input
         defaultValue={searchParams.get('query')?.toString()}
         placeholder={placeholder}
@@ -46,7 +46,7 @@ export function SearchContainer({ placeholder }: { placeholder: string }) {
 
   return (
     <Suspense fallback={<div className='h-10 flex-1 animate-pulse rounded bg-gray-100'>Loading...</div>}>
-      <Search placeholder={placeholder} />
+      <Search placeholder={`⌕ ${placeholder}`} />
     </Suspense>
   );
 }
