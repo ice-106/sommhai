@@ -3,7 +3,7 @@ import { Calendar } from '@sommhai/ui/components/ui/calendar';
 import { cn } from '@sommhai/ui/lib/utils';
 import React, { useState } from 'react';
 
-import TimePicker from '@/components/TimePicker';
+import TimePicker from '@/components/organizer/event/reminder/TimePicker';
 
 // Interface for the DateTimePicker props
 interface DateTimePickerProps {

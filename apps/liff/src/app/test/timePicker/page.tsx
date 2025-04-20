@@ -1,8 +1,8 @@
 'use client';
 import React from 'react';
 
-import SwiperTimePicker from '@/components/SwiperTimePicker';
-import TimePicker from '@/components/TimePicker';
+import SwiperTimePicker from '@/components/organizer/event/reminder/SwiperTimePicker';
+import TimePicker from '@/components/organizer/event/reminder/TimePicker';
 
 function PageTest() {
   return (

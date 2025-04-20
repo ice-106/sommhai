@@ -1,6 +1,6 @@
 import React from 'react';
 
-import DateTimePickerExample from '@/components/DateTimePicker';
+import DateTimePickerExample from '@/components/organizer/event/reminder/DateTimePicker';
 
 function page() {
   return (
