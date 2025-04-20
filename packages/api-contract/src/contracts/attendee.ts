@@ -1,5 +1,5 @@
 import { eventAttendeeInfo } from '@sommhai/shared-type';
-import { leaderboardData } from '@sommhai/shared-type';
+//import { leaderboardData } from '@sommhai/shared-type';
 import { initContract } from '@ts-rest/core';
 import { z } from 'zod';
 
@@ -41,7 +41,7 @@ export const attendeeContract = c.router({
       eventId: z.string(),
     }),
     responses: {
-      200: leaderboardData,
+      //200: leaderboardData,
       404: z.object({ message: z.string() }),
       500: z.object({ message: z.string() }),
     },

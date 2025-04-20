@@ -18,6 +18,7 @@ function ParticipantCard() {
   const goToNext = () => {
     if (currentPage < totalPages) setCurrentPage((prev) => prev + 1);
   };
+
   return (
     <div className='gap-19 bg-white-pure mx-auto mt-[19px] flex h-[163px] w-[342px] flex-col gap-[19px] p-24'>
       <div className='flex gap-24'>
