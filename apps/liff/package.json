@@ -11,6 +11,7 @@
   "dependencies": {
     "@hookform/resolvers": "^5.0.1",
     "@line/liff": "2.25.1",
+    "@react-oauth/google": "^0.12.1",
     "@sommhai/api-contract": "workspace:*",
     "@sommhai/eslint-config": "workspace:*",
     "@sommhai/shared-type": "workspace:*",
@@ -34,9 +35,9 @@
     "react-dom": "^18.3.1",
     "react-hook-form": "^7.55.0",
     "react-icons": "^5.5.0",
-    "swiper": "^11.2.6",
     "react-leaflet": "^5.0.0",
     "recharts": "^2.15.2",
+    "swiper": "^11.2.6",
     "use-debounce": "^10.0.4",
     "zod": "^3.24.1"
   },

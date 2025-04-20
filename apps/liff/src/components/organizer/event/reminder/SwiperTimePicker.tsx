@@ -9,7 +9,7 @@ interface SwiperTimePickerProps {
 }
 
 const SwiperTimePicker = ({ onTimeChange }: SwiperTimePickerProps) => {
-  const initialHour = new Date().getHours();
+  const initialHour = new Date().getHours() + 1;
   const initialMinute = new Date().getMinutes();
   const [selectedHour, setSelectedHour] = useState(initialHour);
   const [selectedMinute, setSelectedMinute] = useState(initialMinute);
@@ -73,8 +73,8 @@ const SwiperTimePicker = ({ onTimeChange }: SwiperTimePickerProps) => {
               virtual={true}
               watchSlidesProgress={true}
               onSwiper={(swiper) => {
-                const realIndex = swiper.realIndex % 12;
-                const hour = (realIndex % 12) + 1;
+                const realIndex = swiper.realIndex % 24;
+                const hour = realIndex % 24;
                 setSelectedHour(hour);
               }}
             >

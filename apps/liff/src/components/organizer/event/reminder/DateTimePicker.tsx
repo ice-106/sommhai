@@ -20,7 +20,7 @@ function DateTimeSelect({ onChange, initialDate = new Date(), onSave }: DateTime
     hour: number;
     minute: number;
   }>({
-    hour: initialDate.getHours(),
+    hour: initialDate.getHours() + 1,
     minute: initialDate.getMinutes(),
   });
   useEffect(() => {
@@ -71,7 +71,7 @@ function DateTimeSelect({ onChange, initialDate = new Date(), onSave }: DateTime
             )}
             onClick={() => setActiveView('date')}
           >
-            {date.toLocaleDateString(undefined, {
+            {date.toLocaleDateString('en-GB', {
               month: 'short',
               day: '2-digit',
             })}
