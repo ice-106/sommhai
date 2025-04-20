@@ -5,7 +5,7 @@ import { Keyboard, Mousewheel, Virtual } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
 interface SwiperTimePickerProps {
-  onTimeChange: (time: { hours: number; minutes: number }) => void;
+  onTimeChange: (time: { hour: number; minute: number }) => void;
 }
 
 const SwiperTimePicker = ({ onTimeChange }: SwiperTimePickerProps) => {
@@ -21,8 +21,8 @@ const SwiperTimePicker = ({ onTimeChange }: SwiperTimePickerProps) => {
 
   useEffect(() => {
     onTimeChange({
-      hours: selectedHour,
-      minutes: selectedMinute,
+      hour: selectedHour,
+      minute: selectedMinute,
     });
   }, [selectedHour, selectedMinute]);
 
@@ -92,7 +92,7 @@ const SwiperTimePicker = ({ onTimeChange }: SwiperTimePickerProps) => {
             :
           </div>
 
-          <div className='h-full w-full border-2'>
+          <div className='h-full w-full'>
             <Swiper
               allowTouchMove={true}
               centeredSlides={true}

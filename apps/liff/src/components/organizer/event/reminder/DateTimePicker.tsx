@@ -1,31 +1,38 @@
 'use client';
 import { Calendar } from '@sommhai/ui/components/ui/calendar';
 import { cn } from '@sommhai/ui/lib/utils';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { date } from 'zod';
 
-import TimePicker from '@/components/organizer/event/reminder/TimePicker';
+import SwiperTimePicker from './SwiperTimePicker';
 
 // Interface for the DateTimePicker props
 interface DateTimePickerProps {
   onChange?: (dateTime: { date: Date; time: { hour: number; minute: number } }) => void;
   initialDate?: Date;
-  onSave?: (data: { title: string; date: Date; time: { hour: number; minute: number }; message?: string }) => void;
-}
-interface SelectedTime {
-  hour: number;
-  minute: number;
+  onSave?: (data: { date: Date; time: { hour: number; minute: number } }) => void;
 }
 
 function DateTimeSelect({ onChange, initialDate = new Date(), onSave }: DateTimePickerProps) {
-  const [title, setTitle] = useState('');
-  const [message, setMessage] = useState('');
   const [date, setDate] = useState<Date>(initialDate);
   const [activeView, setActiveView] = useState<'date' | 'time'>('date');
-  const [is24Hour, setIs24Hour] = useState(true);
-  const [time, setTime] = useState<SelectedTime>({
+  const [time, setTime] = useState<{
+    hour: number;
+    minute: number;
+  }>({
     hour: initialDate.getHours(),
     minute: initialDate.getMinutes(),
   });
+  useEffect(() => {
+    const data = {
+      date: date,
+      time: {
+        hour: time.hour,
+        minute: time.minute,
+      },
+    };
+    if (data != undefined && onSave) onSave(data);
+  }, [date, time]);
 
   const handleDateChange = (newDate: Date | undefined) => {
     if (newDate) {
@@ -40,7 +47,7 @@ function DateTimeSelect({ onChange, initialDate = new Date(), onSave }: DateTime
     }
   };
 
-  const handleTimeChange = (newTime: SelectedTime) => {
+  const handleTimeChange = (newTime: { hour: number; minute: number }) => {
     setTime(newTime);
     if (onChange) {
       onChange({ date, time: newTime });
@@ -95,8 +102,8 @@ function DateTimeSelect({ onChange, initialDate = new Date(), onSave }: DateTime
           </div>
         ) : (
           <div className='w-full px-20'>
-            <div className='w-full origin-top scale-90'>
-              <TimePicker onChange={handleTimeChange} />
+            <div className='w-full origin-top scale-90 pt-12'>
+              <SwiperTimePicker onTimeChange={handleTimeChange} />
             </div>
           </div>
         )}
@@ -110,18 +117,13 @@ function DateTimePicker() {
     console.log('Selected date and time:', dateTime);
   };
 
-  const handleSave = (data: {
-    title: string;
-    date: Date;
-    time: { hour: number; minute: number };
-    message?: string;
-  }) => {
+  const handleSave = (data: { date: Date; time: { hour: number; minute: number } }) => {
     console.log('Form data saved:', data);
     // Here you would typically send the data to your backend
   };
 
   return (
-    <div className='p-4'>
+    <div className='p-8'>
       <DateTimeSelect initialDate={new Date()} onChange={handleDateTimeChange} onSave={handleSave} />
     </div>
   );
