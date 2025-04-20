@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import { IoArrowBackOutline, IoArrowForwardOutline } from 'react-icons/io5';
 
+import { DonutChart } from './DonutChart';
+
 const Pages = [1, 2, 3, 4];
 
 function ParticipantCard() {
@@ -17,9 +19,11 @@ function ParticipantCard() {
     if (currentPage < totalPages) setCurrentPage((prev) => prev + 1);
   };
   return (
-    <div className='gap-19 mx-auto flex h-[163px] w-[342px] flex-col gap-[19px] bg-fuchsia-200 p-24'>
+    <div className='gap-19 bg-white-pure mx-auto mt-[19px] flex h-[163px] w-[342px] flex-col gap-[19px] p-24'>
       <div className='flex gap-24'>
-        <div className='bg-orange-6 h-[64px] w-[64px]'></div>
+        <div className='h-[64px] w-[64px]'>
+          <DonutChart />
+        </div>
         <div className='flex w-[206] flex-col'>
           <h1 className='text-orange-3 text-bold-20'>Attendee</h1>
           <p className='text-regular-14'>10 of 40 attendee will be attending</p>
