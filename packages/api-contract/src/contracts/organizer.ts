@@ -1,10 +1,11 @@
 import {
-  eventAttendeeInvInfo,
+  eventInviteBaseInfo,
+  eventInvResponse,
+  eventInvSend,
   eventOrganizerInfo,
-  eventOrganizerInvInfo,
-  eventOrganizerInvResponse,
   leaderboardData,
   leaderboardEntry,
+  questionBaseInfo,
 } from '@sommhai/shared-type';
 import { initContract } from '@ts-rest/core';
 import { z } from 'zod';
@@ -21,6 +22,7 @@ export const organizerContract = c.router({
       take: z.string().regex(/^\d+$/).transform(Number).optional(),
       skip: z.string().regex(/^\d+$/).transform(Number).optional(),
       status: z.string().optional(),
+      userId: z.string().optional(),
     }),
     responses: {
       200: z.array(eventOrganizerInfo),
@@ -83,7 +85,7 @@ export const organizerContract = c.router({
       uids: z.array(z.string()),
     }),
     responses: {
-      201: eventOrganizerInvInfo,
+      201: eventInvSend,
       404: z.object({ message: z.string() }),
       500: z.object({ message: z.string() }),
     },
@@ -98,22 +100,174 @@ export const organizerContract = c.router({
       uids: z.array(z.string()),
     }),
     responses: {
-      201: eventAttendeeInvInfo,
+      201: eventInvSend,
+      404: z.object({ message: z.string() }),
+      500: z.object({ message: z.string() }),
+    },
+  },
+  getEventInvites: {
+    method: 'GET',
+    path: '/org/events/:eventId/invites',
+    pathParams: z.object({
+      eventId: z.string(),
+    }),
+    query: z.object({
+      role: z.enum(['ORGANIZER', 'ATTENDEE']).optional(),
+      accept: z.boolean().optional(),
+      take: z.string().regex(/^\d+$/).transform(Number).optional(),
+      skip: z.string().regex(/^\d+$/).transform(Number).optional(),
+    }),
+    responses: {
+      200: z.array(eventInviteBaseInfo),
+      404: z.object({ message: z.string() }),
+      500: z.object({ message: z.string() }),
+    },
+  },
+  getEventInvite: {
+    method: 'GET',
+    path: '/org/events/:eventId/invites/:inviteId',
+    pathParams: z.object({
+      eventId: z.string(),
+      inviteId: z.string(),
+    }),
+    responses: {
+      200: eventInviteBaseInfo,
+      404: z.object({ message: z.string() }),
+      500: z.object({ message: z.string() }),
+    },
+  },
+  deleteEventInvite: {
+    method: 'DELETE',
+    path: '/org/events/:eventId/invites',
+    pathParams: z.object({
+      eventId: z.string(),
+    }),
+    body: z.object({
+      inviteIds: z.array(z.string()),
+    }),
+    responses: {
+      200: z.array(eventInviteBaseInfo),
       404: z.object({ message: z.string() }),
       500: z.object({ message: z.string() }),
     },
   },
   respondOrganizerInvite: {
     method: 'PUT',
-    path: '/org/events/:invitationId/respond',
+    path: '/org/events/:inviteId/respond',
     pathParams: z.object({
-      invitationId: z.string(),
+      inviteId: z.string(),
     }),
     body: z.object({
-      accept: z.boolean(),
+      accept: z.boolean().nullable(),
     }),
     responses: {
-      200: eventOrganizerInvResponse,
+      200: eventInvResponse,
+      404: z.object({ message: z.string() }),
+      500: z.object({ message: z.string() }),
+    },
+  },
+  getEventQuestions: {
+    method: 'GET',
+    path: '/org/events/:eventId/questions',
+    pathParams: z.object({
+      eventId: z.string(),
+    }),
+    responses: {
+      200: z.array(questionBaseInfo),
+      404: z.object({ message: z.string() }),
+      500: z.object({ message: z.string() }),
+    },
+  },
+  getEventQuestion: {
+    method: 'GET',
+    path: '/org/events/:eventId/questions/:questionId',
+    pathParams: z.object({
+      eventId: z.string(),
+      questionId: z.string(),
+    }),
+    responses: {
+      200: questionBaseInfo,
+      404: z.object({ message: z.string() }),
+      500: z.object({ message: z.string() }),
+    },
+  },
+  createEventQuestions: {
+    method: 'POST',
+    path: '/org/events/:eventId/questions',
+    pathParams: z.object({
+      eventId: z.string(),
+    }),
+    body: z.object({
+      questions: z.array(
+        z.object({
+          question: z.string(),
+          type: z.enum(['SHORT_ANSWER', 'MULTIPLE_CHOICE', 'CHECKBOX']),
+          required: z.boolean().default(false),
+          options: z.array(z.string()).optional(),
+        }),
+      ),
+    }),
+    responses: {
+      201: z.array(questionBaseInfo),
+      404: z.object({ message: z.string() }),
+      500: z.object({ message: z.string() }),
+    },
+  },
+  updateEventQuestion: {
+    method: 'PUT',
+    path: '/events/:eventId/questions/:questionId',
+    pathParams: z.object({
+      eventId: z.string(),
+      questionId: z.string(),
+    }),
+    body: z.object({
+      question: z.string().optional(),
+      type: z.enum(['SHORT_ANSWER', 'MULTIPLE_CHOICE', 'CHECKBOX']).optional(),
+      required: z.boolean().optional(),
+      options: z.array(z.string()).optional(),
+    }),
+    responses: {
+      200: questionBaseInfo,
+      404: z.object({ message: z.string() }),
+      500: z.object({ message: z.string() }),
+    },
+  },
+  deleteEventQuestion: {
+    method: 'DELETE',
+    path: '/org/events/:eventId/questions/:questionId',
+    pathParams: z.object({
+      eventId: z.string(),
+      questionId: z.string(),
+    }),
+    responses: {
+      200: questionBaseInfo,
+      404: z.object({ message: z.string() }),
+      500: z.object({ message: z.string() }),
+    },
+  },
+  deleteEventQuestions: {
+    method: 'DELETE',
+    path: '/org/events/:eventId/questions',
+    pathParams: z.object({
+      eventId: z.string(),
+    }),
+    body: z.object({
+      questionIds: z.array(z.string()),
+    }),
+    responses: {
+      200: z.array(questionBaseInfo),
+      404: z.object({ message: z.string() }),
+      500: z.object({ message: z.string() }),
+    },
+  },
+  deleteAllEventQuestions: {
+    method: 'DELETE',
+    path: '/org/events/:eventId/questions/all',
+    pathParams: z.object({
+      eventId: z.string(),
+    }),
+    responses: {
+      200: z.array(questionBaseInfo),
       404: z.object({ message: z.string() }),
       500: z.object({ message: z.string() }),
     },
@@ -137,7 +291,6 @@ export const organizerContract = c.router({
       eventId: z.string(),
     }),
     body: z.object({
-      name: z.string(),
       uid: z.string(),
       score: z.number().optional(),
     }),
@@ -149,13 +302,13 @@ export const organizerContract = c.router({
   },
   updateLeaderboard: {
     method: 'PUT',
-    path: '/org/events/:eventId/leaderboard/:name',
+    path: '/org/events/:eventId/leaderboard/:entryId',
     pathParams: z.object({
       eventId: z.string(),
-      name: z.string(),
+      entryId: z.string(),
     }),
     body: z.object({
-      name: z.string().optional(),
+      uid: z.string().optional(),
       score: z.number().optional(),
     }),
     responses: {
@@ -166,13 +319,13 @@ export const organizerContract = c.router({
   },
   deleteLeaderboardEntry: {
     method: 'DELETE',
-    path: '/org/events/:eventId/leaderboard/:name',
+    path: '/org/events/:eventId/leaderboard/:entryId',
     pathParams: z.object({
       eventId: z.string(),
-      name: z.string(),
+      entryId: z.string(),
     }),
     responses: {
-      204: z.null(),
+      204: leaderboardEntry,
       404: z.object({ message: z.string() }),
       500: z.object({ message: z.string() }),
     },

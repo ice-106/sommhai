@@ -53,10 +53,9 @@ export const UserService = {
         histories: true,
         creates: true,
         mediaTaken: true,
-        receives: true,
-        leaderboards: true,
-        attendeeInvitations: true,
-        organizerInvitations: true,
+        invites: true,
+        responses: true,
+        leaderboard: true,
       },
     });
 
@@ -115,10 +114,9 @@ export const UserService = {
         histories: true,
         creates: true,
         mediaTaken: true,
-        receives: true,
-        leaderboards: true,
-        attendeeInvitations: true,
-        organizerInvitations: true,
+        invites: true,
+        responses: true,
+        leaderboard: true,
       },
       orderBy: {
         pref_name: 'asc',

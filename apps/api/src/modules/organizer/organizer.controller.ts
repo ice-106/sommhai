@@ -1,3 +1,4 @@
+import { InviteRole, QuestionType } from '@prisma/client';
 import { contract } from '@sommhai/api-contract';
 import { RouterImplementation } from '@ts-rest/express/src/lib/types';
 
@@ -13,8 +14,8 @@ export const OrganizerController: RouterImplementation<typeof contract.organizer
       body: OrganizerAdapter.toEventOrganizerInfo(event),
     };
   },
-  getEvents: async ({ query: { search, date, take, skip, status } }) => {
-    const events = await OrganizerService.getEvents({ search, date, take, skip, status });
+  getEvents: async ({ query: { search, date, take, skip, status, userId } }) => {
+    const events = await OrganizerService.getEvents({ search, date, take, skip, status, userId });
 
     return {
       status: 200,
@@ -49,7 +50,7 @@ export const OrganizerController: RouterImplementation<typeof contract.organizer
     params: { eventId },
     body: { name, date, description, invite_list, memory, location, time, picture },
   }) => {
-    await OrganizerService.updateEventDetails({
+    await OrganizerService.updateEvent({
       eventId,
       event: {
         name,
@@ -70,28 +71,154 @@ export const OrganizerController: RouterImplementation<typeof contract.organizer
       body: OrganizerAdapter.toEventOrganizerInfo(event),
     };
   },
+
   inviteAttendees: async ({ params: { eventId }, body: { uids } }) => {
-    const attendeeInvitation = await OrganizerService.inviteAttendees({ eventId, uids });
+    const result = await OrganizerService.createInvites({
+      eventId,
+      userIds: uids,
+      role: InviteRole.ATTENDEE,
+    });
 
     return {
       status: 201,
-      body: attendeeInvitation,
+      body: result,
     };
   },
 
   inviteOrganizers: async ({ params: { eventId }, body: { uids } }) => {
-    const organizerInvitation = await OrganizerService.inviteOrganizers({ eventId, uids });
+    const result = await OrganizerService.createInvites({
+      eventId,
+      userIds: uids,
+      role: InviteRole.ORGANIZER,
+    });
 
     return {
       status: 201,
-      body: organizerInvitation,
+      body: result,
     };
   },
-  respondOrganizerInvite: async ({ params: { invitationId }, body: { accept } }) => {
-    const response = await OrganizerService.respondOrganizerInvite({ invitationId, accept });
+  getEventInvites: async ({ params: { eventId }, query: { role, accept, take, skip } }) => {
+    let inviteRole: InviteRole | undefined;
+    if (role) {
+      inviteRole = role === 'ATTENDEE' ? InviteRole.ATTENDEE : InviteRole.ORGANIZER;
+    }
+
+    const result = await OrganizerService.getEventInvites({
+      eventId,
+      role: inviteRole,
+      accept: accept,
+      take: take ? Number(take) : undefined,
+      skip: skip ? Number(skip) : undefined,
+    });
+
     return {
       status: 200,
-      body: response,
+      body: result.map((invite) => OrganizerAdapter.toEventInviteInfo(invite)),
+    };
+  },
+  getEventInvite: async ({ params: { eventId, inviteId } }) => {
+    const result = await OrganizerService.getEventInvite({ eventId, inviteId });
+
+    return {
+      status: 200,
+      body: OrganizerAdapter.toEventInviteInfo(result),
+    };
+  },
+  deleteEventInvite: async ({ params: { eventId }, body: { inviteIds } }) => {
+    const results = await OrganizerService.deleteEventInvite({
+      eventId,
+      inviteIds,
+    });
+
+    return {
+      status: 200,
+      body: results.map((result) => OrganizerAdapter.toEventInviteInfo(result)),
+    };
+  },
+  respondOrganizerInvite: async ({ params: { inviteId }, body: { accept } }) => {
+    const result = await OrganizerService.respondToInvite({
+      inviteId,
+      accept: accept ?? false,
+    });
+
+    return {
+      status: 200,
+      body: result,
+    };
+  },
+  getEventQuestions: async ({ params: { eventId } }) => {
+    const questions = await OrganizerService.getEventQuestions({ eventId });
+    return {
+      status: 200,
+      body: questions.map((questions) => OrganizerAdapter.toEventQuestionInfo(questions)),
+    };
+  },
+  getEventQuestion: async ({ params: { eventId, questionId } }) => {
+    const question = await OrganizerService.getEventQuestion({ eventId, questionId });
+
+    return {
+      status: 200,
+      body: OrganizerAdapter.toEventQuestionInfo(question),
+    };
+  },
+  createEventQuestions: async ({ params: { eventId }, body: { questions } }) => {
+    const createdQuestions = await OrganizerService.createEventQuestions({
+      eventId,
+      questions: questions.map((q) => ({
+        question: q.question,
+        type: q.type as QuestionType,
+        required: q.required,
+        options: q.options,
+      })),
+    });
+
+    return {
+      status: 201,
+      body: createdQuestions.map((q) => OrganizerAdapter.toEventQuestionInfo(q)),
+    };
+  },
+  updateEventQuestion: async ({ params: { eventId, questionId }, body: { question, type, required, options } }) => {
+    const updatedQuestion = await OrganizerService.updateEventQuestion({
+      eventId,
+      questionId,
+      question: question ?? '',
+      type: type as QuestionType,
+      required: required ?? false,
+      options,
+    });
+
+    return {
+      status: 200,
+      body: OrganizerAdapter.toEventQuestionInfo(updatedQuestion),
+    };
+  },
+  deleteEventQuestion: async ({ params: { eventId, questionId } }) => {
+    const deletedQuestion = await OrganizerService.deleteEventQuestion({
+      eventId,
+      questionId,
+    });
+
+    return {
+      status: 200,
+      body: OrganizerAdapter.toEventQuestionInfo(deletedQuestion),
+    };
+  },
+  deleteEventQuestions: async ({ params: { eventId }, body: { questionIds } }) => {
+    const deletedQuestions = await OrganizerService.deleteEventQuestions({
+      eventId,
+      questionIds,
+    });
+    return {
+      status: 200,
+      body: deletedQuestions.map((q) => OrganizerAdapter.toEventQuestionInfo(q)),
+    };
+  },
+  deleteAllEventQuestions: async ({ params: { eventId } }: { params: { eventId: string } }) => {
+    const deletedQuestions = await OrganizerService.deleteAllEventQuestions({ eventId });
+
+    return {
+      status: 200,
+      body: deletedQuestions.map((q) => OrganizerAdapter.toEventQuestionInfo(q)),
     };
   },
   getLeaderboard: async ({ params: { eventId } }) => {
@@ -103,10 +230,9 @@ export const OrganizerController: RouterImplementation<typeof contract.organizer
     };
   },
 
-  createLeaderboard: async ({ params: { eventId }, body: { name, uid, score } }) => {
+  createLeaderboard: async ({ params: { eventId }, body: { uid, score } }) => {
     const newEntry = await OrganizerService.createLeaderboard({
       eventId,
-      name,
       uid,
       score,
     });
@@ -117,12 +243,12 @@ export const OrganizerController: RouterImplementation<typeof contract.organizer
     };
   },
 
-  updateLeaderboard: async ({ params: { eventId, name }, body: { name: newName, score } }) => {
+  updateLeaderboard: async ({ params: { eventId, entryId }, body: { uid, score } }) => {
     const updatedEntry = await OrganizerService.updateLeaderboard({
       eventId,
-      name,
+      entryId,
       updates: {
-        name: newName,
+        uid,
         score,
       },
     });
@@ -133,12 +259,12 @@ export const OrganizerController: RouterImplementation<typeof contract.organizer
     };
   },
 
-  deleteLeaderboardEntry: async ({ params: { eventId, name } }) => {
-    await OrganizerService.deleteLeaderboardEntry({ eventId, name });
+  deleteLeaderboardEntry: async ({ params: { eventId, entryId } }) => {
+    const deletedEntry = await OrganizerService.deleteLeaderboardEntry({ eventId, entryId });
 
     return {
       status: 204,
-      body: null,
+      body: OrganizerAdapter.toLeaderboardEntry(deletedEntry),
     };
   },
 };
