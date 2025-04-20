@@ -4,7 +4,7 @@ import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import { FiPieChart } from 'react-icons/fi';
 import { GoPersonAdd } from 'react-icons/go';
-import { LuCalendarClock, LuCalendarPlus, LuUserRoundCog } from 'react-icons/lu';
+import { LuCalendarClock, LuUserRoundCog } from 'react-icons/lu';
 import { MdOutlineEventNote } from 'react-icons/md';
 import { MdNavigateNext } from 'react-icons/md';
 import { TbCalendarQuestion } from 'react-icons/tb';
@@ -13,9 +13,10 @@ interface IconButtonProps {
   icon: React.ElementType;
   title: string;
   link: string;
+  detail: string;
 }
 
-export function IconButton({ icon: Icon, title: name, link: href }: IconButtonProps) {
+export function IconButton({ icon: Icon, title: name, link: href, detail: detail }: IconButtonProps) {
   const pathName = usePathname();
 
   return (
@@ -26,7 +27,7 @@ export function IconButton({ icon: Icon, title: name, link: href }: IconButtonPr
         </div>
         <div className='flex flex-col self-center'>
           <h1 className='text-[1.25rem] font-bold'>{name}</h1>
-          <p className='text-[0.8rem]'>Details</p>
+          <p className='text-[0.8rem]'>{detail}</p>
         </div>
         <div className='my-12 ml-auto px-12'>
           <MdNavigateNext size={25} />
@@ -39,13 +40,12 @@ export function IconButton({ icon: Icon, title: name, link: href }: IconButtonPr
 export function IconButtonGroup() {
   const buttons = [
     //change element in icon button group here
-    { icon: MdOutlineEventNote, title: 'Event Details', link: 'details' },
-    { icon: FiPieChart, title: 'Dashboard', link: 'dashboard' },
-    { icon: LuUserRoundCog, title: 'Admin List', link: '' },
-    { icon: TbCalendarQuestion, title: 'Question Form', link: 'questions' },
-    { icon: LuCalendarClock, title: 'Reminder', link: 'reminder' },
-    { icon: LuCalendarPlus, title: 'Google Calendar', link: 'google-calendar' },
-    { icon: GoPersonAdd, title: 'Invite Attendees', link: 'invite' },
+    { icon: MdOutlineEventNote, title: 'Event Details', detail: 'Details of the event.', link: 'details' },
+    { icon: FiPieChart, title: 'Dashboard', detail: 'Participant chart', link: 'dashboard' },
+    { icon: GoPersonAdd, title: 'Invite Attendees', detail: 'Invite attendee', link: 'invite' },
+    { icon: TbCalendarQuestion, title: 'Question Form', detail: 'Edit the question form.', link: 'question' },
+    { icon: LuCalendarClock, title: 'Reminder', detail: 'Add a reminder to Google Calendar', link: 'reminder' },
+    { icon: LuUserRoundCog, title: 'Admin List', detail: 'Add admins to the event.', link: 'admin' },
   ];
   const [seeMore, setSeeMore] = useState(false);
   const initialDisplayed = 3;
@@ -58,20 +58,20 @@ export function IconButtonGroup() {
   return (
     <div className='flex h-full w-full flex-col items-center'>
       <div className='flex flex-col items-center gap-[16px]'>
-        {displayedButtons.map(({ icon, title, link }, index) => (
-          <IconButton icon={icon} key={index} link={link} title={title} />
+        {displayedButtons.map(({ icon, title, link, detail }, index) => (
+          <IconButton detail={detail} icon={icon} key={index} link={link} title={title} />
         ))}
       </div>
       {!seeMore ? (
         <button
-          className='rounded-24 border-orange-2 text-orange-2 mt-[16px] h-[56px] w-[345px] border-[3px] bg-white'
+          className='rounded-24 border-orange-2 text-orange-2 mt-[16px] h-[56px] w-full border-[3px] bg-white'
           onClick={handleSeeMore}
         >
           See more
         </button>
       ) : (
         <button
-          className='rounded-24 border-orange-2 text-orange-2 mt-[16px] h-[56px] w-[345px] border-[3px] bg-white'
+          className='rounded-24 border-orange-2 text-orange-2 mt-[16px] h-[56px] w-full border-[3px] bg-white'
           onClick={handleSeeMore}
         >
           Hide

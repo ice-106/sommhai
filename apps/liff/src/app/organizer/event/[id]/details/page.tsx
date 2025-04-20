@@ -7,7 +7,7 @@ import DetailForm from '@/components/organizer/event/detail/DetailForm';
 
 function DetailPage() {
   const params = useParams();
-  const id = params.id as string;
+  const id = params?.id as string;
   const [currentPage, setCurrentPage] = useState(0);
 
   useEffect(() => {
