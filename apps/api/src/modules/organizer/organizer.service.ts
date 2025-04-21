@@ -704,7 +704,6 @@ export const OrganizerService = {
       throw new InternalServerErrorException(error, 'Failed to get event leaderboard');
     }
   },
-
   createLeaderboard: async ({ eventId, uid, score = 0 }: CreateLeaderboardOptions) => {
     try {
       const event = await prisma.event.findUnique({
@@ -751,7 +750,6 @@ export const OrganizerService = {
       throw new InternalServerErrorException(error, 'Failed to create leaderboard entry');
     }
   },
-
   updateLeaderboard: async ({ eventId, entryId, updates }: UpdateLeaderboardOptions) => {
     try {
       const event = await prisma.event.findUnique({
@@ -802,7 +800,6 @@ export const OrganizerService = {
       throw new InternalServerErrorException(error, 'Failed to update leaderboard entry');
     }
   },
-
   deleteLeaderboardEntry: async ({ eventId }: DeleteLeaderboardEntryOptions) => {
     try {
       const event = await prisma.event.findUnique({

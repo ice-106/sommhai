@@ -83,7 +83,7 @@ model EventQuestion {
   id        String       @id @default(cuid())
   eventId   String
   question  String
-  type      QuestionType
+  type      QuestionType @default(SHORT_ANSWER)
   required  Boolean      @default(false)
   options   String[]
   createdAt DateTime     @default(now())
