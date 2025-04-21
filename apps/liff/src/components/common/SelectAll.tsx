@@ -23,7 +23,7 @@ function SelectAll() {
           className='bg-orange-3 border-orange-3 hover:bg-orange-3-hover text-black-pure mt-[16px] h-[56px] w-full rounded-3xl border-[3px] text-2xl font-medium'
           onClick={handleSelectAll}
         >
-          <CheckCircle2Icon className='text-orange-3 bg-white-bg !size-40 rounded-full' />
+          <CheckCircle2Icon className='text-orange-3 fill-white-bg !size-40 rounded-full' />
           <div className='w-full truncate'>Select All</div>
         </Button>
       )}

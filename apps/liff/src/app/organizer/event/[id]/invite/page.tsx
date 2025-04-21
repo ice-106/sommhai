@@ -4,6 +4,7 @@ import React from 'react';
 import { Suspense } from 'react';
 import { useEffect, useState } from 'react';
 
+import { ConfirmButton } from '@/components/common/confirmremove-button';
 import HeaderBurgur from '@/components/common/HeaderBurgur';
 import Loading from '@/components/common/loading';
 import SelectAll from '@/components/common/SelectAll';
@@ -76,6 +77,11 @@ function InvitePage() {
       </div>
       <div className='mx-24 flex h-[69%] w-full flex-col items-center gap-16 overflow-y-auto'>
         <AttendeeContainer />
+      </div>
+      <div className='bg-white-bg fixed bottom-0 left-0 right-0 z-10 flex h-[10%] w-full items-center justify-center'>
+        <ConfirmButton className='border-orange-3 bg-orange-3 text-black-pure hover:bg-orange-3-hover mx-5 h-[56px] w-[90%] rounded-3xl text-2xl font-medium'>
+          Confirm
+        </ConfirmButton>
       </div>
     </div>
   );
