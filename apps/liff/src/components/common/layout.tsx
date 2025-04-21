@@ -10,7 +10,7 @@ export default function AppLayout({
 }): React.JSX.Element {
   return (
     <main className='flex w-full justify-center'>
-      <div className={cn('relative min-h-dvh w-full max-w-md', className)}>{children}</div>
+      <div className={cn('max-w-dvw relative min-h-dvh w-full', className)}>{children}</div>
     </main>
   );
 }
