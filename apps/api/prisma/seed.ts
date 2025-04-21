@@ -2,7 +2,7 @@
 /* eslint-disable unused-imports/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { faker } from '@faker-js/faker/locale/en';
-import { PrismaClient } from '@prisma/client';
+import { InviteRole, PrismaClient, QuestionType } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -138,68 +138,6 @@ async function main() {
     });
   }
 
-  // // Create InvitationLetters
-  // const invitationLetters = await prisma.invitationLetter.createMany({
-  //   data: Array.from({ length: 5 }, () => ({
-  //     description: faker.lorem.paragraph(),
-  //   })),
-  // });
-
-  // // Fetch created invitation letters
-  // const invitationLetterList = await prisma.invitationLetter.findMany();
-
-  // // Create Receives
-  // for (const letter of invitationLetterList) {
-  //   const user = faker.helpers.arrayElement(userList) as (typeof userList)[0];
-  //   try {
-  //     await prisma.receive.create({
-  //       data: {
-  //         uid: user.uid,
-  //         letter_id: letter.letter_id,
-  //       },
-  //     });
-  //   } catch (error) {
-  //     console.log(`Receive already exists for user ${user.uid} and letter ${letter.letter_id}`);
-  //   }
-  // }
-
-  // // Create Preferences
-  // for (const letter of invitationLetterList) {
-  //   await prisma.preference.create({
-  //     data: {
-  //       preference_id: faker.string.alphanumeric(7),
-  //       letter_id: letter.letter_id,
-  //       notes: faker.lorem.sentence(),
-  //       seat: `Table ${faker.number.int({ min: 1, max: 20 })}`,
-  //       food: faker.helpers.arrayElement(['Vegetarian', 'Vegan', 'No restrictions', 'Gluten-free']),
-  //     },
-  //   });
-  // }
-
-  // // Create Questions
-  // for (const letter of invitationLetterList) {
-  //   await prisma.questions.create({
-  //     data: {
-  //       question_id: faker.string.uuid(),
-  //       letter_id: letter.letter_id,
-  //       question: faker.lorem.sentence() + '?',
-  //       answer: faker.datatype.boolean() ? faker.lorem.sentence() : null,
-  //     },
-  //   });
-  // }
-
-  // Create Leaderboards
-  for (const event of eventList) {
-    await prisma.leaderboard.create({
-      data: {
-        name: faker.lorem.words(2),
-        uid: (faker.helpers.arrayElement(userList) as (typeof userList)[0]).uid,
-        eid: event.eid,
-        score: faker.number.int({ min: 0, max: 1000 }),
-      },
-    });
-  }
-
   // Create Creates
   for (const event of eventList) {
     const user = faker.helpers.arrayElement(userList) as (typeof userList)[0];
@@ -215,76 +153,158 @@ async function main() {
     }
   }
 
-  // Create Organizer Invitations
-  console.log('Creating organizer invitations...');
+  // Create Invites
+  console.log('Creating invites...');
   for (const event of eventList) {
-    // Find users who are already attendees but not organizers
+    // Find users who are not already attendees
+    const existingAttendees = await prisma.attendee.findMany({
+      where: { eid: event.eid },
+      select: { uid: true },
+    });
+
+    const existingAttendeeIds = existingAttendees.map((a) => a.uid);
+    const eligibleUsers = userList.filter((user) => !existingAttendeeIds.includes(user.uid));
+
+    // Create attendee invites
+    const usersToInvite = eligibleUsers.slice(0, 2);
+    for (const user of usersToInvite) {
+      try {
+        await prisma.invite.create({
+          data: {
+            eventId: event.eid,
+            userId: user.uid,
+            role: InviteRole.ATTENDEE,
+            accept: null, // pending
+          },
+        });
+        console.log(`Created attendee invitation for user ${user.uid} to event ${event.eid}`);
+      } catch (error) {
+        console.log(`Error creating attendee invitation for user ${user.uid} to event ${event.eid}:`, error);
+      }
+    }
+
+    // Find users who are not already organizers but are attendees
     const existingOrganizers = await prisma.organizer.findMany({
       where: { eid: event.eid },
       select: { uid: true },
     });
 
     const existingOrganizerIds = existingOrganizers.map((o) => o.uid);
+    const eligibleAttendees = existingAttendees.filter((a) => !existingOrganizerIds.includes(a.uid));
 
+    // Create organizer invites
+    const attendeesToPromote = eligibleAttendees.slice(0, 2);
+    for (const attendee of attendeesToPromote) {
+      try {
+        await prisma.invite.create({
+          data: {
+            eventId: event.eid,
+            userId: attendee.uid,
+            role: InviteRole.ORGANIZER,
+            accept: null, // pending
+          },
+        });
+        console.log(`Created organizer invitation for user ${attendee.uid} to event ${event.eid}`);
+      } catch (error) {
+        console.log(`Error creating organizer invitation for user ${attendee.uid} to event ${event.eid}:`, error);
+      }
+    }
+  }
+
+  // Create Event Questions
+  console.log('Creating event questions...');
+  for (const event of eventList) {
+    const questionTypes = [QuestionType.SHORT_ANSWER, QuestionType.MULTIPLE_CHOICE, QuestionType.CHECKBOX];
+
+    for (let i = 0; i < 3; i++) {
+      const questionType = questionTypes[i % questionTypes.length];
+      let options: string[] = [];
+
+      if (questionType !== QuestionType.SHORT_ANSWER) {
+        options = Array.from({ length: 4 }, () => faker.lorem.word());
+      }
+
+      try {
+        await prisma.eventQuestion.create({
+          data: {
+            eventId: event.eid,
+            question: faker.lorem.sentence() + '?',
+            type: questionType,
+            required: faker.datatype.boolean(),
+            options: options,
+          },
+        });
+      } catch (error) {
+        console.log(`Error creating question for event ${event.eid}:`, error);
+      }
+    }
+  }
+
+  // Create Question Responses
+  console.log('Creating question responses...');
+  const questions = await prisma.eventQuestion.findMany();
+
+  for (const question of questions) {
+    // Get a random set of users to answer the question
+    const respondents = faker.helpers.arrayElements(userList, faker.number.int({ min: 1, max: 3 }));
+
+    for (const user of respondents) {
+      try {
+        let answer: string | null = null;
+
+        switch (question.type) {
+          case QuestionType.SHORT_ANSWER:
+            answer = faker.lorem.sentence();
+            break;
+          case QuestionType.MULTIPLE_CHOICE:
+            answer = question.options.length > 0 ? faker.helpers.arrayElement(question.options) : null;
+            break;
+          case QuestionType.CHECKBOX:
+            answer =
+              question.options.length > 0
+                ? faker.helpers
+                    .arrayElements(question.options, faker.number.int({ min: 1, max: question.options.length }))
+                    .join(',')
+                : null;
+            break;
+        }
+
+        await prisma.questionResponse.create({
+          data: {
+            questionId: question.id,
+            userId: user.uid,
+            answer,
+          },
+        });
+      } catch (error) {
+        console.log(`Error creating response for question ${question.id} by user ${user.uid}:`, error);
+      }
+    }
+  }
+
+  // Create Leaderboards
+  console.log('Creating leaderboards...');
+  for (const event of eventList) {
+    // Create leaderboard entries for a few random attendees
     const attendees = await prisma.attendee.findMany({
       where: { eid: event.eid },
       select: { uid: true },
     });
 
-    const eligibleAttendees = attendees.filter((a) => !existingOrganizerIds.includes(a.uid));
-
-    //   // Better approach: Process only the first 2 eligible attendees using slice
-    //   // This ensures we never try to access an element beyond the array length
-    //   const attendeesToInvite = eligibleAttendees.slice(0, 2);
-
-    //   for (const attendeeToInvite of attendeesToInvite) {
-    //     try {
-    //       await prisma.organizerInvitation.create({
-    //         data: {
-    //           eid: event.eid,
-    //           uid: attendeeToInvite.uid,
-    //           accept: null, // pending
-    //         },
-    //       });
-    //       console.log(`Created organizer invitation for user ${attendeeToInvite.uid} to event ${event.eid}`);
-    //     } catch (error) {
-    //       console.log(`Error creating organizer invitation for user ${attendeeToInvite.uid} to event ${event.eid}`);
-    //     }
-    //   }
-    // }
-
-    // // Create Attendee Invitations
-    // console.log('Creating attendee invitations...');
-    // for (const event of eventList) {
-    //   // Get an invitation letter to connect (optional)
-    //   const invitationLetter = await prisma.invitationLetter.findFirst();
-
-    //   const existingAttendees = await prisma.attendee.findMany({
-    //     where: { eid: event.eid },
-    //     select: { uid: true },
-    //   });
-
-    //   const existingAttendeeIds = existingAttendees.map((a) => a.uid);
-    //   const eligibleUsers = userList.filter((user) => !existingAttendeeIds.includes(user.uid));
-
-    //   const usersToInvite = eligibleUsers.slice(0, 2);
-
-    //   for (const userToInvite of usersToInvite) {
-    //     try {
-    //       // Create attendee invitation with optional letter reference
-    //       await prisma.attendeeInvitation.create({
-    //         data: {
-    //           eid: event.eid,
-    //           uid: userToInvite.uid,
-    //           accept: null,
-    //           letter_id: invitationLetter?.letter_id, // Optional connection
-    //         },
-    //       });
-    //       console.log(`Created attendee invitation for user ${userToInvite.uid} to event ${event.eid}`);
-    //     } catch (error) {
-    //       console.log(`Error creating attendee invitation for user ${userToInvite.uid} to event ${event.eid}:`, error);
-    //     }
-    //   }
+    for (const attendee of attendees.slice(0, 3)) {
+      try {
+        await prisma.leaderboard.create({
+          data: {
+            name: faker.lorem.words(2),
+            uid: attendee.uid,
+            eid: event.eid,
+            score: faker.number.int({ min: 0, max: 1000 }),
+          },
+        });
+      } catch (error) {
+        console.log(`Error creating leaderboard entry for user ${attendee.uid} in event ${event.eid}:`, error);
+      }
+    }
   }
 
   console.log('Seeding completed.');

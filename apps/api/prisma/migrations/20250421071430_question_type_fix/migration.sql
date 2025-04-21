@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "EventQuestion" ALTER COLUMN "type" SET DEFAULT 'SHORT_ANSWER';
