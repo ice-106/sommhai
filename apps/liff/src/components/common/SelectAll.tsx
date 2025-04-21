@@ -1,4 +1,6 @@
 'use client';
+import { Button } from '@sommhai/ui/components/ui/button';
+import { CheckCircle2Icon, Circle } from 'lucide-react';
 import { useState } from 'react';
 
 function SelectAll() {
@@ -9,19 +11,21 @@ function SelectAll() {
   return (
     <div className='flex w-full flex-col items-center justify-center'>
       {!isSelected ? (
-        <button
-          className='rounded-24 border-orange-3 hover:bg-orange-3-hover text-black-pure poppins mt-[16px] h-[56px] w-full border-[3px] bg-white text-2xl font-medium'
+        <Button
+          className='border-orange-3 hover:bg-orange-3-hover text-black-pure bg-white-bg mt-[16px] h-[56px] w-full rounded-3xl border-[3px] text-left text-2xl font-medium'
           onClick={handleSelectAll}
         >
+          <Circle className='text-orange-3 !size-40' />
           Select All
-        </button>
+        </Button>
       ) : (
-        <button
-          className='rounded-24 bg-orange-3 border-orange-3 hover:bg-orange-3-hover text-black-pure poppins mt-[16px] h-[56px] w-full border-[3px] text-2xl font-medium'
+        <Button
+          className='bg-orange-3 border-orange-3 hover:bg-orange-3-hover text-black-pure mt-[16px] h-[56px] w-full rounded-3xl border-[3px] text-2xl font-medium'
           onClick={handleSelectAll}
         >
+          <CheckCircle2Icon className='text-orange-3 bg-white-bg !size-40 rounded-full' />
           Select All
-        </button>
+        </Button>
       )}
     </div>
   );
