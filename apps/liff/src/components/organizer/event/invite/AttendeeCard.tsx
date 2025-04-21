@@ -1,5 +1,6 @@
 'use client';
 
+import { Checkbox } from '@sommhai/ui/components/ui/checkbox';
 import React from 'react';
 
 interface AttendeeCardProp {
@@ -8,9 +9,10 @@ interface AttendeeCardProp {
 
 function AttendeeCard({ name: name }: AttendeeCardProp) {
   return (
-    <div className='bg-white-bg flex w-[345px] flex-col justify-between gap-4 rounded-[25px] p-16 shadow-lg'>
-      <div className='flex justify-between'>
-        <h1 className='text-bold-20 truncate'>{name}</h1>
+    <div className='bg-white-bg flex w-full flex-col justify-center rounded-[25px] p-16 shadow-lg'>
+      <div className='flex items-center justify-center'>
+        <Checkbox className='border-orange-3 data-[state=checked]:bg-orange-3 data-[state:checked]:text-white-pure size-40 rounded-full border-[2px]' />
+        <div className='text-bold-20 w-full truncate text-center'>{name}</div>
       </div>
     </div>
   );
