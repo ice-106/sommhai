@@ -3,3 +3,32 @@ export * from './libs/event';
 export * from './libs/organizer';
 export * from './libs/post';
 export * from './libs/user';
+
+export interface Events {
+  eid: string;
+  name: string;
+  date: Date;
+  time: Date;
+  picture: string[];
+  location: string;
+  description: string | null;
+  invite_list: number;
+  memory: string | null;
+  host: string;
+  host_uid: string;
+  attendees: Attendee[];
+  attendings: Attendee[];
+  organizers: Organizer[];
+  status: string;
+}
+
+export interface Attendee {
+  uid: string;
+  name: string;
+  eid: string;
+}
+export interface Organizer {
+  uid: string;
+  name: string;
+  eid: string;
+}
