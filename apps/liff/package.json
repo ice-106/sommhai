@@ -11,6 +11,7 @@
   "dependencies": {
     "@hookform/resolvers": "^5.0.1",
     "@line/liff": "2.25.1",
+    "@radix-ui/react-slot": "^1.1.2",
     "@react-oauth/google": "^0.12.1",
     "@sommhai/api-contract": "workspace:*",
     "@sommhai/eslint-config": "workspace:*",
