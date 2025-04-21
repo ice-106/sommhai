@@ -3,8 +3,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
 
-import { ConfirmButton } from '@/components/common/confirmremove-button';
-
 function LandingPage() {
   return (
     <div className='flex h-dvh w-full flex-col'>
