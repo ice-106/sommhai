@@ -29,6 +29,12 @@ jobs:
             CORS_ORIGIN=$(grep -oP '(?<=CORS_ORIGIN=).*' /app/deployment/development/.env)
             CORS_ORIGIN=$(echo $CORS_ORIGIN | sed "s|https://preview-pr${{ github.event.number }}.sommhai-dev.p-def.xyz||g" | sed 's/,,/,/g' | sed 's/,$//')
             sed -i "s|CORS_ORIGIN=.*|CORS_ORIGIN=${CORS_ORIGIN}|" /app/deployment/development/.env
+
+            # Remove deploy preview domain from NEXTAUTH_URL
+            NEXTAUTH_URL=$(grep -oP '(?<=NEXTAUTH_URL=).*' /app/deployment/development/.env)
+            NEXTAUTH_URL=$(echo $NEXTAUTH_URL | sed "s|https://preview-pr${{ github.event.number }}.sommhai-dev.p-def.xyz||g" | sed 's/,,/,/g' | sed 's/,$//')
+            sed -i "s|NEXTAUTH_URL=.*|NEXTAUTH_URL=${NEXTAUTH_URL}|" /app/deployment/development/.env
+
             docker compose -f /app/deployment/development/docker-compose.api.yaml up -d
 
             docker rm -f preview-liff-pr${{ github.event.number }}

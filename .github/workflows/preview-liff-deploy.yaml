@@ -59,6 +59,12 @@ jobs:
             CORS_ORIGIN=$(grep -oP '(?<=CORS_ORIGIN=).*' /app/deployment/development/.env)
             CORS_ORIGIN="${CORS_ORIGIN},https://preview-pr${{ github.event.number }}.sommhai-dev.p-def.xyz"
             sed -i "s|CORS_ORIGIN=.*|CORS_ORIGIN=${CORS_ORIGIN}|" /app/deployment/development/.env
+
+            # Add deploy preview domain to NEXTAUTH_URL
+            NEXTAUTH_URL=$(grep -oP '(?<=NEXTAUTH_URL=).*' /app/deployment/development/.env)
+            NEXTAUTH_URL="${NEXTAUTH_URL},https://preview-pr${{ github.event.number }}.sommhai-dev.p-def.xyz"
+            sed -i "s|NEXTAUTH_URL=.*|NEXTAUTH_URL=${NEXTAUTH_URL}|" /app/deployment/development/.env
+
             docker compose -f /app/deployment/development/docker-compose.api.yaml up -d
 
             echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
