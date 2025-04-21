@@ -57,43 +57,43 @@ function CreateEventForm() {
   }
 
   return (
-    <div className='bg-orange-4 flex h-full w-full flex-col items-center justify-between bg-[url(/create-bg.svg)] bg-cover py-[24px]'>
-      <div className='flex w-full justify-between gap-[4px] px-16'>
+    <div className='bg-orange-4 flex h-full w-full flex-col items-center justify-between bg-[url(/create-bg.svg)] bg-cover'>
+      <div className='flex w-full justify-between gap-[2vw] px-16 pt-16'>
         <div className='w-full rounded-[24px] bg-gray-50 px-20'></div>
-        {step === 1 && <div className='h-[8px] w-full rounded-[24px] bg-gray-300'></div>}
-        {step === 2 && <div className='h-[8px] w-full rounded-[24px] bg-gray-50'></div>}
+        {step === 1 && <div className='h-4 w-full rounded-[24px] bg-gray-300'></div>}
+        {step === 2 && <div className='h-4 w-full rounded-[24px] bg-gray-50'></div>}
       </div>
-      <div className='px-16'>
+      <div className='flex max-h-[85vh] w-full justify-center px-16'>
         {step === 1 && (
           <form
-            className='bg-white-bg rounded-12 flex h-[155px] w-full flex-col justify-between px-24 py-[24px]'
+            className='bg-white-bg rounded-12 flex h-full min-h-[50vh] flex-col justify-start px-24'
             id='Create-event-form'
             onSubmit={handleSubmit(onSubmit)}
           >
-            <h2 className='text-medium-24 text-center font-semibold'>What is your event called?</h2>
+            <h2 className='text-medium-24 w-full pt-[10vh] text-center font-semibold'>What is your event called?</h2>
             <input
               {...register('eventName')}
-              className='border-gray-300focus:border-blue-500 border-b-2 focus:outline-none'
-              placeholder='Event name'
+              className='border-gray-300focus:border-blue-500 px[vw] mt-[5vh] h-[5vh] border-b-2 focus:outline-none'
+              placeholder=' Event name'
               type='text'
             />
             {errors.eventName && <p className='text-sm text-red-500'>{errors.eventName.message}</p>}
           </form>
         )}
         {step === 2 && (
-          <div className='bg-white-bg rounded-12 flex h-[532px] w-[328px] flex-col items-center justify-between px-[24px] py-[24px] text-center'>
-            <div className='flex h-[180px] max-w-[100%] flex-col justify-between overflow-hidden'>
-              <h2 className='text-medium-20 font-semibold'>
+          <div className='bg-white-bg rounded-12 mx-[2vw] my-[8vh] flex max-h-full min-h-[50vh] w-full flex-col items-center justify-between text-center'>
+            <div className='flex min-h-[30vh] w-full flex-col items-center justify-between overflow-hidden'>
+              <h2 className='text-medium w-full pt-[3vh] text-[6vw] font-semibold'>
                 {eventName} <br />
                 is created!
               </h2>
-              <p className='text-medium-20 font-semibol'>
+              <p className='text-medium font-semibol h-full w-full text-wrap px-[12vw] pt-[2vh] text-[4vw]'>
                 Click on your new event to manage and customize your event invitation.
               </p>
             </div>
             <Image
               alt={'sommhai-logo'}
-              className='h-[30vh] w-[60vw] pb-8'
+              className='mb-12 max-h-full w-full max-w-[70vw] overflow-hidden'
               height='200'
               src={'/create-finsih.png'}
               width='200'
@@ -101,7 +101,7 @@ function CreateEventForm() {
           </div>
         )}
       </div>
-      <div>
+      <div className='pb-16'>
         {step === 1 && (
           <button
             className='rounded-24 border-orange-2 bg-white-pure text-medium-24 text-orange-2 h-[55px] w-[345px] border-[3px]'
@@ -113,10 +113,10 @@ function CreateEventForm() {
         )}
         {step === 2 && (
           <button
-            className='rounded-24 border-orange-2 bg-white-pure text-medium-24 text-orange-2 h-[55px] w-[345px] border-[3px]'
+            className='rounded-24 border-orange-2 bg-white-pure text-medium-24 text-orange-2 h-[5vh] w-[80vw] border-[3px]'
             onClick={onReturn}
           >
-            <span className='relative top-[-3px]'>Return</span>
+            <span className='relative text-xl'>Return</span>
           </button>
         )}
       </div>
