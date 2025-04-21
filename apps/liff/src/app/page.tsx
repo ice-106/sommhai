@@ -23,7 +23,7 @@ function LandingPage() {
         <h1 className='pb-44 pt-56 text-4xl font-bold text-white'>Sommhai!</h1>
         <Image alt={'sommhai-logo'} height='200' src={'/logo-sommhai.svg'} width='200' />
       </div>
-      <div className='mt-auto flex h-screen flex-col items-center justify-end pb-[14vw]'>
+      <div className='mt-auto flex h-screen flex-col items-center justify-end pb-[6vw]'>
         <div className='flex-col items-center justify-end'>
           <p className='text-center text-[7vw] font-bold leading-9 text-black'>Welcome</p>
           <p className='text-center text-lg font-medium leading-relaxed text-black'>Select your role</p>
