@@ -4,7 +4,7 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import React from 'react';
 
 const buttonVarients = cva(
-  'relative inline-flex h-14 w-fit items-center justify-center rounded-3xl p-16 text-medium-24 font-medium font-poppins transition-colors',
+  'relative inline-flex h-14 w-full items-center justify-center rounded-3xl p-16 text-medium-24 font-medium font-poppins transition-colors',
   {
     variants: {
       variant: {
