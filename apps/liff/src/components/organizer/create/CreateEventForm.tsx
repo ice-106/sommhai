@@ -8,7 +8,7 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import Loading from '@/components/common/loading';
-import { SERVER_URL } from '@/env';
+import { API_BASE_URL } from '@/env';
 
 const createEventSchema = z.object({
   eventName: z.string().min(1, 'Name is required'),
@@ -29,7 +29,7 @@ function CreateEventForm() {
   });
 
   function createEvent(name: string) {
-    const res = fetch(`${SERVER_URL}/org/events`, {
+    const res = fetch(`${API_BASE_URL}/org/events`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
