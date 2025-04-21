@@ -3,6 +3,8 @@ services:
     container_name: sommhai-liff-dev
     image: ghcr.io/ice-106/sommhai-liff:dev
     restart: always
+    env_file:
+      - .env
     environment:
       - PORT=5000
     labels:
