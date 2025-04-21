@@ -1,8 +1,6 @@
-/* eslint-disable unused-imports/no-unused-vars */
 import { contract } from '@sommhai/api-contract';
 import { RouterImplementation } from '@ts-rest/express/src/lib/types';
 
-import { InternalServerErrorException } from '../../common/exception/http';
 import { AttendeeAdapter } from './attendee.adapter';
 import { AttendeeService } from './attendee.service';
 
@@ -31,8 +29,14 @@ export const AttendeeController: RouterImplementation<typeof contract.attendee> 
     };
   },
   respondAttendeeInvite: async ({ params: { inviteId }, body: { accept } }) => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const response = await AttendeeService.respondToInvite({ inviteId, accept });
-    throw new InternalServerErrorException('Not implemented');
+    const result = await AttendeeService.respondToInvite({
+      inviteId,
+      accept: accept ?? false,
+    });
+
+    return {
+      status: 200,
+      body: result,
+    };
   },
 };
