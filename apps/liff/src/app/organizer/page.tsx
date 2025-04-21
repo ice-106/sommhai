@@ -21,7 +21,7 @@ const SearchContainer = () => {
 import { Events } from '@sommhai/shared-type/src';
 
 import EventCard from '@/components/organizer/EventCard';
-import { SERVER_URL } from '@/env';
+import { API_BASE_URL } from '@/env';
 
 const EventContainer = () => {
   const [events, setEvents] = useState<Events[]>([]);
@@ -29,7 +29,7 @@ const EventContainer = () => {
   useEffect(() => {
     function fetchEvents() {
       try {
-        const res = fetch(`${SERVER_URL}/org/events`, {
+        const res = fetch(`${API_BASE_URL}/org/events`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
