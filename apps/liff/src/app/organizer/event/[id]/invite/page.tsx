@@ -1,4 +1,5 @@
 'use client';
+import { useParams } from 'next/navigation';
 import React from 'react';
 import { Suspense } from 'react';
 import { useEffect, useState } from 'react';
@@ -17,18 +18,20 @@ const SearchContainer = () => {
   );
 };
 
-import { Events } from '@sommhai/shared-type/src';
+import { Attendee } from '@sommhai/shared-type/src';
 
-import EventCard from '@/components/organizer/EventCard';
+import AttendeeCard from '@/components/organizer/event/invite/AttendeeCard';
 import { API_BASE_URL } from '@/env';
 
 const AttendeeContainer = () => {
-  const [events, setEvents] = useState<Events[]>([]);
+  const [Attendee, setAttendee] = useState<Attendee[]>([]);
   const [loading, setLoading] = useState(true);
+  const params = useParams();
+  const id = params?.id as string;
   useEffect(() => {
     function fetchEvents() {
       try {
-        const res = fetch(`${API_BASE_URL}/org/events`, {
+        const res = fetch(`${API_BASE_URL}/org/events/${id}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -37,7 +40,8 @@ const AttendeeContainer = () => {
           .then((res) => res.json())
           .then((data) => {
             console.log(data);
-            setEvents(data);
+            console.log(data.attendees);
+            setAttendee(data.attendees);
             setLoading(false);
           });
       } catch (error) {
@@ -53,8 +57,8 @@ const AttendeeContainer = () => {
   }
   return (
     <>
-      {events.map((event) => (
-        <EventCard key={event.eid} link={event.eid} name={event.name} />
+      {Attendee.map((attendee) => (
+        <AttendeeCard key={attendee.uid} name={attendee.uid} />
       ))}
     </>
   );
