@@ -1,33 +1,3 @@
-// import HeaderBurgur from '@/components/common/HeaderBurgur';
-
-// function Profile() {
-//   return (
-//     <div className='flex h-screen w-screen flex-col'>
-//       <div className='bg-orange-4 relative h-72 w-full'>
-//         <HeaderBurgur name='Profile' />
-//       </div>
-//       <div className='flex h-full w-full items-center justify-center'>
-//         <div className='relative inline-flex flex-col items-center justify-start gap-2.5 px-6 py-3'>
-//           <div className='bg-black-pure absolute left-0 top-0 h-12 w-80 rounded-3xl' />
-//           <div className="text-Color-black-pure flex-1 justify-center font-['Poppins'] text-lg font-medium leading-relaxed">
-//             Line Name: Organizer A
-//           </div>
-//           <div className='bg-black-pure absolute left-0 top-0 h-12 w-80 rounded-3xl' />
-//           <div className="text-Color-black-pure flex-1 justify-center font-['Poppins'] text-lg font-medium leading-relaxed">
-//             Mobile Number: XXX-XXX-XXXX
-//           </div>
-//           <div className='bg-black-pure absolute left-0 top-0 h-12 w-80 rounded-3xl' />
-//           <div className="text-Color-black-pure flex-1 justify-center font-['Poppins'] text-lg font-medium leading-relaxed">
-//             Email: email@gmail.com
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
-
-// export default Profile;
-
 'use client';
 import { User } from 'lucide-react';
 import React from 'react';
