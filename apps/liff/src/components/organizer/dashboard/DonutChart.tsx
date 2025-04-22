@@ -22,9 +22,9 @@ const chartConfig = {
 
 export function DonutChart() {
   return (
-    <ChartContainer className='min-h-[64px] w-full' config={chartConfig}>
-      <PieChart>
-        <Pie data={chartData} dataKey='value' innerRadius={24} nameKey='data' outerRadius={31} strokeWidth={5}>
+    <ChartContainer className='min-h-full' config={chartConfig}>
+      <PieChart className='h-full w-full'>
+        <Pie data={chartData} dataKey='value' innerRadius={44} nameKey='data' outerRadius={72} strokeWidth={5}>
           <Label
             content={({ viewBox }) => {
               if (viewBox && 'cx' in viewBox && 'cy' in viewBox) {
