@@ -2,19 +2,26 @@
 import { Events } from '@sommhai/shared-type/src';
 import { Circle, User } from 'lucide-react';
 import { useParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useContext, useEffect, useState } from 'react';
 
 import DetailForm from '@/components/attendee/Detail';
 import Message from '@/components/attendee/Message';
 import { AcceptButton } from '@/components/common/acceptdeny-button';
 import AddtoCalendar from '@/components/common/AddtoCalendar-Button';
 import HeaderBurgur from '@/components/common/HeaderBurgur';
+import { LiffContext } from '@/contexts/global/liff';
 import { API_BASE_URL } from '@/env';
 
 export default function AtdEventPage() {
+  const router = useRouter();
   const params = useParams();
   const id = params?.id as string;
+  const { userId } = useContext(LiffContext);
   const [event, setEvent] = useState<Events | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [inv, setInv] = useState('');
+  const [accepted, setAccepted] = useState(false);
   useEffect(() => {
     console.log(event);
     fetch(`${API_BASE_URL}/org/events/${id}`, {
@@ -32,6 +39,35 @@ export default function AtdEventPage() {
         setEvent(eventData as Events);
       });
   }, [id]);
+  useEffect(() => {
+    const handleAccept = () => {
+      if (accepted == true) setLoading(true);
+      fetch(`${API_BASE_URL}/org/events/${id}/inv`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          uids: [userId],
+        }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data.invites[0].inviteId);
+          setInv(data.invites[0].inviteId);
+          setLoading(false);
+        });
+    };
+    if (inv !== '') {
+      console.log('inv', inv);
+
+      if (loading == false && accepted == true) {
+        router.push(`/attendee/event/${id}/${inv}/questions`);
+      }
+    }
+    handleAccept();
+  }, [userId, accepted, id]);
+
   return (
     <div className='flex h-screen w-screen flex-col'>
       <HeaderBurgur name={'Events'} />
@@ -52,7 +88,13 @@ export default function AtdEventPage() {
           <AddtoCalendar />
         </div>
         <div className='mt-[-15px] flex h-[100px] w-full items-center justify-center gap-[29px]'>
-          <AcceptButton className='h-[64px] w-[155px]' variant={'Accept'}>
+          <AcceptButton
+            className='h-[64px] w-[155px]'
+            variant={'Accept'}
+            onClick={() => {
+              setAccepted(true);
+            }}
+          >
             Accept
           </AcceptButton>
           <AcceptButton className='h-[64px] w-[155px]' variant={'Deny'}>
