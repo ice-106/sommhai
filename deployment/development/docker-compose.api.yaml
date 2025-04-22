@@ -9,7 +9,8 @@ services:
       - .env
     labels:
       - traefik.enable=true
-      - traefik.http.routers.sommhai-api-dev.rule=Host(`api.sommhai-dev.p-def.xyz`)
+      - traefik.http.middlewares.stripprefix-api.stripprefix.prefixes=/api
+      - traefik.http.routers.sommhai-api-dev.rule=Host(`api.sommhai-dev.p-def.xyz`) || (Host(`sommhai-dev.p-def.xyz`) && PathPrefix(`/api`))
       - traefik.http.routers.sommhai-api-dev.middlewares=stripprefix-api@docker
       - traefik.http.routers.sommhai-api-dev.tls=true
       - traefik.http.routers.sommhai-api-dev.tls.certresolver=letsencrypt
