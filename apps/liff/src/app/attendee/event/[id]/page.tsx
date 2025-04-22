@@ -1,6 +1,7 @@
 'use client';
 import { Events } from '@sommhai/shared-type/src';
 import { Circle, User } from 'lucide-react';
+import Image from 'next/image';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
@@ -61,15 +62,23 @@ export default function AtdEventPage() {
         </div>
         <div className='flex flex-col items-center justify-center gap-24'>
           <AtdMessage />
-          <div className='flex w-full items-center justify-center gap-16'>
-            <Circle className='text-grey-light fill-grey-light'>
-              <User className='text-black-pure !size-40' />
+          <div className='mt-[-15px] flex w-full items-center justify-center gap-16'>
+            <Circle className='text-grey-light bg-grey-light border-grey-light !size-36 rounded-full border-[3px]'>
+              <User className='text-black-pure' />
             </Circle>
             <h1 className='text-bold-20'>Organizer A</h1>
           </div>
         </div>
         <div className='flex h-[122px] w-[292px] flex-col items-center justify-center'>
           <AddtoCalendar />
+        </div>
+        <div className='mt-[-15px] flex h-[100px] w-full items-center justify-center gap-[29px]'>
+          <AcceptButton className='h-[64px] w-[155px]' variant={'Accept'}>
+            Accept
+          </AcceptButton>
+          <AcceptButton className='h-[64px] w-[155px]' variant={'Deny'}>
+            Deny
+          </AcceptButton>
         </div>
       </div>
     </div>
