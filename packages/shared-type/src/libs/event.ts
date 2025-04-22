@@ -9,9 +9,9 @@ export const eventBaseInfo = z.object({
   date: z.date(),
   time: z.date(),
   picture: z.array(z.string()),
-  location: z.string(),
+  location: z.string().nullable(),
   description: z.string().nullable(),
-  invite_list: z.number(),
+  invite_list: z.number().nullable(),
   memory: z.string().nullable(),
   host: z.string(),
   host_uid: z.string(),
@@ -19,6 +19,7 @@ export const eventBaseInfo = z.object({
   attendings: z.array(attendee),
   organizers: z.array(organizer),
   status: z.string(),
+  message: z.string().nullable(),
 });
 
 export const eventInviteBaseInfo = z.object({

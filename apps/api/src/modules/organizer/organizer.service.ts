@@ -125,14 +125,15 @@ export const OrganizerService = {
           name,
           date: new Date(),
           time: new Date(),
-          location: '',
-          description: '',
+          location: null,
+          description: null,
           invite_list: 0,
-          memory: '',
+          memory: null,
           picture: [],
           host: user.username,
           host_uid: user.uid,
           status: 'Upcoming',
+          message: null,
           attendees: {
             create: [
               {

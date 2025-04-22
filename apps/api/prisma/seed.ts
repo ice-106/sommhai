@@ -38,6 +38,7 @@ async function main() {
       host_uid: user.uid,
       picture: [faker.image.urlPicsumPhotos()],
       status: faker.helpers.arrayElement(['Upcoming', 'Ongoing', 'Completed']),
+      message: faker.lorem.sentence(),
     })),
   });
 
