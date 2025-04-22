@@ -1,0 +1,383 @@
+// 'use client';
+
+// import { useParams } from 'next/navigation';
+// import React from 'react';
+
+// import Loading from '@/components/common/loading';
+// import AttendeeQuestionnaire from '@/components/common/questions';
+
+// export default function QuestionFormPage() {
+//   const params = useParams();
+//   const eventId = params?.eventId as string;
+//   const [loading, setLoading] = React.useState(true);
+//   const [eventData, setEventData] = React.useState<{
+//     eventId: string;
+//     eventName: string;
+//     questions: Array<{
+//       id: string;
+//       text: string;
+//       type: 'text' | 'radio' | 'checkbox';
+//       options?: string[];
+//       required: boolean;
+//     }>;
+//   } | null>(null);
+
+//   React.useEffect(() => {
+//     // In a real app, you would fetch this data from your API
+//     // Example: fetch(`/api/events/${eventId}/questions`)
+
+//     // For demo purposes, we'll use dummy data
+//     setTimeout(() => {
+//       setEventData({
+//         eventId: eventId || 'event123',
+//         eventName: 'Birthday Party',
+//         questions: [
+//           {
+//             id: 'name',
+//             text: "What's your full name?",
+//             type: 'text',
+//             required: true,
+//           },
+//           {
+//             id: 'attending',
+//             text: 'Will you be attending?',
+//             type: 'radio',
+//             options: ["Yes, I'll be there!", "No, I can't make it", "Maybe, I'll let you know later"],
+//             required: true,
+//           },
+//           {
+//             id: 'food',
+//             text: 'What food options would you prefer?',
+//             type: 'checkbox',
+//             options: ['Pizza', 'Burgers', 'Salad', 'Desserts'],
+//             required: true,
+//           },
+//         ],
+//       });
+//       setLoading(false);
+//     }, 1000); // Simulate loading time
+//   }, [eventId]);
+
+//   if (loading) {
+//     return <Loading />;
+//   }
+
+//   if (!eventData) {
+//     return <div>Event not found</div>;
+//   }
+
+//   return (
+//     <AttendeeQuestionnaire
+//       eventId={eventData.eventId}
+//       eventName={eventData.eventName}
+//       questions={eventData.questions}
+//     />
+//   );
+// }
+'use client';
+
+import Image from 'next/image';
+import { useParams, useRouter } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
+
+import Loading from '@/components/common/loading';
+
+// Define question types
+type QuestionType = 'text' | 'radio' | 'checkbox';
+
+// Question interface
+interface Question {
+  id: string;
+  text: string;
+  type: QuestionType;
+  options?: string[];
+  required: boolean;
+}
+
+interface EventData {
+  eventId: string;
+  eventName: string;
+  questions: Question[];
+}
+
+export default function EventQuestionnairePage() {
+  const params = useParams();
+  const eventId = params?.eventId as string;
+  const [currentStep, setCurrentStep] = useState(0);
+  const [completed, setCompleted] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [answers, setAnswers] = useState<Record<string, any>>({});
+  const [eventData, setEventData] = useState<EventData | null>(null);
+  const router = useRouter();
+
+  // Fetch event data and questions
+  useEffect(() => {
+    function fetchEventData() {
+      try {
+        // In a real app, fetch from your API
+        // const response = await fetch(`${API_BASE_URL}/events/${eventId}`);
+        // const data = await response.json();
+
+        // For demo purposes, use sample data
+        setTimeout(() => {
+          setEventData({
+            eventId: eventId || 'event123',
+            eventName: 'Birthday Party',
+            questions: [
+              {
+                id: 'name',
+                text: "What's your full name?",
+                type: 'text',
+                required: true,
+              },
+              {
+                id: 'attending',
+                text: 'Will you be attending?',
+                type: 'radio',
+                options: ["Yes, I'll be there!", "No, I can't make it", "Maybe, I'll let you know later"],
+                required: true,
+              },
+              {
+                id: 'food',
+                text: 'What food options would you prefer?',
+                type: 'checkbox',
+                options: ['Pizza', 'Burgers', 'Salad', 'Desserts'],
+                required: true,
+              },
+            ],
+          });
+          setLoading(false);
+        }, 500);
+      } catch (error) {
+        console.error('Error fetching event data:', error);
+        setLoading(false);
+      }
+    }
+
+    fetchEventData();
+  }, [eventId]);
+
+  // Handle text input changes
+  const handleTextChange = (questionId: string, value: string) => {
+    setAnswers((prev) => ({ ...prev, [questionId]: value }));
+  };
+
+  // Handle radio button selection
+  const handleRadioChange = (questionId: string, value: string) => {
+    setAnswers((prev) => ({ ...prev, [questionId]: value }));
+  };
+
+  // Handle checkbox selection
+  const handleCheckboxChange = (questionId: string, value: string) => {
+    const currentSelections = Array.isArray(answers[questionId]) ? [...answers[questionId]] : [];
+
+    const newSelections = currentSelections.includes(value)
+      ? currentSelections.filter((item) => item !== value)
+      : [...currentSelections, value];
+
+    setAnswers((prev) => ({ ...prev, [questionId]: newSelections }));
+  };
+
+  // Handle next button click
+  const handleNext = () => {
+    // If this is the last question, submit the form
+    if (eventData && currentStep === eventData.questions.length - 1) {
+      handleSubmit();
+      return;
+    }
+
+    // Validate current question
+    const question = eventData?.questions[currentStep];
+    if (question?.required) {
+      const answer = answers[question.id];
+      const isEmpty = answer === undefined || answer === '' || (Array.isArray(answer) && answer.length === 0);
+
+      if (isEmpty) {
+        alert('This question is required');
+        return;
+      }
+    }
+
+    // Move to next question
+    setCurrentStep((prev) => prev + 1);
+  };
+
+  // Handle form submission
+  const handleSubmit = () => {
+    try {
+      // Submit answers to API
+      // const response = await fetch(`${API_BASE_URL}/events/${eventId}/responses`, {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify({ answers }),
+      // });
+
+      console.log('Form submitted:', answers);
+
+      // Show completion screen
+      setCompleted(true);
+    } catch (error) {
+      console.error('Error submitting form:', error);
+    }
+  };
+
+  // Handle return button
+  const handleReturn = () => {
+    window.location.href = '/attendee'; // Using direct navigation for simplicity
+  };
+
+  if (loading) {
+    return <Loading />;
+  }
+
+  if (!eventData) {
+    return (
+      <div className='flex min-h-screen items-center justify-center bg-orange-300'>
+        <div className='rounded-2xl bg-white p-8'>
+          <h2 className='text-xl font-bold'>Event not found</h2>
+        </div>
+      </div>
+    );
+  }
+
+  // useEffect(() => {
+  //   // Scroll to the top of the page when the question changes
+  //   setCurrentQuestion(eventData.questions[currentStep] || null);
+  //   if (eventData.questions[currentStep] == null) {
+  //     router.push('/attendee');
+  //   }
+  // }, [currentStep, eventData, router]);
+  const currentQuestion = eventData.questions[currentStep];
+
+  // Render completion screen
+  if (completed) {
+    return (
+      <div className='bg-orange-3 flex min-h-full flex-col items-center justify-center bg-[url(/create-bg.svg)] bg-cover p-4 px-12'>
+        <div className='bg-white-pure flex min-h-[50vh] w-full max-w-md flex-col items-center justify-center gap-10 rounded-3xl bg-white px-20 py-20'>
+          <h2 className='mb-4 text-center text-xl font-bold'>
+            Thank you for accepting the invitation to "{eventData.eventName}"
+          </h2>
+          <p className='mb-6 text-center'>See you at the Event!!</p>
+
+          <div className='mb-6 flex h-[20vh] w-[20vh] items-center justify-center rounded-full text-white'>
+            <Image alt='sommhai' className='w-full' height={100} src={'/sommhai-pose-2.svg'} width={100} />
+          </div>
+
+          <button className='mb-4 flex w-full items-center justify-center gap-2 rounded-xl bg-orange-400 px-4 py-12 font-semibold text-white'>
+            Add Reminder to Google Calendar
+          </button>
+
+          <button
+            className='w-full rounded-xl border border-orange-400 px-4 py-12 font-semibold text-orange-400'
+            onClick={handleReturn}
+          >
+            Return
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className='bg-orange-3 flex min-h-screen flex-col bg-[url(/create-bg.svg)] bg-cover'>
+      {/* Progress indicator */}
+      <div className='w-full px-4 py-6'>
+        <div className='flex w-full gap-2'>
+          {eventData.questions.map((_, idx) => (
+            <div
+              className={`h-2 flex-1 rounded-full ${idx <= currentStep ? 'bg-orange-1' : 'bg-grey-light'}`}
+              key={idx}
+            ></div>
+          ))}
+        </div>
+      </div>
+
+      {/* Question content */}
+      <div className='flex flex-1 flex-col justify-center px-4 py-6'>
+        <div className='mx-auto w-full max-w-md rounded-3xl bg-white p-8'>
+          <h2 className='mb-6 text-2xl font-bold text-gray-800'>{currentQuestion?.text}</h2>
+
+          {currentQuestion?.type === 'text' && (
+            <input
+              className='w-full rounded-xl border-b-2 border-gray-300 px-10 py-2 shadow-lg focus:border-orange-400 focus:outline-none'
+              placeholder='Your answer'
+              type='text'
+              value={answers[currentQuestion.id] || ''}
+              onChange={(e) => handleTextChange(currentQuestion.id, e.target.value)}
+            />
+          )}
+
+          {currentQuestion?.type === 'radio' && currentQuestion.options && (
+            <div className='bg-white-pure space-y-4 rounded-2xl px-20 py-32'>
+              {currentQuestion.options.map((option, idx) => (
+                <label className='flex cursor-pointer items-center gap-3' key={idx}>
+                  <div
+                    className={`flex h-[5vw] w-[5vw] items-center justify-center rounded-full border-2 border-orange-400 ${answers[currentQuestion.id] === option ? 'bg-orange-400' : 'bg-white'}`}
+                  >
+                    {answers[currentQuestion.id] === option && <div className='h-3 w-3 rounded-full bg-white'></div>}
+                  </div>
+                  <input
+                    checked={answers[currentQuestion.id] === option}
+                    className='hidden'
+                    type='radio'
+                    onChange={() => handleRadioChange(currentQuestion.id, option)}
+                  />
+                  <span className='font-semibold'>{option}</span>
+                </label>
+              ))}
+            </div>
+          )}
+
+          {currentQuestion?.type === 'checkbox' && currentQuestion.options && (
+            <div className='bg-white-pure space-y-4 rounded-2xl px-20 py-32'>
+              {currentQuestion.options.map((option, idx) => {
+                const currentValues = answers[currentQuestion.id] || [];
+                const isChecked = Array.isArray(currentValues) && currentValues.includes(option);
+
+                return (
+                  <label className='flex cursor-pointer items-center gap-3' key={idx}>
+                    <div
+                      className={`flex h-[5vw] w-[5vw] items-center justify-center rounded-lg border-2 border-orange-400 ${isChecked ? 'bg-orange-400' : 'bg-white'}`}
+                    >
+                      {isChecked && (
+                        <svg
+                          className='h-4 w-4 text-white'
+                          fill='currentColor'
+                          viewBox='0 0 20 20'
+                          xmlns='http://www.w3.org/2000/svg'
+                        >
+                          <path
+                            clipRule='evenodd'
+                            d='M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z'
+                            fillRule='evenodd'
+                          />
+                        </svg>
+                      )}
+                    </div>
+                    <input
+                      checked={isChecked}
+                      className='hidden'
+                      type='checkbox'
+                      onChange={() => handleCheckboxChange(currentQuestion.id, option)}
+                    />
+                    <span>{option}</span>
+                  </label>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Next button */}
+      <div className='flex items-center justify-center p-4 px-20 py-20'>
+        <button
+          className='text-orange-2 bg-white-bg border-orange-2 w-full rounded-3xl border px-8 py-12 text-center text-xl font-bold'
+          onClick={handleNext}
+        >
+          Next
+        </button>
+      </div>
+    </div>
+  );
+}
