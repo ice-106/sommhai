@@ -2,7 +2,14 @@ import { Prisma } from '@prisma/client';
 
 import { ConflictException, InternalServerErrorException, NotFoundException } from '../../common/exception/http';
 import prisma from '../../common/libs/prisma';
-import { CreateUserOptions, GetManyUsersOptions, GetUserOptions, UpdateUserOptions } from './types';
+import {
+  CreateUserHistoryOptions,
+  CreateUserOptions,
+  GetManyUsersOptions,
+  GetUserHistoryOptions,
+  GetUserOptions,
+  UpdateUserOptions,
+} from './types';
 
 export const UserService = {
   createUser: async ({ uid, username }: CreateUserOptions) => {
@@ -139,5 +146,106 @@ export const UserService = {
     });
 
     return { users, total };
+  },
+  getUserHistory: async ({ uid, take, skip, search }: GetUserHistoryOptions) => {
+    try {
+      const user = await prisma.user.findUnique({
+        where: { uid },
+      });
+
+      if (!user) {
+        throw new NotFoundException(`User with ID ${uid} not found`);
+      }
+
+      const historyEntries = await prisma.history.findMany({
+        where: { uid },
+        take,
+        skip,
+        include: {
+          event: true,
+        },
+        orderBy: {
+          event: {
+            date: 'desc',
+          },
+        },
+      });
+
+      const simplifiedEvents = historyEntries.map((entry) => ({
+        eid: entry.eid,
+        uid: entry.uid,
+        name: entry.event.name,
+        date: entry.event.date,
+      }));
+
+      return {
+        simplifiedEvents,
+      };
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      console.error('Error getting user history:', error);
+      throw new InternalServerErrorException(error, 'Failed to get user history');
+    }
+  },
+  createUserHistory: async ({ uid, eid }: CreateUserHistoryOptions) => {
+    try {
+      const user = await prisma.user.findUnique({
+        where: { uid },
+      });
+
+      if (!user) {
+        throw new NotFoundException(`User with ID ${uid} not found`);
+      }
+
+      const existingEntry = await prisma.history.findUnique({
+        where: {
+          eid_uid: {
+            uid,
+            eid,
+          },
+        },
+      });
+      if (existingEntry) {
+        throw new ConflictException('User history entry already exists');
+      }
+
+      const event = await prisma.event.findUnique({
+        where: { eid },
+        select: {
+          name: true,
+          date: true,
+        },
+      });
+
+      if (!event) {
+        throw new NotFoundException(`Event with ID ${eid} not found`);
+      }
+
+      const historyEntry = await prisma.history.create({
+        data: {
+          uid,
+          eid,
+        },
+      });
+
+      if (!historyEntry) {
+        throw new InternalServerErrorException('Failed to create user history');
+      }
+
+      return {
+        eid,
+        uid,
+        name: event.name,
+        date: event.date,
+      };
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      console.error('Error creating user history:', error);
+      throw new InternalServerErrorException(error, 'Failed to create user history');
+    }
   },
 };
