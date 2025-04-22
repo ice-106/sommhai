@@ -11,9 +11,30 @@ export const userContract = c.router({
     body: z.object({
       uid: z.string(),
       username: z.string(),
+      phone: z.string().optional(),
+      email: z.string().optional(),
+      payment_method: z.string().optional(),
+      subscription_plan: z.string().optional(),
     }),
     responses: {
       201: userInfo,
+      500: z.object({ message: z.string() }),
+    },
+  },
+  updateUser: {
+    method: 'PUT',
+    path: '/users/:uid',
+    pathParams: z.object({ uid: z.string() }),
+    body: z.object({
+      username: z.string().optional(),
+      phone: z.string().optional(),
+      email: z.string().optional(),
+      payment_method: z.string().optional(),
+      subscription_plan: z.string().optional(),
+    }),
+    responses: {
+      204: userInfo,
+      404: z.object({ message: z.string() }),
       500: z.object({ message: z.string() }),
     },
   },

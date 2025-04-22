@@ -16,6 +16,16 @@ export const UserController: RouterImplementation<typeof contract.user> = {
       body: UserAdapter.toUserInfo(newUser),
     };
   },
+  updateUser: async ({ params: { uid }, body }) => {
+    const updatedUser = await UserService.updateUser({
+      uid,
+      userData: body,
+    });
+    return {
+      status: 204,
+      body: UserAdapter.toUserInfo(updatedUser),
+    };
+  },
   getUser: async ({ params: { uid } }) => {
     const user = await UserService.getUser({ uid });
     return {

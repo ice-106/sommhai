@@ -15,6 +15,17 @@ export interface CreateUserOptions {
   username: string;
 }
 
+export interface UpdateUserOptions {
+  uid: string;
+  userData: {
+    username?: string;
+    phone?: string;
+    email?: string;
+    payment_method?: string;
+    subscription_plan?: string;
+  };
+}
+
 export type UserEntityFull = Prisma.UserGetPayload<{
   include: {
     attendees: true;

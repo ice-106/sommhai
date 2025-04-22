@@ -2,7 +2,7 @@ import { Prisma } from '@prisma/client';
 
 import { ConflictException, InternalServerErrorException, NotFoundException } from '../../common/exception/http';
 import prisma from '../../common/libs/prisma';
-import { CreateUserOptions, GetManyUsersOptions, GetUserOptions } from './types';
+import { CreateUserOptions, GetManyUsersOptions, GetUserOptions, UpdateUserOptions } from './types';
 
 export const UserService = {
   createUser: async ({ uid, username }: CreateUserOptions) => {
@@ -15,7 +15,7 @@ export const UserService = {
       });
 
       if (existingUser) {
-        throw new ConflictException('User with this email already exists');
+        throw new ConflictException('User with this uid already exists');
       }
 
       const userData: Prisma.UserCreateInput = {
@@ -36,6 +36,37 @@ export const UserService = {
       console.error('Error creating user:', error);
       throw new InternalServerErrorException('Failed to create user');
     }
+  },
+  updateUser: async ({ uid, userData }: UpdateUserOptions) => {
+    const existingUser = await prisma.user.findUnique({
+      where: {
+        uid,
+      },
+    });
+
+    if (!existingUser) {
+      throw new NotFoundException(`User with uid ${uid} not found`);
+    }
+
+    const updatedUser = await prisma.user.update({
+      where: {
+        uid,
+      },
+      data: userData,
+      include: {
+        attendees: true,
+        attendings: true,
+        organizers: true,
+        histories: true,
+        creates: true,
+        mediaTaken: true,
+        invites: true,
+        responses: true,
+        leaderboard: true,
+      },
+    });
+
+    return updatedUser;
   },
   getUser: async ({ uid }: GetUserOptions) => {
     const user = await prisma.user.findUnique({
