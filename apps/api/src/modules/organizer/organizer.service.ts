@@ -19,6 +19,7 @@ import {
   RespondToEventInviteOptions,
   RespondWithQuestionsOptions,
   UpdateEventQuestionOptions,
+  UpdateLeaderboardOptions,
 } from './types';
 
 export const OrganizerService = {
