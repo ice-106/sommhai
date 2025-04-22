@@ -55,7 +55,7 @@ const EventContainer = () => {
   return (
     <>
       {events.map((event) => (
-        <EventCard key={event.eid} link={event.eid} name={event.name} />
+        <EventCard date={event.date} key={event.eid} link={event.eid} name={event.name} />
       ))}
     </>
   );
