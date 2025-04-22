@@ -61,7 +61,15 @@ export const OrganizerController: RouterImplementation<typeof contract.organizer
       body: OrganizerAdapter.toEventOrganizerInfo(event),
     };
   },
+  deleteEvent: async ({ params: { eventId } }) => {
+    const event = await OrganizerService.getEvent({ eventId });
+    await OrganizerService.deleteEvent({ eventId });
 
+    return {
+      status: 204,
+      body: OrganizerAdapter.toEventOrganizerInfo(event),
+    };
+  },
   inviteAttendees: async ({ params: { eventId }, body: { uids } }) => {
     const result = await OrganizerService.createInvites({
       eventId,
