@@ -77,6 +77,18 @@ export const organizerContract = c.router({
       500: z.object({ message: z.string() }),
     },
   },
+  deleteEvent: {
+    method: 'DELETE',
+    path: '/org/events/:eventId',
+    pathParams: z.object({
+      eventId: z.string(),
+    }),
+    responses: {
+      204: eventOrganizerInfo,
+      404: z.object({ message: z.string() }),
+      500: z.object({ message: z.string() }),
+    },
+  },
   inviteOrganizers: {
     method: 'POST',
     path: '/org/events/:eventId/adinv',
