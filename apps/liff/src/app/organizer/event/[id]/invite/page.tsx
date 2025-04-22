@@ -73,7 +73,7 @@ function InvitePage() {
         <SearchContainer />
       </div>
       <div className='my-5 flex w-full items-center gap-2 px-7'>
-        <SelectAll/>
+        <SelectAll />
       </div>
       <div className='mx-24 flex h-[69%] w-full flex-col items-center gap-16 overflow-y-auto'>
         <AttendeeContainer />
