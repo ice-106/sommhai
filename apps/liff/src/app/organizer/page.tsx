@@ -1,6 +1,6 @@
 'use client';
 import { SlidersHorizontal } from 'lucide-react';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Suspense } from 'react';
 
 import HeaderBurgur from '@/components/common/HeaderBurgur';
@@ -21,15 +21,18 @@ const SearchContainer = () => {
 import { Events } from '@sommhai/shared-type/src';
 
 import EventCard from '@/components/organizer/EventCard';
+import { LiffContext } from '@/contexts/global/liff';
 import { API_BASE_URL } from '@/env';
 
 const EventContainer = () => {
   const [events, setEvents] = useState<Events[]>([]);
   const [loading, setLoading] = useState(true);
+  const { userId } = useContext(LiffContext);
+
   useEffect(() => {
     function fetchEvents() {
       try {
-        const res = fetch(`${API_BASE_URL}/org/events`, {
+        const res = fetch(`${API_BASE_URL}/org/events?userId=${userId}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -74,11 +77,11 @@ function OrganizerPage() {
   return (
     <div className='bg-g flex h-screen w-screen flex-col'>
       <HeaderBurgur name='Home' />
-      <div className='my-5 flex w-full items-center gap-2 px-7'>
+      <div className='mt-5 flex w-full items-center gap-2 px-7'>
         <SearchContainer />
         <SlidersHorizontal />
       </div>
-      <div className='my-5 flex w-full items-center justify-center px-7'>
+      <div className='mt-5 flex w-full items-center justify-center px-7'>
         <CreateEvent />
       </div>
       <div className='w-ful mx-24 flex h-[69%] flex-col gap-16 overflow-y-auto'>
