@@ -84,7 +84,7 @@ function OrganizerPage() {
       <div className='mt-5 flex w-full items-center justify-center px-7'>
         <CreateEvent />
       </div>
-      <div className='w-ful mx-24 flex h-[69%] flex-col gap-16 overflow-y-auto pt-12'>
+      <div className='mx-24 flex h-[69%] w-full flex-col gap-16 overflow-y-auto pt-12'>
         <EventContainer />
       </div>
     </div>
