@@ -31,7 +31,6 @@ export function LiffProvider({ children }: { children: React.ReactNode }): React
             setLiffObject(liff);
           })
           .catch((error: Error) => {
-            console.log('LIFF ID', LIFF_ID);
             console.error('LIFF init failed.');
             setLiffError(error.toString());
           })

@@ -21,6 +21,12 @@ services:
     build:
       context: ../../
       dockerfile: apps/liff/Dockerfile
+      args:
+        NEXT_PUBLIC_LIFF_ID: ${NEXT_PUBLIC_LIFF_ID}
+        NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL}
+    env_file:
+      - .env
+
     environment:
       - PORT=5000
     labels:
