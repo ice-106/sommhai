@@ -8,6 +8,7 @@ import {
   CreateManyEventQuestionOptions,
   DeleteAllEventQuestionOptions,
   DeleteEventInviteOptions,
+  DeleteEventOptions,
   DeleteManyEventQuestionOptions,
   GetEventInviteOptions,
   GetEventOptions,
@@ -18,6 +19,7 @@ import {
   RespondToEventInviteOptions,
   RespondWithQuestionsOptions,
   UpdateEventQuestionOptions,
+  UpdateLeaderboardOptions,
 } from './types';
 
 export const OrganizerService = {
@@ -159,6 +161,29 @@ export const OrganizerService = {
       }
       console.error('Error updating event details:', error);
       throw new InternalServerErrorException('Failed to update event details');
+    }
+  },
+  deleteEvent: async ({ eventId }: DeleteEventOptions) => {
+    try {
+      const event = await prisma.event.findUnique({
+        where: { eid: eventId },
+      });
+
+      if (!event) {
+        throw new NotFoundException('Event not found');
+      }
+
+      prisma.event.delete({
+        where: { eid: eventId },
+      });
+
+      return event;
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      console.error('Error deleting event:', error);
+      throw new InternalServerErrorException('Failed to delete event');
     }
   },
   createInvites: async ({ eventId, userIds, role }: CreateEventInviteOptions) => {
