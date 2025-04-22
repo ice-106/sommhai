@@ -188,6 +188,9 @@ importers:
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
+      dotenv:
+        specifier: ^16.5.0
+        version: 16.5.0
       init:
         specifier: ^0.1.2
         version: 0.1.2
@@ -13155,7 +13158,7 @@ snapshots:
 
   dotenv-expand@11.0.7:
     dependencies:
-      dotenv: 16.4.7
+      dotenv: 16.5.0
 
   dotenv@16.0.3: {}
 
