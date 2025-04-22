@@ -4,6 +4,8 @@ import type { Liff } from '@line/liff';
 import React from 'react';
 import { createContext, useEffect, useState } from 'react';
 
+import { LIFF_ID } from '@/env';
+
 interface LiffContextProps {
   liffObject: Liff | null;
   liffError: string | null;
@@ -23,7 +25,7 @@ export function LiffProvider({ children }: { children: React.ReactNode }): React
       .then((liff) => liff.default)
       .then((liff) => {
         liff
-          .init({ liffId: process.env.NEXT_PUBLIC_LIFF_ID! })
+          .init({ liffId: LIFF_ID! })
           .then(() => {
             console.log('LIFF init succeeded.');
             setLiffObject(liff);

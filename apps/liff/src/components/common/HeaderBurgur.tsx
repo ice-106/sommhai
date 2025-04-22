@@ -1,5 +1,6 @@
 'use client';
 import Link from 'next/link';
+import { signOut } from 'next-auth/react';
 import { useState } from 'react';
 import { AiFillHome, AiOutlineHistory, AiOutlineMenu, AiOutlineUser } from 'react-icons/ai';
 
@@ -55,6 +56,12 @@ export default function HeaderBurgur({ name }: { name: string }) {
                     <p className='ml-1'>History</p>
                   </li>
                 </Link>
+                <button onClick={() => signOut({ callbackUrl: '/' })}>
+                  <li className='flex py-2 pl-2'>
+                    <AiOutlineHistory size='1.2rem' />
+                    <p className='ml-1'>Log Out</p>
+                  </li>
+                </button>
               </ul>
             </div>
           </div>

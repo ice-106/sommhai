@@ -1,3 +1,4 @@
+'use client';
 import { Button } from '@sommhai/ui/components/ui/button';
 import Image from 'next/image';
 import Link from 'next/link';

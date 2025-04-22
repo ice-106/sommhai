@@ -17,6 +17,7 @@ const buttonVariants = cva(
         link: 'text-primary underline-offset-4 hover:underline',
         orange: 'bg-orange-400 text-primary-foreground shadow-lg hover:bg-orange-600',
         delete: 'bg-[#E74C3C] shadow-lg text-white font-bold p text-[24px] rounded-[24px]',
+        line: 'bg-[#06C755] text-white font-medium text-2xl rounded-3xl',
       },
       size: {
         default: 'h-9 px-4 py-2',
