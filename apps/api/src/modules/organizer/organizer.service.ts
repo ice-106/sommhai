@@ -119,11 +119,10 @@ export const OrganizerService = {
           data: {
             phone: '1234567890',
             email: 'test@example.com',
-            dob: new Date(),
-            pref_name: 'Test User',
-            first_name: 'Test',
-            last_name: 'User',
+            username: 'testuser',
+            uid: 'testuser',
             subscription_plan: 'free',
+            payment_method: 'none',
           },
         });
       }
@@ -131,7 +130,7 @@ export const OrganizerService = {
       return await prisma.event.create({
         data: {
           ...event,
-          host: testUser.pref_name,
+          host: testUser.username,
           host_uid: testUser.uid,
           status: 'Upcoming',
           attendees: {

@@ -1,7 +1,7 @@
 import { Prisma } from '@prisma/client';
 
 export interface GetUserOptions {
-  userId: string;
+  uid: string;
 }
 
 export interface GetManyUsersOptions {
@@ -9,6 +9,12 @@ export interface GetManyUsersOptions {
   skip?: number;
   take?: number;
 }
+
+export interface CreateUserOptions {
+  uid: string;
+  username: string;
+}
+
 export type UserEntityFull = Prisma.UserGetPayload<{
   include: {
     attendees: true;

@@ -9,8 +9,8 @@ export const userContract = c.router({
     method: 'POST',
     path: '/users/create',
     body: z.object({
-      user: z.string(),
-      email: z.string(),
+      uid: z.string(),
+      username: z.string(),
     }),
     responses: {
       201: userInfo,
@@ -19,8 +19,8 @@ export const userContract = c.router({
   },
   getUser: {
     method: 'GET',
-    path: '/users/:userId',
-    pathParams: z.object({ userId: z.string() }),
+    path: '/users/:uid',
+    pathParams: z.object({ uid: z.string() }),
     responses: {
       200: userInfo,
       404: z.object({ message: z.string() }),
