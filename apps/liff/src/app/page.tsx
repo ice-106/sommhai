@@ -13,7 +13,7 @@ function LandingPage() {
   useEffect(() => {
     if (session.status === 'unauthenticated') {
       router.push('/auth');
-      // setLoad(true);
+      setLoad(true);
     }
   }, [loaded]);
   return (
