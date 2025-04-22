@@ -130,3 +130,12 @@ export interface DeleteManyEventQuestionOptions {
 export interface DeleteAllEventQuestionOptions {
   eventId: string;
 }
+
+export interface RespondWithQuestionsOptions {
+  inviteId: string;
+  accepted: boolean;
+  responses: {
+    questionId: string;
+    answer: string;
+  }[];
+}

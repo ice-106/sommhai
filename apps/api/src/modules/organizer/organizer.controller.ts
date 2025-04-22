@@ -213,50 +213,16 @@ export const OrganizerController: RouterImplementation<typeof contract.organizer
       body: deletedQuestions.map((q) => OrganizerAdapter.toEventQuestionInfo(q)),
     };
   },
-  getLeaderboard: async ({ params: { eventId } }) => {
-    const leaderboard = await OrganizerService.getEventLeaderboard({ eventId });
-
-    return {
-      status: 200,
-      body: leaderboard.map((entry) => OrganizerAdapter.toLeaderboardEntry(entry)),
-    };
-  },
-
-  createLeaderboard: async ({ params: { eventId }, body: { uid, score } }) => {
-    const newEntry = await OrganizerService.createLeaderboard({
-      eventId,
-      uid,
-      score,
-    });
-
-    return {
-      status: 201,
-      body: OrganizerAdapter.toLeaderboardEntry(newEntry),
-    };
-  },
-
-  updateLeaderboard: async ({ params: { eventId, entryId }, body: { uid, score } }) => {
-    const updatedEntry = await OrganizerService.updateLeaderboard({
-      eventId,
-      entryId,
-      updates: {
-        uid,
-        score,
-      },
+  respondOrganizerInviteWithQuestions: async ({ params: { inviteId }, body: { accepted, responses } }) => {
+    const result = await OrganizerService.respondToInviteWithQuestions({
+      inviteId,
+      accepted,
+      responses,
     });
 
     return {
       status: 200,
-      body: OrganizerAdapter.toLeaderboardEntry(updatedEntry),
-    };
-  },
-
-  deleteLeaderboardEntry: async ({ params: { eventId, entryId } }) => {
-    const deletedEntry = await OrganizerService.deleteLeaderboardEntry({ eventId, entryId });
-
-    return {
-      status: 204,
-      body: OrganizerAdapter.toLeaderboardEntry(deletedEntry),
+      body: result,
     };
   },
 };

@@ -1,5 +1,4 @@
-import { eventAttendeeInfo, eventInvResponse } from '@sommhai/shared-type';
-import { leaderboardData } from '@sommhai/shared-type';
+import { eventAttendeeInfo, eventInviteWithResponsesOutput, eventInvResponse } from '@sommhai/shared-type';
 import { initContract } from '@ts-rest/core';
 import { z } from 'zod';
 
@@ -34,18 +33,6 @@ export const attendeeContract = c.router({
       500: z.object({ message: z.string() }),
     },
   },
-  getAtdEventLeaderboard: {
-    method: 'GET',
-    path: '/atd/events/:eventId/leaderboard',
-    pathParams: z.object({
-      eventId: z.string(),
-    }),
-    responses: {
-      200: leaderboardData,
-      404: z.object({ message: z.string() }),
-      500: z.object({ message: z.string() }),
-    },
-  },
   respondAttendeeInvite: {
     method: 'PUT',
     path: '/atd/events/:inviteId/respond',
@@ -57,6 +44,27 @@ export const attendeeContract = c.router({
     }),
     responses: {
       200: eventInvResponse,
+      404: z.object({ message: z.string() }),
+      500: z.object({ message: z.string() }),
+    },
+  },
+  respondAttendeeInviteWithQuestions: {
+    method: 'PUT',
+    path: '/atd/events/:inviteId/respond-with-questions',
+    pathParams: z.object({
+      inviteId: z.string(),
+    }),
+    body: z.object({
+      accepted: z.boolean(),
+      responses: z.array(
+        z.object({
+          questionId: z.string(),
+          answer: z.string(),
+        }),
+      ),
+    }),
+    responses: {
+      200: eventInviteWithResponsesOutput,
       404: z.object({ message: z.string() }),
       500: z.object({ message: z.string() }),
     },
