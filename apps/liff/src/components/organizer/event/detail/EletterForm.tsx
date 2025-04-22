@@ -7,6 +7,8 @@ import { z } from 'zod';
 
 import LocationPicker from '@/components/organizer/event/detail/LocationPicker';
 
+import { ConfirmButton } from '../../buttons';
+
 const ELetterformSchema = z.object({
   Title: z.string().min(1, 'Title is required'),
   Description: z.string(),
@@ -74,6 +76,7 @@ function EletterForm({ onClose }: { onClose?: () => void }) {
           <input name='longitude' type='hidden' value={longitude || ''} />
         </div>
       </form>
+      <ConfirmButton onClick={onClose} />
       <button className='rounded-24 bg-orange-3 text-medium-20 mt-24 h-[56px] w-full max-w-[345px]' onClick={onClose}>
         Confirm
       </button>
