@@ -26,7 +26,7 @@ function DetailForm({ page, onClose, eid }: DetailFormProp) {
       .then((data) => {
         const eventData = {
           ...data,
-          date: new Date(data.date).toISOString().split('T')[0], // Ensure date is formatted for input
+          date: new Date(data.date).toISOString().split('T')[0],
         };
         setEvent(eventData as Events);
       });
@@ -46,12 +46,18 @@ function DetailForm({ page, onClose, eid }: DetailFormProp) {
           }
         : null,
     );
-    fetch(`${API_BASE_URL}/org/events/${eid}`, {
+    console.log('updatedData', new Date(updatedData.date).toLocaleDateString());
+    fetch(`${API_BASE_URL}/org/events/${eid}/details`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(updatedData),
+      body: JSON.stringify({
+        name: updatedData.name,
+        location: updatedData.address,
+        description: updatedData.description,
+        date: new Date(updatedData.date).toLocaleDateString(),
+      }),
     }).then(() => {
       setEvent((prev) =>
         prev
@@ -68,12 +74,12 @@ function DetailForm({ page, onClose, eid }: DetailFormProp) {
 
   const handleSaveMessage = (message: string) => {
     setEvent((prev) => (prev ? { ...prev, message } : null));
-    fetch(`${API_BASE_URL}/org/events/${eid}`, {
+    fetch(`${API_BASE_URL}/org/events/${eid}/details`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ message }),
+      body: JSON.stringify({ message: message }),
     }).then(() => {
       setEvent((prev) => (prev ? { ...prev, message } : null));
       onClose();
