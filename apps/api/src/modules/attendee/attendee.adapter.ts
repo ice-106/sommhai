@@ -18,6 +18,7 @@ export const AttendeeAdapter = {
       attendings: event.attendings,
       organizers: event.organizers,
       status: event.status,
+      message: event.message,
     };
   },
   toLeaderboardEntry: (entry: LeaderboardEntity) => {

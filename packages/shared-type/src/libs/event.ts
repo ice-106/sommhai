@@ -19,6 +19,7 @@ export const eventBaseInfo = z.object({
   attendings: z.array(attendee),
   organizers: z.array(organizer),
   status: z.string(),
+  message: z.string().nullable(),
 });
 
 export const eventInviteBaseInfo = z.object({

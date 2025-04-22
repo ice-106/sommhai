@@ -38,7 +38,7 @@ export const OrganizerController: RouterImplementation<typeof contract.organizer
 
   updateEvent: async ({
     params: { eventId },
-    body: { name, date, description, invite_list, memory, location, time, picture },
+    body: { name, date, description, invite_list, memory, location, time, picture, status, message },
   }) => {
     await OrganizerService.updateEvent({
       eventId,
@@ -51,6 +51,8 @@ export const OrganizerController: RouterImplementation<typeof contract.organizer
         location,
         time,
         picture: picture ?? [],
+        status,
+        message,
       },
     });
 

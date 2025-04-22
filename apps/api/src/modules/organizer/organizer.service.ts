@@ -133,6 +133,7 @@ export const OrganizerService = {
           host: user.username,
           host_uid: user.uid,
           status: 'Upcoming',
+          message: '',
           attendees: {
             create: [
               {

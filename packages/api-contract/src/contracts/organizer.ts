@@ -70,6 +70,7 @@ export const organizerContract = c.router({
       memory: z.string().optional(),
       picture: z.array(z.string()).optional(),
       status: z.string().optional(),
+      message: z.string().optional(),
     }),
     responses: {
       201: eventOrganizerInfo,
