@@ -1,31 +1,68 @@
 'use client';
 import { useParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
-
+import { useRouter } from 'next/navigation';
+import { useContext, useEffect, useState } from 'react';
+import type { Events } from '@sommhai/shared-type/src';
 import HeaderBurgur from '@/components/common/HeaderBurgur';
-import DetailForm from '@/components/organizer/event/detail/DetailForm';
+import { AcceptButton } from '@/components/common/acceptdeny-button';
+import { LiffContext } from '@/contexts/global/liff';
+import { API_BASE_URL } from '@/env';
 
-function DetailPage() {
+function AtdEventPage() {
+  const router = useRouter();
   const params = useParams();
   const id = params?.id as string;
-  const [currentPage, setCurrentPage] = useState(0);
-
+  const { userId } = useContext(LiffContext);
+  const [event, setEvent] = useState<Events | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [inv, setInv] = useState('');
+  const [accepted, setAccepted] = useState(false);
   useEffect(() => {
-    if (currentPage !== 0) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-
-    // Cleanup on unmount
-    return () => {
-      document.body.style.overflow = '';
+    console.log(event);
+    fetch(`${API_BASE_URL}/org/events/${id}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        const eventData = {
+          ...data,
+          date: new Date(data.date).toISOString().split('T')[0], // Ensure date is formatted for input
+        };
+        setEvent(eventData as Events);
+      });
+  }, [id]);
+  useEffect(() => {
+    const handleAccept = () => {
+      if (accepted == true) setLoading(true);
+      fetch(`${API_BASE_URL}/org/events/${id}/inv`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          uids: [userId],
+        }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data.invites[0].inviteId);
+          setInv(data.invites[0].inviteId);
+          setLoading(false);
+        });
     };
-  }, [currentPage]);
+    if (inv !== '') {
+      console.log('inv', inv);
 
-  const handleChangePage = (page: number) => {
-    setCurrentPage(page);
-  };
+      if (loading == false && accepted == true) {
+        router.push(`/attendee/event/${id}/${inv}/questions`);
+      }
+    }
+    handleAccept();
+  }, [userId, accepted, id]);
+
   return (
     <div className='flex h-screen w-screen flex-col'>
       <HeaderBurgur name={id} />
@@ -44,17 +81,25 @@ function DetailPage() {
           <h1 className='text-semi-24'>Message</h1>
           <p className='text-medium-20'>Click to edit</p>
         </div>
-      </div>
-      {currentPage !== 0 && (
-        <div
-          className={`fixed left-0 top-0 z-50 h-screen w-screen overflow-y-auto transition-all duration-500 ease-in-out ${
-            currentPage !== 0 ? 'translate-y-0' : 'translate-y-full'
-          }`}
-        >
-          <DetailForm eid={id} page={currentPage} onClose={() => setCurrentPage(0)} />
+        <div className='flex flex-col items-center justify-center'>
+          <AddtoCalendar />
         </div>
-      )}
+        <div className='mt-[-15px] flex h-[100px] w-full items-center justify-center gap-[29px]'>
+          <AcceptButton
+            className='h-[64px] w-[155px]'
+            variant={'Accept'}
+            onClick={() => {
+              setAccepted(true);
+            }}
+          >
+            Accept
+          </AcceptButton>
+          <AcceptButton className='h-[64px] w-[155px]' variant={'Deny'}>
+            Deny
+          </AcceptButton>
+        </div>
+      </div>
     </div>
   );
 }
-export default DetailPage;
+export default AtdEventPage;
