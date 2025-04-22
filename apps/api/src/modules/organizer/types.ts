@@ -18,6 +18,10 @@ export interface CreateEventOptions {
   name: string;
 }
 
+export interface DeleteEventOptions {
+  eventId: string;
+}
+
 export type EventEntity = Prisma.EventGetPayload<{
   include: {
     attendees: true;
