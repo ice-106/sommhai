@@ -46,7 +46,7 @@ function DetailForm({ page, onClose, eid }: DetailFormProp) {
           }
         : null,
     );
-    console.log('updatedData', new Date(updatedData.date).toLocaleDateString());
+    console.log('updatedData', new Date(updatedData.date));
     fetch(`${API_BASE_URL}/org/events/${eid}/details`, {
       method: 'PUT',
       headers: {
@@ -56,7 +56,7 @@ function DetailForm({ page, onClose, eid }: DetailFormProp) {
         name: updatedData.name,
         location: updatedData.address,
         description: updatedData.description,
-        date: new Date(updatedData.date).toLocaleDateString(),
+        date: new Date(updatedData.date),
       }),
     }).then(() => {
       setEvent((prev) =>
