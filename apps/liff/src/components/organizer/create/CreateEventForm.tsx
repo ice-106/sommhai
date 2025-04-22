@@ -35,6 +35,7 @@ function CreateEventForm() {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
+        uid: '12345',
         name: name,
       }),
     });
