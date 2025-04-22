@@ -43,8 +43,10 @@ RUN pnpm install --frozen-lockfile --ignore-scripts
 # Copy source code from pruned workspace
 COPY --from=builder /app/out/full/ .
 
-ARG NEXT_PUBLIC_LIFF_ID=default_liff_id
+ARG NEXT_PUBLIC_LIFF_ID
 ENV NEXT_PUBLIC_LIFF_ID=${NEXT_PUBLIC_LIFF_ID}
+ARG NEXT_PUBLIC_LIFF_URL
+ENV NEXT_PUBLIC_LIFF_URL=${NEXT_PUBLIC_LIFF_URL}
 ARG NEXT_PUBLIC_API_BASE_URL
 ENV NEXT_PUBLIC_API_BASE_URL=${NEXT_PUBLIC_API_BASE_URL}
 
