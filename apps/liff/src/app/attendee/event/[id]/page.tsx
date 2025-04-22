@@ -1,60 +1,71 @@
 'use client';
+import { Circle, User } from 'lucide-react';
+import Image from 'next/image';
 import { useParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import DetailForm from '@/components/attendee/Detail';
 
+import AtdEventText from '@/components/attendee/event/AtdEventText';
+import AtdMessage from '@/components/attendee/event/AtdMessageText';
+import { AcceptButton } from '@/components/common/acceptdeny-button';
+import AddtoCalendar from '@/components/common/AddtoCalendar-Button';
 import HeaderBurgur from '@/components/common/HeaderBurgur';
-import DetailForm from '@/components/organizer/event/detail/DetailForm';
+import Message from '@/components/attendee/Message';
+import { useEffect, useState } from 'react';
+import { Events } from '@sommhai/shared-type/src';
+import { API_BASE_URL } from '@/env';
 
-function DetailPage() {
+export default function AtdEventPage() {
   const params = useParams();
   const id = params?.id as string;
-  const [currentPage, setCurrentPage] = useState(0);
-
+  const [event, setEvent] = useState<Events | null>(null);
   useEffect(() => {
-    if (currentPage !== 0) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
+    console.log(event);
+    fetch(`${API_BASE_URL}/org/events/${id}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        const eventData = {
+          ...data,
+          date: new Date(data.date).toISOString().split('T')[0], // Ensure date is formatted for input
+        };
+        setEvent(eventData as Events);
+      });
+  }, [id]);
 
-    // Cleanup on unmount
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, [currentPage]);
+  const handleAccept = () => {};
 
-  const handleChangePage = (page: number) => {
-    setCurrentPage(page);
-  };
   return (
     <div className='flex h-screen w-screen flex-col'>
-      <HeaderBurgur name={id} />
-      <div className='flex flex-1 flex-col items-center justify-between gap-[10vh] px-24 py-32'>
-        <div
-          className='bg-orange-6 flex h-full w-full flex-col justify-center rounded-3xl text-center active:bg-gray-200'
-          onClick={() => handleChangePage(2)}
-        >
-          <h1 className='text-semi-24'>Event Details</h1>
-          <p className='text-medium-20'>Click to edit</p>
+      <HeaderBurgur name={'Events'} />
+      <div className='flex flex-1 flex-col items-center justify-between gap-24 px-24 py-16'>
+        <div className='flex flex-col items-center justify-center gap-24'>
+          <DetailForm eid={id} />
         </div>
-        <div
-          className='bg-orange-3 rounded-24 active:bg-orange-4 flex h-full w-full flex-col justify-center text-center'
-          onClick={() => handleChangePage(3)}
-        >
-          <h1 className='text-semi-24'>Message</h1>
-          <p className='text-medium-20'>Click to edit</p>
+        <div className='flex flex-col items-center justify-center gap-24'>
+          <Message message={event?.message ?? ''} />
+          <div className='mt-[-15px] flex w-full items-center justify-center gap-16'>
+            <Circle className='text-grey-light bg-grey-light border-grey-light !size-36 rounded-full border-[3px]'>
+              <User className='text-black-pure' />
+            </Circle>
+            <h1 className='text-bold-20 py-2'>{event?.host}</h1>
+          </div>
+        </div>
+        <div className='flex flex-col items-center justify-center'>
+          <AddtoCalendar />
+        </div>
+        <div className='mt-[-15px] flex h-[100px] w-full items-center justify-center gap-[29px]'>
+          <AcceptButton className='h-[64px] w-[155px]' variant={'Accept'}>
+            Accept
+          </AcceptButton>
+          <AcceptButton className='h-[64px] w-[155px]' variant={'Deny'}>
+            Deny
+          </AcceptButton>
         </div>
       </div>
-      {currentPage !== 0 && (
-        <div
-          className={`fixed left-0 top-0 z-50 h-screen w-screen overflow-y-auto transition-all duration-500 ease-in-out ${
-            currentPage !== 0 ? 'translate-y-0' : 'translate-y-full'
-          }`}
-        >
-          <DetailForm eid={id} page={currentPage} onClose={() => setCurrentPage(0)} />
-        </div>
-      )}
     </div>
   );
 }
-export default DetailPage;
