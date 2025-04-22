@@ -59,6 +59,15 @@ export default function AtdEventPage() {
             Deny
           </AcceptButton>
         </div>
+        <div className='flex flex-col items-center justify-center gap-24'>
+          <AtdMessage />
+          <div className='flex w-full items-center justify-center gap-16'>
+            <Circle className='text-grey-light fill-grey-light'>
+              <User className='text-black-pure !size-40' />
+            </Circle>
+            <h1 className='text-bold-20'>Organizer A</h1>
+          </div>
+        </div>
       </div>
     </div>
   );
