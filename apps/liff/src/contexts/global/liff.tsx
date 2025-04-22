@@ -33,6 +33,14 @@ export function LiffProvider({ children }: { children: React.ReactNode }): React
           .catch((error: Error) => {
             console.error('LIFF init failed.');
             setLiffError(error.toString());
+          })
+          .then(() => {
+            if (liff.isLoggedIn()) {
+              console.log('LIFF is logged in.');
+            } else {
+              console.log('LIFF is not logged in.');
+              liff.login();
+            }
           });
       })
       .catch((error: Error) => {

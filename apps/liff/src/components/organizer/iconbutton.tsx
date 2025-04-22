@@ -9,6 +9,8 @@ import { MdOutlineEventNote } from 'react-icons/md';
 import { MdNavigateNext } from 'react-icons/md';
 import { TbCalendarQuestion } from 'react-icons/tb';
 
+import { inviteAttendee } from '@/utils/invite';
+
 interface IconButtonProps {
   icon: React.ElementType;
   title: string;
@@ -58,9 +60,28 @@ export function IconButtonGroup() {
   return (
     <div className='flex h-full w-full flex-col items-center'>
       <div className='flex flex-col items-center gap-[16px]'>
-        {displayedButtons.map(({ icon, title, link, detail }, index) => (
-          <IconButton detail={detail} icon={icon} key={index} link={link} title={title} />
-        ))}
+        {displayedButtons.map(({ icon, title, link, detail }, index) =>
+          link === 'invite' ? (
+            <div
+              className='bg-white-bg rounded-24 flex h-[4.75rem] w-[20.375rem] shadow-lg'
+              key={index}
+              onClick={inviteAttendee}
+            >
+              <div className='mx-12 self-center'>
+                <GoPersonAdd size={45} />
+              </div>
+              <div className='flex flex-col self-center'>
+                <h1 className='text-[1.25rem] font-bold'>{title}</h1>
+                <p className='text-[0.8rem]'>{detail}</p>
+              </div>
+              <div className='my-12 ml-auto px-12'>
+                <MdNavigateNext size={25} />
+              </div>
+            </div>
+          ) : (
+            <IconButton detail={detail} icon={icon} key={index} link={link} title={title} />
+          ),
+        )}
       </div>
       {!seeMore ? (
         <button

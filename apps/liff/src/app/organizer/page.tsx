@@ -19,8 +19,6 @@ const SearchContainer = () => {
 };
 
 import { Events } from '@sommhai/shared-type/src';
-import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
 
 import EventCard from '@/components/organizer/EventCard';
 import { API_BASE_URL } from '@/env';
@@ -64,15 +62,15 @@ const EventContainer = () => {
 };
 
 function OrganizerPage() {
-  const session = useSession();
-  const router = useRouter();
-  const [loaded, setLoad] = React.useState(false);
-  useEffect(() => {
-    if (session.status === 'unauthenticated') {
-      router.push('/auth');
-      setLoad(true);
-    }
-  }, []);
+  // const session = useSession();
+  // const router = useRouter();
+  // const [loaded, setLoad] = React.useState(false);
+  // useEffect(() => {
+  //   if (session.status === 'unauthenticated') {
+  //     router.push('/auth');
+  //     setLoad(true);
+  //   }
+  // }, []);
   return (
     <div className='bg-g flex h-screen w-screen flex-col'>
       <HeaderBurgur name='Home' />
