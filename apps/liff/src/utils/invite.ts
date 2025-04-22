@@ -2,7 +2,7 @@ import liff from '@line/liff';
 
 import { LIFF_ID, LIFF_URL } from '@/env';
 
-export async function inviteAttendee() {
+export async function inviteAttendee(eventId: string) {
   const result = await liff.init({ liffId: LIFF_ID }).then(() =>
     liff.shareTargetPicker([
       {
@@ -89,7 +89,7 @@ export async function inviteAttendee() {
                 action: {
                   type: 'uri',
                   label: 'View',
-                  uri: `${LIFF_URL}/attendee`,
+                  uri: `${LIFF_URL}/attendee/event/${eventId}`,
                 },
                 height: 'sm',
                 color: '#F6BB0A',

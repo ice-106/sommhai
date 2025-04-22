@@ -40,7 +40,6 @@ const EventContainer = () => {
         })
           .then((res) => res.json())
           .then((data) => {
-            console.log(data);
             setEvents(data);
             setLoading(false);
           });
