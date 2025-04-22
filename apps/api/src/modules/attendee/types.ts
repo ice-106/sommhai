@@ -37,3 +37,12 @@ export type InviteEntity = Prisma.InviteGetPayload<{
     user: true;
   };
 }>;
+
+export interface RespondWithQuestionsOptions {
+  inviteId: string;
+  accepted: boolean;
+  responses: {
+    questionId: string;
+    answer: string;
+  }[];
+}

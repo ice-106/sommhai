@@ -147,7 +147,7 @@ export const UserService = {
 
     return { users, total };
   },
-  getUserHistory: async ({ uid, take, skip, search }: GetUserHistoryOptions) => {
+  getUserHistory: async ({ uid, take, skip }: GetUserHistoryOptions) => {
     try {
       const user = await prisma.user.findUnique({
         where: { uid },

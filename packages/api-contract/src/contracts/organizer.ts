@@ -1,10 +1,9 @@
 import {
   eventInviteBaseInfo,
+  eventInviteWithResponsesOutput,
   eventInvResponse,
   eventInvSend,
   eventOrganizerInfo,
-  leaderboardData,
-  leaderboardEntry,
   questionBaseInfo,
 } from '@sommhai/shared-type';
 import { initContract } from '@ts-rest/core';
@@ -274,60 +273,23 @@ export const organizerContract = c.router({
       500: z.object({ message: z.string() }),
     },
   },
-  getLeaderboard: {
-    method: 'GET',
-    path: '/org/events/:eventId/leaderboard',
-    pathParams: z.object({
-      eventId: z.string(),
-    }),
-    responses: {
-      200: leaderboardData,
-      404: z.object({ message: z.string() }),
-      500: z.object({ message: z.string() }),
-    },
-  },
-  createLeaderboard: {
-    method: 'POST',
-    path: '/org/events/:eventId/leaderboard',
-    pathParams: z.object({
-      eventId: z.string(),
-    }),
-    body: z.object({
-      uid: z.string(),
-      score: z.number().optional(),
-    }),
-    responses: {
-      201: leaderboardEntry,
-      404: z.object({ message: z.string() }),
-      500: z.object({ message: z.string() }),
-    },
-  },
-  updateLeaderboard: {
+  respondOrganizerInviteWithQuestions: {
     method: 'PUT',
-    path: '/org/events/:eventId/leaderboard/:entryId',
+    path: '/org/events/:inviteId/respond-with-questions',
     pathParams: z.object({
-      eventId: z.string(),
-      entryId: z.string(),
+      inviteId: z.string(),
     }),
     body: z.object({
-      uid: z.string().optional(),
-      score: z.number().optional(),
+      accepted: z.boolean(),
+      responses: z.array(
+        z.object({
+          questionId: z.string(),
+          answer: z.string(),
+        }),
+      ),
     }),
     responses: {
-      200: leaderboardEntry,
-      404: z.object({ message: z.string() }),
-      500: z.object({ message: z.string() }),
-    },
-  },
-  deleteLeaderboardEntry: {
-    method: 'DELETE',
-    path: '/org/events/:eventId/leaderboard/:entryId',
-    pathParams: z.object({
-      eventId: z.string(),
-      entryId: z.string(),
-    }),
-    responses: {
-      204: leaderboardEntry,
+      200: eventInviteWithResponsesOutput,
       404: z.object({ message: z.string() }),
       500: z.object({ message: z.string() }),
     },

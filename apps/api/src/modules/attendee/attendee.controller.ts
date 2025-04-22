@@ -21,17 +21,22 @@ export const AttendeeController: RouterImplementation<typeof contract.attendee> 
       body: events.map((event) => AttendeeAdapter.toEventAttendeeInfo(event)),
     };
   },
-  getAtdEventLeaderboard: async ({ params: { eventId } }) => {
-    const leaderboard = await AttendeeService.getAtdEventLeaderboard({ eventId });
-    return {
-      status: 200,
-      body: leaderboard.map((entry) => AttendeeAdapter.toLeaderboardEntry(entry)),
-    };
-  },
   respondAttendeeInvite: async ({ params: { inviteId }, body: { accept } }) => {
     const result = await AttendeeService.respondToInvite({
       inviteId,
       accept: accept ?? false,
+    });
+
+    return {
+      status: 200,
+      body: result,
+    };
+  },
+  respondAttendeeInviteWithQuestions: async ({ params: { inviteId }, body: { accepted, responses } }) => {
+    const result = await AttendeeService.respondToInviteWithQuestions({
+      inviteId,
+      accepted,
+      responses,
     });
 
     return {
