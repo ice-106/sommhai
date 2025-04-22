@@ -61,7 +61,7 @@ export const organizerContract = c.router({
     }),
     body: z.object({
       name: z.string().optional(),
-      date: z.date().optional(),
+      date: z.string().datetime().optional(),
       time: z.date().optional(),
       location: z.string().optional(),
       description: z.string().optional(),
@@ -73,6 +73,18 @@ export const organizerContract = c.router({
     }),
     responses: {
       201: eventOrganizerInfo,
+      500: z.object({ message: z.string() }),
+    },
+  },
+  deleteEvent: {
+    method: 'DELETE',
+    path: '/org/events/:eventId',
+    pathParams: z.object({
+      eventId: z.string(),
+    }),
+    responses: {
+      204: eventOrganizerInfo,
+      404: z.object({ message: z.string() }),
       500: z.object({ message: z.string() }),
     },
   },

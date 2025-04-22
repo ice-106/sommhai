@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 
 import Loading from '@/components/common/loading';
+import { API_BASE_URL } from '@/env';
 
 // Define question types
 type QuestionType = 'text' | 'radio' | 'checkbox';
@@ -26,52 +27,33 @@ interface EventData {
 
 export default function EventQuestionnairePage() {
   const params = useParams();
-  const eventId = params?.eventId as string;
+  const eventId = params?.id as string;
+  const inviteId = params?.inv as string;
   const [currentStep, setCurrentStep] = useState(0);
-  const [completed, setCompleted] = useState(false);
+  const [currentQuestion, setCurrentQuestion] = useState<Question | null>(null);
+  const [completed, setCompleted] = useState(true);
   const [loading, setLoading] = useState(true);
   const [answers, setAnswers] = useState<Record<string, any>>({});
   const [eventData, setEventData] = useState<EventData | null>(null);
+  const [returning, setReturning] = useState(false);
   const router = useRouter();
 
   // Fetch event data and questions
   useEffect(() => {
     function fetchEventData() {
       try {
-        // In a real app, fetch from your API
-        // const response = await fetch(`${API_BASE_URL}/events/${eventId}`);
-        // const data = await response.json();
-
-        // For demo purposes, use sample data
-        setTimeout(() => {
-          setEventData({
-            eventId: eventId || 'event123',
-            eventName: 'Birthday Party',
-            questions: [
-              {
-                id: 'name',
-                text: "What's your full name?",
-                type: 'text',
-                required: true,
-              },
-              {
-                id: 'attending',
-                text: 'Will you be attending?',
-                type: 'radio',
-                options: ["Yes, I'll be there!", "No, I can't make it", "Maybe, I'll let you know later"],
-                required: true,
-              },
-              {
-                id: 'food',
-                text: 'What food options would you prefer?',
-                type: 'checkbox',
-                options: ['Pizza', 'Burgers', 'Salad', 'Desserts'],
-                required: true,
-              },
-            ],
+        fetch(`${API_BASE_URL}/org/events/${eventId}/questions`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            console.log('Event', data);
+            setEventData(data);
+            setLoading(false);
           });
-          setLoading(false);
-        }, 500);
       } catch (error) {
         console.error('Error fetching event data:', error);
         setLoading(false);
@@ -146,9 +128,44 @@ export default function EventQuestionnairePage() {
   };
 
   // Handle return button
-  const handleReturn = () => {
-    window.location.href = '/attendee'; // Using direct navigation for simplicity
-  };
+  useEffect(() => {
+    const handleComplete = () => {
+      if (returning == true) setLoading(true);
+      fetch(`${API_BASE_URL}/atd/events/${inviteId}/response-with-questions`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          accepted: true,
+          responses: [
+            {
+              questionId: 'name',
+              answer: answers['name'],
+            },
+            {
+              questionId: 'attending',
+              answer: answers['attending'],
+            },
+            {
+              questionId: 'food',
+              answer: answers['food'],
+            },
+          ],
+        }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          setLoading(false);
+        });
+    };
+
+    if (loading == false && completed == true) {
+      router.push(`/attendee`);
+    }
+
+    handleComplete();
+  }, [completed, inviteId, answers, router, loading, returning]);
 
   if (loading) {
     return <Loading />;
@@ -163,15 +180,6 @@ export default function EventQuestionnairePage() {
       </div>
     );
   }
-
-  // useEffect(() => {
-  //   // Scroll to the top of the page when the question changes
-  //   setCurrentQuestion(eventData.questions[currentStep] || null);
-  //   if (eventData.questions[currentStep] == null) {
-  //     router.push('/attendee');
-  //   }
-  // }, [currentStep, eventData, router]);
-  const currentQuestion = eventData.questions[currentStep];
 
   // Render completion screen
   if (completed) {
@@ -193,7 +201,9 @@ export default function EventQuestionnairePage() {
 
           <button
             className='w-full rounded-xl border border-orange-400 px-4 py-12 font-semibold text-orange-400'
-            onClick={handleReturn}
+            onClick={() => {
+              setReturning(true);
+            }}
           >
             Return
           </button>

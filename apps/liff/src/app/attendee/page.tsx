@@ -1,6 +1,6 @@
 'use client';
 import { SlidersHorizontal } from 'lucide-react';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Suspense } from 'react';
 
 import HeaderBurgur from '@/components/common/HeaderBurgur';
@@ -20,15 +20,18 @@ const SearchContainer = () => {
 import { Events } from '@sommhai/shared-type/src';
 
 import AtdEventCard from '@/components/attendee/AtdEventCard';
+import { LiffContext } from '@/contexts/global/liff';
 import { API_BASE_URL } from '@/env';
 
 const EventContainer = () => {
   const [events, setEvents] = useState<Events[]>([]);
   const [loading, setLoading] = useState(true);
+  const { userId } = useContext(LiffContext);
+
   useEffect(() => {
     function fetchEvents() {
       try {
-        const res = fetch(`${API_BASE_URL}/atd/events`, {
+        const res = fetch(`${API_BASE_URL}/org/events?userId=${userId}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -47,28 +50,34 @@ const EventContainer = () => {
     }
 
     fetchEvents();
-  }, []);
+  }, [userId]);
   if (loading) {
     return <Loading />;
   }
   return (
-    <>
+    <div className='flex h-full w-full flex-col gap-5 overflow-y-auto'>
       {events.map((event) => (
-        <AtdEventCard date={event.date} key={event.eid} link={event.eid} name={event.name} />
+        <AtdEventCard
+          date={event.date}
+          detail={event.description ?? ''}
+          key={event.eid}
+          link={event.eid}
+          name={event.name}
+        />
       ))}
-    </>
+    </div>
   );
 };
 
 function OrganizerPage() {
   return (
-    <div className='bg-g flex h-screen w-screen flex-col'>
+    <div className='flex h-full w-full flex-col'>
       <HeaderBurgur name='Your Events' />
       <div className='my-5 flex w-full items-center gap-2 px-7'>
         <SearchContainer />
         <SlidersHorizontal />
       </div>
-      <div className='mx-24 flex h-[69%] flex-col gap-16 overflow-y-auto'>
+      <div className='mx-24 flex h-[75%] w-full flex-col gap-16 overflow-y-auto pt-12'>
         <EventContainer />
       </div>
     </div>

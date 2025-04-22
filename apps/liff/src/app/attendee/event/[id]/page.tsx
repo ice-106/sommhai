@@ -1,46 +1,110 @@
 'use client';
+import { Events } from '@sommhai/shared-type/src';
 import { Circle, User } from 'lucide-react';
-import Image from 'next/image';
+import Link from 'next/link';
 import { useParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
+import { useContext, useEffect, useState } from 'react';
 
-import AtdEventText from '@/components/attendee/event/AtdEventText';
-import AtdMessage from '@/components/attendee/event/AtdMessageText';
+import DetailForm from '@/components/attendee/Detail';
+import Message from '@/components/attendee/Message';
 import { AcceptButton } from '@/components/common/acceptdeny-button';
 import AddtoCalendar from '@/components/common/AddtoCalendar-Button';
 import HeaderBurgur from '@/components/common/HeaderBurgur';
+import { LiffContext } from '@/contexts/global/liff';
+import { API_BASE_URL } from '@/env';
 
 export default function AtdEventPage() {
+  const router = useRouter();
   const params = useParams();
   const id = params?.id as string;
+  const { userId } = useContext(LiffContext);
+  const [event, setEvent] = useState<Events | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [inv, setInv] = useState('');
+  const [accepted, setAccepted] = useState(false);
+  useEffect(() => {
+    console.log(event);
+    fetch(`${API_BASE_URL}/org/events/${id}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        const eventData = {
+          ...data,
+          date: new Date(data.date).toISOString().split('T')[0], // Ensure date is formatted for input
+        };
+        setEvent(eventData as Events);
+      });
+  }, [id]);
+  useEffect(() => {
+    const handleAccept = () => {
+      if (accepted == true) setLoading(true);
+      fetch(`${API_BASE_URL}/org/events/${id}/inv`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          uids: [userId],
+        }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.invites && Array.isArray(data.invites) && data.invites.length > 0) {
+            console.log('inv', data.invites[0].inviteId);
+            setInv(data.invites[0].inviteId);
+          }
+          setLoading(false);
+        });
+    };
+    if (inv !== '') {
+      console.log('inv', inv);
+
+      if (loading == false && accepted == true) {
+        router.push(`/attendee/event/${id}/${inv}/questions`);
+      }
+    }
+    handleAccept();
+  }, [userId, accepted, id]);
+
   return (
     <div className='flex h-screen w-screen flex-col'>
-      <HeaderBurgur name={id} />
+      <HeaderBurgur name={'Events'} />
       <div className='flex flex-1 flex-col items-center justify-between gap-24 px-24 py-16'>
-        <div className='bg-orange-3 flex h-[420px] w-[300px] flex-col justify-center justify-items-center text-center'>
-          <Image alt={'Event Picture'} height='420' src={'/file.svg'} width='300' />
+        <div className='flex flex-col items-center justify-center gap-24'>
+          <DetailForm eid={id} />
         </div>
         <div className='flex flex-col items-center justify-center gap-24'>
-          <AtdEventText />
-        </div>
-        <div className='flex flex-col items-center justify-center gap-24'>
-          <AtdMessage />
+          <Message message={event?.message ?? ''} />
           <div className='mt-[-15px] flex w-full items-center justify-center gap-16'>
             <Circle className='text-grey-light bg-grey-light border-grey-light !size-36 rounded-full border-[3px]'>
               <User className='text-black-pure' />
             </Circle>
-            <h1 className='text-bold-20'>Organizer A</h1>
+            <h1 className='text-bold-20 py-2'>{event?.host}</h1>
           </div>
         </div>
         <div className='flex flex-col items-center justify-center'>
           <AddtoCalendar />
         </div>
         <div className='mt-[-15px] flex h-[100px] w-full items-center justify-center gap-[29px]'>
-          <AcceptButton className='h-[64px] w-[155px]' variant={'Accept'}>
+          <AcceptButton
+            className='h-[64px] w-[155px]'
+            variant={'Accept'}
+            onClick={() => {
+              setAccepted(true);
+            }}
+          >
             Accept
           </AcceptButton>
-          <AcceptButton className='h-[64px] w-[155px]' variant={'Deny'}>
-            Deny
-          </AcceptButton>
+          <Link href={`/attendee`}>
+            <AcceptButton className='h-[64px] w-[155px]' variant={'Deny'}>
+              Deny
+            </AcceptButton>
+          </Link>
         </div>
       </div>
     </div>

@@ -6,6 +6,7 @@ export * from './libs/user';
 export interface Events {
   eid: string;
   name: string;
+  message: string | null;
   date: Date;
   time: Date;
   picture: string[];
@@ -15,9 +16,6 @@ export interface Events {
   memory: string | null;
   host: string;
   host_uid: string;
-  attendees: Attendee[];
-  attendings: Attendee[];
-  organizers: Organizer[];
   status: string;
 }
 
