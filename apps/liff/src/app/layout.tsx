@@ -8,7 +8,6 @@ import { Poppins } from 'next/font/google';
 import { StrictMode } from 'react';
 
 import AppLayout from '@/components/common/layout';
-import AuthProvider from '@/contexts/global/auth';
 import { LiffProvider } from '@/contexts/global/liff';
 import { QueryProvider } from '@/contexts/global/query';
 import { CLIENT_ID } from '@/env';
@@ -34,15 +33,15 @@ export default function RootLayout({
     <html lang='en'>
       <body className={`${poppins.variable} antialiased`}>
         <StrictMode>
-          <AuthProvider>
-            <QueryProvider>
-              <LiffProvider>
-                <GoogleOAuthProvider clientId={CLIENT_ID}>
-                  <AppLayout>{children}</AppLayout>
-                </GoogleOAuthProvider>
-              </LiffProvider>
-            </QueryProvider>
-          </AuthProvider>
+          {/* <AuthProvider> */}
+          <QueryProvider>
+            <LiffProvider>
+              <GoogleOAuthProvider clientId={CLIENT_ID}>
+                <AppLayout>{children}</AppLayout>
+              </GoogleOAuthProvider>
+            </LiffProvider>
+          </QueryProvider>
+          {/* </AuthProvider> */}
         </StrictMode>
       </body>
     </html>
