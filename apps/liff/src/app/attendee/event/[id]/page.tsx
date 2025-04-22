@@ -4,6 +4,7 @@ import { useParams } from 'next/navigation';
 
 import AtdEventText from '@/components/attendee/event/AtdEventText';
 import AtdMessage from '@/components/attendee/event/AtdMessageText';
+import AddtoCalendar from '@/components/common/AddtoCalendar-Button';
 import HeaderBurgur from '@/components/common/HeaderBurgur';
 
 export default function AtdEventPage() {
@@ -27,6 +28,9 @@ export default function AtdEventPage() {
             </Circle>
             <h1 className='text-bold-20'>Organizer A</h1>
           </div>
+        </div>
+        <div className='flex h-[122px] w-[292px] flex-col items-center justify-center'>
+          <AddtoCalendar />
         </div>
       </div>
     </div>
