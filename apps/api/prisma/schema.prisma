@@ -33,13 +33,13 @@ model Event {
   date        DateTime
   time        DateTime
   picture     String[]
-  location    String
+  location    String?
   description String?
   invite_list Int
   memory      String?
   host        String
   host_uid    String
-  status      String
+  status      String @default("UPCOMING")
   message     String?
   hostUser    User            @relation(fields: [host_uid], references: [uid], onDelete: Cascade)
   histories   History[]

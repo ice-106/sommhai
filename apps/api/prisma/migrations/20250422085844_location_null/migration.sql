@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Event" ALTER COLUMN "location" DROP NOT NULL,
+ALTER COLUMN "status" SET DEFAULT 'UPCOMING';
