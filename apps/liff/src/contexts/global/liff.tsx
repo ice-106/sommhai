@@ -23,7 +23,7 @@ export function LiffProvider({ children }: { children: React.ReactNode }): React
       .then((liff) => liff.default)
       .then((liff) => {
         liff
-          .init({ liffId: process.env.NEXT_PUBLIC_LIFF_ID! })
+          .init({ liffId: process.env.LIFF_ID! })
           .then(() => {
             console.log('LIFF init succeeded.');
             setLiffObject(liff);
