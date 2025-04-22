@@ -1,4 +1,4 @@
-import { EventEntity, InviteEntity, LeaderboardEntity } from './types';
+import { EventEntity, InviteEntity } from './types';
 
 export const AttendeeAdapter = {
   toEventAttendeeInfo: (event: EventEntity) => {
@@ -19,14 +19,6 @@ export const AttendeeAdapter = {
       organizers: event.organizers,
       status: event.status,
       message: event.message,
-    };
-  },
-  toLeaderboardEntry: (entry: LeaderboardEntity) => {
-    return {
-      entryId: entry.id,
-      uid: entry.uid,
-      eid: entry.eid,
-      score: entry.score,
     };
   },
   toEventInviteInfo: (invite: InviteEntity) => {

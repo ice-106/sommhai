@@ -1,26 +1,23 @@
 import { InviteRole, Prisma, QuestionType } from '@prisma/client';
 
-import { ConflictException, InternalServerErrorException, NotFoundException } from '../../common/exception/http';
+import { InternalServerErrorException, NotFoundException } from '../../common/exception/http';
 import prisma from '../../common/libs/prisma';
 import {
   CreateEventInviteOptions,
   CreateEventOptions,
-  CreateLeaderboardOptions,
   CreateManyEventQuestionOptions,
   DeleteAllEventQuestionOptions,
   DeleteEventInviteOptions,
-  DeleteLeaderboardEntryOptions,
   DeleteManyEventQuestionOptions,
   GetEventInviteOptions,
-  GetEventLeaderboardOptions,
   GetEventOptions,
   GetEventQuestionOptions,
   GetManyEventInvitesOptions,
   GetManyEventQuestionOptions,
   GetManyEventsOptions,
   RespondToEventInviteOptions,
+  RespondWithQuestionsOptions,
   UpdateEventQuestionOptions,
-  UpdateLeaderboardOptions,
 } from './types';
 
 export const OrganizerService = {
@@ -680,162 +677,124 @@ export const OrganizerService = {
       throw new InternalServerErrorException('Failed to delete all event questions');
     }
   },
-  getEventLeaderboard: async ({ eventId }: GetEventLeaderboardOptions) => {
+  respondToInviteWithQuestions: async ({ inviteId, accepted, responses }: RespondWithQuestionsOptions) => {
     try {
-      const event = await prisma.event.findUnique({
-        where: { eid: eventId },
-      });
-
-      if (!event) {
-        throw new NotFoundException(`Event with ID ${eventId} not found`);
-      }
-
-      const leaderboardEntries = await prisma.leaderboard.findMany({
-        where: { eid: eventId },
-        orderBy: { score: 'desc' },
-      });
-
-      return leaderboardEntries;
-    } catch (error) {
-      if (error instanceof NotFoundException) {
-        throw error;
-      }
-      console.error('Error getting event leaderboard:', error);
-      throw new InternalServerErrorException(error, 'Failed to get event leaderboard');
-    }
-  },
-  createLeaderboard: async ({ eventId, uid, score = 0 }: CreateLeaderboardOptions) => {
-    try {
-      const event = await prisma.event.findUnique({
-        where: { eid: eventId },
-      });
-
-      if (!event) {
-        throw new NotFoundException(`Event with ID ${eventId} not found`);
-      }
-
-      const user = await prisma.user.findUnique({
-        where: { uid },
-      });
-
-      if (!user) {
-        throw new NotFoundException(`User with ID ${uid} not found`);
-      }
-
-      const existingEntry = await prisma.leaderboard.findFirst({
-        where: {
-          eid: eventId,
+      const invite = await prisma.invite.findUnique({
+        where: { id: inviteId },
+        include: {
+          event: {
+            include: {
+              questions: true,
+            },
+          },
         },
       });
 
-      if (existingEntry) {
-        throw new ConflictException(`Leaderboard entry with name '${name}' already exists`);
+      if (!invite) {
+        throw new NotFoundException('Invitation not found');
       }
 
-      const newEntry = await prisma.leaderboard.create({
-        data: {
-          uid: uid,
-          eid: eventId,
-          name: '',
-          score,
-        },
+      await prisma.invite.update({
+        where: { id: inviteId },
+        data: { accept: accepted },
       });
 
-      return newEntry;
-    } catch (error) {
-      if (error instanceof NotFoundException || error instanceof ConflictException) {
-        throw error;
-      }
-      console.error('Error creating leaderboard entry:', error);
-      throw new InternalServerErrorException(error, 'Failed to create leaderboard entry');
-    }
-  },
-  updateLeaderboard: async ({ eventId, entryId, updates }: UpdateLeaderboardOptions) => {
-    try {
-      const event = await prisma.event.findUnique({
-        where: { eid: eventId },
-      });
+      const responseResults = [];
 
-      if (!event) {
-        throw new NotFoundException(`Event with ID ${eventId} not found`);
-      }
+      if (responses && responses.length > 0) {
+        for (const response of responses) {
+          const questionExists = invite.event.questions.some((q) => q.id === response.questionId);
+          if (!questionExists) {
+            continue;
+          }
 
-      const existingEntry = await prisma.leaderboard.findFirst({
-        where: {
-          id: entryId,
-          eid: eventId,
-        },
-      });
+          const existingResponse = await prisma.questionResponse.findUnique({
+            where: {
+              questionId_userId: {
+                questionId: response.questionId,
+                userId: invite.userId,
+              },
+            },
+          });
 
-      if (!existingEntry) {
-        throw new NotFoundException(`Leaderboard entry '${entryId}' not found for this event`);
-      }
+          if (existingResponse) {
+            await prisma.questionResponse.update({
+              where: {
+                id: existingResponse.id,
+              },
+              data: {
+                answer: response.answer,
+              },
+            });
+          } else {
+            await prisma.questionResponse.create({
+              data: {
+                questionId: response.questionId,
+                userId: invite.userId,
+                answer: response.answer,
+              },
+            });
+          }
 
-      if (updates.uid == existingEntry.uid) {
-        const entryWithNewName = await prisma.leaderboard.findUnique({
-          where: { uid_eid: { uid: existingEntry.uid, eid: eventId } },
-        });
-
-        if (entryWithNewName) {
-          throw new ConflictException(`Leaderboard entry with name '${updates.uid}' already exists`);
+          responseResults.push({
+            questionId: response.questionId,
+            submitted: true,
+          });
         }
       }
 
-      const updatedEntry = await prisma.leaderboard.update({
-        where: {
-          uid_eid: {
-            uid: existingEntry.uid,
-            eid: eventId,
-          },
-        },
-        data: updates,
-      });
+      if (accepted) {
+        if (invite.role === InviteRole.ORGANIZER) {
+          const existingOrganizer = await prisma.organizer.findUnique({
+            where: {
+              uid_eid: {
+                uid: invite.userId,
+                eid: invite.event.eid,
+              },
+            },
+          });
 
-      return updatedEntry;
-    } catch (error) {
-      if (error instanceof NotFoundException || error instanceof ConflictException) {
-        throw error;
+          if (!existingOrganizer) {
+            await prisma.organizer.create({
+              data: {
+                uid: invite.userId,
+                eid: invite.event.eid,
+              },
+            });
+
+            const existingAttendee = await prisma.attendee.findUnique({
+              where: {
+                uid_eid: {
+                  uid: invite.userId,
+                  eid: invite.event.eid,
+                },
+              },
+            });
+
+            if (!existingAttendee) {
+              await prisma.attendee.create({
+                data: {
+                  uid: invite.userId,
+                  eid: invite.event.eid,
+                },
+              });
+            }
+          }
+        }
       }
-      console.error('Error updating leaderboard entry:', error);
-      throw new InternalServerErrorException(error, 'Failed to update leaderboard entry');
-    }
-  },
-  deleteLeaderboardEntry: async ({ eventId }: DeleteLeaderboardEntryOptions) => {
-    try {
-      const event = await prisma.event.findUnique({
-        where: { eid: eventId },
-      });
 
-      if (!event) {
-        throw new NotFoundException(`Event with ID ${eventId} not found`);
-      }
-
-      const existingEntry = await prisma.leaderboard.findFirst({
-        where: {
-          eid: eventId,
-        },
-      });
-
-      if (!existingEntry) {
-        throw new NotFoundException(`Leaderboard entry not found for this event`);
-      }
-
-      await prisma.leaderboard.delete({
-        where: {
-          uid_eid: {
-            uid: existingEntry.uid,
-            eid: eventId,
-          },
-        },
-      });
-
-      return existingEntry;
+      return {
+        iid: invite.id,
+        eventId: invite.event.eid,
+        accepted,
+        responses: responseResults,
+      };
     } catch (error) {
       if (error instanceof NotFoundException) {
         throw error;
       }
-      console.error('Error deleting leaderboard entry:', error);
-      throw new InternalServerErrorException(error, 'Failed to delete leaderboard entry');
+      console.error('Error responding to invitation with questions:', error);
+      throw new InternalServerErrorException('Failed to respond to invitation');
     }
   },
 };

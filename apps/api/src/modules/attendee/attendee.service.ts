@@ -3,10 +3,10 @@ import { InviteRole } from '@prisma/client';
 import { InternalServerErrorException, NotFoundException } from '../../common/exception/http';
 import prisma from '../../common/libs/prisma';
 import {
-  GetEventLeaderboardOptions,
   GetEventOptions,
   GetManyEventsOptions,
   RespondToEventInviteOptions,
+  RespondWithQuestionsOptions,
 } from './types';
 
 export const AttendeeService = {
@@ -61,30 +61,6 @@ export const AttendeeService = {
     }
 
     return event;
-  },
-  getAtdEventLeaderboard: async ({ eventId }: GetEventLeaderboardOptions) => {
-    try {
-      const event = await prisma.event.findUnique({
-        where: { eid: eventId },
-      });
-
-      if (!event) {
-        throw new NotFoundException(`Event with ID ${eventId} not found`);
-      }
-
-      const leaderboardEntries = await prisma.leaderboard.findMany({
-        where: { eid: eventId },
-        orderBy: { score: 'desc' },
-      });
-
-      return leaderboardEntries;
-    } catch (error) {
-      if (error instanceof NotFoundException) {
-        throw error;
-      }
-      console.error('Error getting event leaderboard:', error);
-      throw new InternalServerErrorException(error, 'Failed to get event leaderboard');
-    }
   },
   respondToInvite: async ({ inviteId, accept }: RespondToEventInviteOptions) => {
     try {
@@ -169,6 +145,111 @@ export const AttendeeService = {
         throw error;
       }
       console.error('Error responding to invitation:', error);
+      throw new InternalServerErrorException('Failed to respond to invitation');
+    }
+  },
+  respondToInviteWithQuestions: async ({ inviteId, accepted, responses }: RespondWithQuestionsOptions) => {
+    try {
+      const invite = await prisma.invite.findUnique({
+        where: { id: inviteId },
+        include: {
+          event: {
+            include: {
+              questions: true,
+            },
+          },
+        },
+      });
+
+      if (!invite) {
+        throw new NotFoundException('Invitation not found');
+      }
+
+      if (invite.role !== InviteRole.ATTENDEE) {
+        throw new NotFoundException('Only attendees can respond to attendee invitations');
+      }
+      await prisma.invite.update({
+        where: { id: inviteId },
+        data: { accept: accepted },
+      });
+
+      const responseResults = [];
+
+      if (responses && responses.length > 0) {
+        for (const response of responses) {
+          const questionExists = invite.event.questions.some((q) => q.id === response.questionId);
+          if (!questionExists) {
+            continue;
+          }
+
+          const existingResponse = await prisma.questionResponse.findUnique({
+            where: {
+              questionId_userId: {
+                questionId: response.questionId,
+                userId: invite.userId,
+              },
+            },
+          });
+
+          if (existingResponse) {
+            await prisma.questionResponse.update({
+              where: {
+                id: existingResponse.id,
+              },
+              data: {
+                answer: response.answer,
+              },
+            });
+          } else {
+            await prisma.questionResponse.create({
+              data: {
+                questionId: response.questionId,
+                userId: invite.userId,
+                answer: response.answer,
+              },
+            });
+          }
+
+          responseResults.push({
+            questionId: response.questionId,
+            submitted: true,
+          });
+        }
+      }
+
+      if (accepted) {
+        if (invite.role === InviteRole.ATTENDEE) {
+          const existingAttendee = await prisma.attendee.findUnique({
+            where: {
+              uid_eid: {
+                uid: invite.userId,
+                eid: invite.event.eid,
+              },
+            },
+          });
+
+          if (!existingAttendee) {
+            await prisma.attendee.create({
+              data: {
+                uid: invite.userId,
+                eid: invite.event.eid,
+              },
+            });
+          }
+        }
+      }
+
+      return {
+        iid: invite.id,
+        eventId: invite.event.eid,
+        accepted,
+        responses: responseResults,
+      };
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      console.error('Error responding to invitation with questions:', error);
       throw new InternalServerErrorException('Failed to respond to invitation');
     }
   },

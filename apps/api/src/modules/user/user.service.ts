@@ -69,7 +69,6 @@ export const UserService = {
         mediaTaken: true,
         invites: true,
         responses: true,
-        leaderboard: true,
       },
     });
 
@@ -89,7 +88,6 @@ export const UserService = {
         mediaTaken: true,
         invites: true,
         responses: true,
-        leaderboard: true,
       },
     });
 
@@ -138,7 +136,6 @@ export const UserService = {
         mediaTaken: true,
         invites: true,
         responses: true,
-        leaderboard: true,
       },
       orderBy: {
         username: 'asc',
@@ -147,7 +144,7 @@ export const UserService = {
 
     return { users, total };
   },
-  getUserHistory: async ({ uid, take, skip, search }: GetUserHistoryOptions) => {
+  getUserHistory: async ({ uid, take, skip }: GetUserHistoryOptions) => {
     try {
       const user = await prisma.user.findUnique({
         where: { uid },

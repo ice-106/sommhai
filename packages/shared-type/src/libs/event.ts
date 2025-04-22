@@ -68,13 +68,6 @@ export const userResponseBaseInfo = z.object({
   updatedAt: z.date(),
 });
 
-export const leaderboardEntry = z.object({
-  entryId: z.string(),
-  uid: z.string(),
-  eid: z.string(),
-  score: z.number().nullable(),
-});
-
 export const historyBaseInfo = z.object({
   uid: z.string(),
   eid: z.string(),
@@ -82,7 +75,22 @@ export const historyBaseInfo = z.object({
   date: z.date(),
 });
 
-export const leaderboardData = z.array(leaderboardEntry);
+export const questionResponseInput = z.object({
+  questionId: z.string(),
+  answer: z.string().nullable(),
+});
+
+export const eventInviteWithResponsesOutput = z.object({
+  iid: z.string(),
+  eventId: z.string(),
+  accepted: z.boolean().nullable(),
+  responses: z.array(
+    z.object({
+      questionId: z.string(),
+      submitted: z.boolean(),
+    }),
+  ),
+});
 
 export const eventOrganizerInfo = eventBaseInfo;
 export const eventAttendeeInfo = eventBaseInfo;

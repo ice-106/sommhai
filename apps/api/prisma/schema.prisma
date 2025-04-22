@@ -24,7 +24,6 @@ model User {
   mediaTaken        Media[]
   invites           Invite[]
   responses         QuestionResponse[]
-  leaderboard       Leaderboard[]
 }
 
 model Event {
@@ -51,8 +50,6 @@ model Event {
   updates     Update[]
   invites     Invite[]
   questions   EventQuestion[]
-
-  Leaderboard Leaderboard[]
 }
 
 model Invite {
@@ -177,19 +174,3 @@ model Update {
   event           Event    @relation(fields: [eid], references: [eid], onDelete: Cascade)
 }
 
-model Leaderboard {
-  id        String   @id @default(cuid())
-  name      String
-  uid       String
-  eid       String
-  score     Int?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  user  User  @relation(fields: [uid], references: [uid], onDelete: Cascade)
-  event Event @relation(fields: [eid], references: [eid], onDelete: Cascade)
-
-  @@unique([uid, eid])
-  @@index([uid])
-  @@index([eid])
-}
