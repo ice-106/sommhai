@@ -2,13 +2,17 @@
 import { useParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 import { useContext, useEffect, useState } from 'react';
-import type { Events } from '@sommhai/shared-type/src';
-import HeaderBurgur from '@/components/common/HeaderBurgur';
+import { Circle, User } from 'lucide-react';
+import type { Events } from '@/types/event';
+import DetailForm from '@/components/attendee/Detail';
+import Message from '@/components/attendee/Message';
 import { AcceptButton } from '@/components/common/acceptdeny-button';
+import AddtoCalendar from '@/components/common/AddtoCalendar-Button';
+import HeaderBurgur from '@/components/common/HeaderBurgur';
 import { LiffContext } from '@/contexts/global/liff';
 import { API_BASE_URL } from '@/env';
 
-function AtdEventPage() {
+export default function AtdEventPage() {
   const router = useRouter();
   const params = useParams();
   const id = params?.id as string;
@@ -63,43 +67,71 @@ function AtdEventPage() {
     handleAccept();
   }, [userId, accepted, id]);
 
+  useEffect(() => {
+    const handleAccept = () => {
+      if (accepted == true) setLoading(true);
+      fetch(`${API_BASE_URL}/org/events/${id}/inv`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          uids: [userId],
+        }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data.invites[0].inviteId);
+          setInv(data.invites[0].inviteId);
+          setLoading(false);
+        });
+    };
+    if (inv !== '') {
+      console.log('inv', inv);
+
+      if (loading == false && accepted == true) {
+        router.push(`/attendee/event/${id}/${inv}/questions`);
+      }
+    }
+    handleAccept();
+  }, [userId, accepted, id]);
+
   return (
     <div className='flex h-screen w-screen flex-col'>
       <HeaderBurgur name={id} />
       <div className='flex flex-1 flex-col items-center justify-between gap-[10vh] px-24 py-32'>
-        <div
-          className='bg-orange-6 flex h-full w-full flex-col justify-center rounded-3xl text-center active:bg-gray-200'
-          onClick={() => handleChangePage(2)}
-        >
-          <h1 className='text-semi-24'>Event Details</h1>
-          <p className='text-medium-20'>Click to edit</p>
-        </div>
-        <div
-          className='bg-orange-3 rounded-24 active:bg-orange-4 flex h-full w-full flex-col justify-center text-center'
-          onClick={() => handleChangePage(3)}
-        >
-          <h1 className='text-semi-24'>Message</h1>
-          <p className='text-medium-20'>Click to edit</p>
-        </div>
-        <div className='flex flex-col items-center justify-center'>
-          <AddtoCalendar />
-        </div>
-        <div className='mt-[-15px] flex h-[100px] w-full items-center justify-center gap-[29px]'>
-          <AcceptButton
-            className='h-[64px] w-[155px]'
-            variant={'Accept'}
-            onClick={() => {
-              setAccepted(true);
-            }}
-          >
-            Accept
-          </AcceptButton>
-          <AcceptButton className='h-[64px] w-[155px]' variant={'Deny'}>
-            Deny
-          </AcceptButton>
+        <div className='flex w-full flex-col items-center justify-center gap-[20px]'>
+          <div className='flex flex-col items-center justify-center gap-24'>
+            <DetailForm eid={id} />
+          </div>
+          <div className='flex flex-col items-center justify-center gap-24'>
+            <Message message={event?.message ?? ''} />
+            <div className='mt-[-15px] flex w-full items-center justify-center gap-16'>
+              <Circle className='text-grey-light bg-grey-light border-grey-light !size-36 rounded-full border-[3px]'>
+                <User className='text-black-pure' />
+              </Circle>
+              <h1 className='text-bold-20 py-2'>{event?.host}</h1>
+            </div>
+          </div>
+          <div className='flex flex-col items-center justify-center'>
+            <AddtoCalendar />
+          </div>
+          <div className='mt-[-15px] flex h-[100px] w-full items-center justify-center gap-[29px]'>
+            <AcceptButton
+              className='h-[64px] w-[155px]'
+              variant={'Accept'}
+              onClick={() => {
+                setAccepted(true);
+              }}
+            >
+              Accept
+            </AcceptButton>
+            <AcceptButton className='h-[64px] w-[155px]' variant={'Deny'}>
+              Deny
+            </AcceptButton>
+          </div>
         </div>
       </div>
     </div>
   );
 }
-export default AtdEventPage;
