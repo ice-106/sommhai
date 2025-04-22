@@ -1,3 +1,5 @@
+import { InviteRole } from '@prisma/client';
+
 import { InternalServerErrorException, NotFoundException } from '../../common/exception/http';
 import prisma from '../../common/libs/prisma';
 import {
@@ -85,15 +87,89 @@ export const AttendeeService = {
     }
   },
   respondToInvite: async ({ inviteId, accept }: RespondToEventInviteOptions) => {
-    const response = await prisma.invite.update({
-      where: {
-        id: inviteId,
-      },
-      data: {
-        accept,
-      },
-    });
+    try {
+      const invite = await prisma.invite.findUnique({
+        where: { id: inviteId },
+      });
 
-    return response;
+      if (!invite) {
+        throw new NotFoundException('Invitation not found');
+      }
+
+      await prisma.invite.update({
+        where: { id: inviteId },
+        data: { accept },
+      });
+
+      if (accept) {
+        if (invite.role === InviteRole.ATTENDEE) {
+          const existingAttendee = await prisma.attendee.findUnique({
+            where: {
+              uid_eid: {
+                uid: invite.userId,
+                eid: invite.eventId,
+              },
+            },
+          });
+
+          if (!existingAttendee) {
+            await prisma.attendee.create({
+              data: {
+                uid: invite.userId,
+                eid: invite.eventId,
+              },
+            });
+          }
+        } else if (invite.role === InviteRole.ORGANIZER) {
+          const existingOrganizer = await prisma.organizer.findUnique({
+            where: {
+              uid_eid: {
+                uid: invite.userId,
+                eid: invite.eventId,
+              },
+            },
+          });
+
+          if (!existingOrganizer) {
+            await prisma.organizer.create({
+              data: {
+                uid: invite.userId,
+                eid: invite.eventId,
+              },
+            });
+
+            const existingAttendee = await prisma.attendee.findUnique({
+              where: {
+                uid_eid: {
+                  uid: invite.userId,
+                  eid: invite.eventId,
+                },
+              },
+            });
+
+            if (!existingAttendee) {
+              await prisma.attendee.create({
+                data: {
+                  uid: invite.userId,
+                  eid: invite.eventId,
+                },
+              });
+            }
+          }
+        }
+      }
+
+      return {
+        iid: invite.id,
+        eventId: invite.eventId,
+        accepted: accept,
+      };
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      console.error('Error responding to invitation:', error);
+      throw new InternalServerErrorException('Failed to respond to invitation');
+    }
   },
 };

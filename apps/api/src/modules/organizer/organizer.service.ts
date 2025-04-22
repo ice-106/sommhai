@@ -4,6 +4,7 @@ import { ConflictException, InternalServerErrorException, NotFoundException } fr
 import prisma from '../../common/libs/prisma';
 import {
   CreateEventInviteOptions,
+  CreateEventOptions,
   CreateLeaderboardOptions,
   CreateManyEventQuestionOptions,
   DeleteAllEventQuestionOptions,
@@ -109,35 +110,33 @@ export const OrganizerService = {
 
     return event;
   },
-  createEvent: async ({ event }: { event: Prisma.EventUncheckedCreateInput }) => {
+  createEvent: async ({ name, uid }: CreateEventOptions) => {
     try {
-      let testUser = await prisma.user.findFirst();
+      const user = await prisma.user.findUnique({
+        where: { uid },
+      });
 
-      if (!testUser) {
-        // Create a test user if none exists
-        testUser = await prisma.user.create({
-          data: {
-            phone: '1234567890',
-            email: 'test@example.com',
-            dob: new Date(),
-            pref_name: 'Test User',
-            first_name: 'Test',
-            last_name: 'User',
-            subscription_plan: 'free',
-          },
-        });
+      if (!user) {
+        throw new NotFoundException(`User with ID ${uid} not found`);
       }
 
       return await prisma.event.create({
         data: {
-          ...event,
-          host: testUser.pref_name,
-          host_uid: testUser.uid,
+          name,
+          date: new Date(),
+          time: new Date(),
+          location: '',
+          description: '',
+          invite_list: 0,
+          memory: '',
+          picture: [],
+          host: user.username,
+          host_uid: user.uid,
           status: 'Upcoming',
           attendees: {
             create: [
               {
-                uid: testUser.uid,
+                uid: uid,
               },
             ],
           },

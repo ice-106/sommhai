@@ -22,24 +22,14 @@ export const OrganizerController: RouterImplementation<typeof contract.organizer
       body: events.map((event) => OrganizerAdapter.toEventOrganizerInfo(event)),
     };
   },
-  createEvent: async ({ body: { name } }) => {
+  createEvent: async ({ body: { uid, name } }) => {
     const newEvent = await OrganizerService.createEvent({
-      event: {
-        name,
-        date: new Date(),
-        time: new Date(),
-        location: '',
-        description: '',
-        invite_list: 0,
-        memory: '',
-        picture: [],
-        host: '',
-        host_uid: '',
-        status: 'Upcoming',
-      },
+      uid,
+      name,
     });
 
     const event = await OrganizerService.getEvent({ eventId: newEvent.eid });
+
     return {
       status: 201,
       body: event,

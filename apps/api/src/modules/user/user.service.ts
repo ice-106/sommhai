@@ -2,29 +2,25 @@ import { Prisma } from '@prisma/client';
 
 import { ConflictException, InternalServerErrorException, NotFoundException } from '../../common/exception/http';
 import prisma from '../../common/libs/prisma';
-import { GetManyUsersOptions, GetUserOptions } from './types';
+import { CreateUserOptions, GetManyUsersOptions, GetUserOptions, UpdateUserOptions } from './types';
 
 export const UserService = {
-  createUser: async ({ user, email }: { user: string; email: string }) => {
+  createUser: async ({ uid, username }: CreateUserOptions) => {
     try {
       const existingUser = await prisma.user.findUnique({
         where: {
-          email,
+          uid,
+          username,
         },
       });
 
       if (existingUser) {
-        throw new ConflictException('User with this email already exists');
+        throw new ConflictException('User with this uid already exists');
       }
 
       const userData: Prisma.UserCreateInput = {
-        email,
-        pref_name: user,
-        first_name: user.split(' ')[0] || user,
-        last_name: user.split(' ').slice(1).join(' ') || '',
-        phone: '',
-        dob: new Date(),
-        subscription_plan: 'Free',
+        uid,
+        username,
       };
 
       const newUser = await prisma.user.create({
@@ -41,10 +37,41 @@ export const UserService = {
       throw new InternalServerErrorException('Failed to create user');
     }
   },
-  getUser: async ({ userId }: GetUserOptions) => {
+  updateUser: async ({ uid, userData }: UpdateUserOptions) => {
+    const existingUser = await prisma.user.findUnique({
+      where: {
+        uid,
+      },
+    });
+
+    if (!existingUser) {
+      throw new NotFoundException(`User with uid ${uid} not found`);
+    }
+
+    const updatedUser = await prisma.user.update({
+      where: {
+        uid,
+      },
+      data: userData,
+      include: {
+        attendees: true,
+        attendings: true,
+        organizers: true,
+        histories: true,
+        creates: true,
+        mediaTaken: true,
+        invites: true,
+        responses: true,
+        leaderboard: true,
+      },
+    });
+
+    return updatedUser;
+  },
+  getUser: async ({ uid }: GetUserOptions) => {
     const user = await prisma.user.findUnique({
       where: {
-        uid: userId,
+        uid,
       },
       include: {
         attendees: true,
@@ -72,25 +99,13 @@ export const UserService = {
       whereCondition = {
         OR: [
           {
-            first_name: {
+            uid: {
               contains: search,
               mode: 'insensitive' as Prisma.QueryMode,
             },
           },
           {
-            last_name: {
-              contains: search,
-              mode: 'insensitive' as Prisma.QueryMode,
-            },
-          },
-          {
-            pref_name: {
-              contains: search,
-              mode: 'insensitive' as Prisma.QueryMode,
-            },
-          },
-          {
-            email: {
+            username: {
               contains: search,
               mode: 'insensitive' as Prisma.QueryMode,
             },
@@ -119,7 +134,7 @@ export const UserService = {
         leaderboard: true,
       },
       orderBy: {
-        pref_name: 'asc',
+        username: 'asc',
       },
     });
 

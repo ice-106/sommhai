@@ -7,8 +7,8 @@ import { UserService } from './user.service';
 export const UserController: RouterImplementation<typeof contract.user> = {
   createUser: async ({ body }) => {
     const newUser = await UserService.createUser({
-      user: body.user,
-      email: body.email,
+      username: body.username,
+      uid: body.uid,
     });
 
     return {
@@ -16,8 +16,18 @@ export const UserController: RouterImplementation<typeof contract.user> = {
       body: UserAdapter.toUserInfo(newUser),
     };
   },
-  getUser: async ({ params: { userId } }) => {
-    const user = await UserService.getUser({ userId });
+  updateUser: async ({ params: { uid }, body }) => {
+    const updatedUser = await UserService.updateUser({
+      uid,
+      userData: body,
+    });
+    return {
+      status: 204,
+      body: UserAdapter.toUserInfo(updatedUser),
+    };
+  },
+  getUser: async ({ params: { uid } }) => {
+    const user = await UserService.getUser({ uid });
     return {
       status: 200,
       body: UserAdapter.toUserInfo(user),

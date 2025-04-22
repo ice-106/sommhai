@@ -12,12 +12,10 @@ async function main() {
   // Create Users
   const users = await prisma.user.createMany({
     data: Array.from({ length: 10 }, () => ({
+      uid: faker.string.uuid(),
       phone: faker.phone.number(),
       email: faker.internet.email(),
-      dob: faker.date.birthdate(),
-      first_name: faker.person.firstName(),
-      last_name: faker.person.lastName(),
-      pref_name: faker.person.fullName(),
+      username: faker.internet.userName(),
       payment_method: faker.helpers.arrayElement(['Credit Card', 'PayPal', 'Bank Transfer']),
       subscription_plan: faker.helpers.arrayElement(['Free', 'Basic', 'Premium']),
     })),
@@ -28,7 +26,7 @@ async function main() {
 
   // Create Events
   const events = await prisma.event.createMany({
-    data: userList.map((user: { pref_name: any; uid: any }) => ({
+    data: userList.map((user: { username: any; uid: any }) => ({
       name: faker.lorem.words(3),
       date: faker.date.future(),
       time: faker.date.soon(),
@@ -36,7 +34,7 @@ async function main() {
       description: faker.lorem.sentence(),
       invite_list: faker.number.int({ min: 1, max: 99 }),
       memory: faker.lorem.sentence(),
-      host: user.pref_name,
+      host: user.username,
       host_uid: user.uid,
       picture: [faker.image.urlPicsumPhotos()],
       status: faker.helpers.arrayElement(['Upcoming', 'Ongoing', 'Completed']),

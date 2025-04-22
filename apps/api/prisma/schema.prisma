@@ -9,15 +9,12 @@ datasource db {
 }
 
 model User {
-  uid               String             @id @default(cuid())
-  phone             String
-  email             String             @unique
-  dob               DateTime
-  pref_name         String
-  first_name        String
-  last_name         String
+  uid               String             @id
+  username          String             @default("guest")
+  phone             String?
+  email             String?
   payment_method    String?
-  subscription_plan String
+  subscription_plan String             @default("Free")
   eventsHosted      Event[]
   histories         History[]
   attendees         Attendee[]
