@@ -2,20 +2,9 @@
 import { Button } from '@sommhai/ui/components/ui/button';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
-import React, { useEffect } from 'react';
+import React from 'react';
 
 function LandingPage() {
-  const session = useSession();
-  const router = useRouter();
-  const [loaded, setLoad] = React.useState(false);
-  useEffect(() => {
-    if (session.status === 'unauthenticated') {
-      router.push('/auth');
-      setLoad(true);
-    }
-  }, [loaded]);
   return (
     <div className='flex h-dvh w-full flex-col'>
       <div className='bg-orange-3 h-56 w-full'></div>
