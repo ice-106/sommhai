@@ -1326,6 +1326,10 @@ packages:
     resolution: {integrity: sha512-/jVjH7k2uMWY1O0F/zkwYD3dqDH/pWbawvDtR6DV/scruH86w9zZrMwknZLt1unUWdK+V9eX4UVP/gLAzqUocg==}
     engines: {node: '>=18'}
 
+  '@line/bot-sdk@9.9.0':
+    resolution: {integrity: sha512-/jVjH7k2uMWY1O0F/zkwYD3dqDH/pWbawvDtR6DV/scruH86w9zZrMwknZLt1unUWdK+V9eX4UVP/gLAzqUocg==}
+    engines: {node: '>=18'}
+
   '@line/liff@2.25.1':
     resolution: {integrity: sha512-sMP+WXCDI5mLuCN4vinqhLM5ULvWGLHJjVXg973KPc0ARyfbo9UOpw3FZNjpqt+7Tc9Y1YKEo1Zbol1nYfeplQ==}
 
