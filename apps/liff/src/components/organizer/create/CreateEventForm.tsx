@@ -3,11 +3,12 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import Image from 'next/image';
 import { redirect } from 'next/navigation';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import Loading from '@/components/common/loading';
+import { LiffContext } from '@/contexts/global/liff';
 import { API_BASE_URL } from '@/env';
 
 const createEventSchema = z.object({
@@ -17,6 +18,7 @@ const createEventSchema = z.object({
 type FormData = z.infer<typeof createEventSchema>;
 
 function CreateEventForm() {
+  const { userId } = useContext(LiffContext);
   const [loading, setLoading] = useState(true);
   const [step, setStep] = useState(1);
   const [eventName, setEventName] = useState('');
@@ -35,7 +37,7 @@ function CreateEventForm() {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        uid: '12345',
+        uid: userId,
         name: name,
       }),
     });
@@ -74,7 +76,7 @@ function CreateEventForm() {
             <h2 className='text-medium-24 w-full pt-[10vh] text-center font-semibold'>What is your event called?</h2>
             <input
               {...register('eventName')}
-              className='border-gray-300focus:border-blue-500 px[vw] mt-[5vh] h-[5vh] border-b-2 focus:outline-none'
+              className='border-gray-300focus:border-blue-500 px[vw] mt-[5vh] h-[5vh] rounded-lg border-b-2 px-4 py-2 shadow-md focus:outline-none'
               placeholder=' Event name'
               type='text'
             />
@@ -105,7 +107,7 @@ function CreateEventForm() {
       <div className='pb-16'>
         {step === 1 && (
           <button
-            className='rounded-24 border-orange-2 bg-white-pure text-medium-24 text-orange-2 h-[55px] w-[345px] border-[3px]'
+            className='rounded-24 border-orange-2 bg-white-pure text-medium-24 text-orange-2 h-[7vh] w-[80vw] border-[3px]'
             form='Create-event-form'
             type='submit'
           >
@@ -114,7 +116,7 @@ function CreateEventForm() {
         )}
         {step === 2 && (
           <button
-            className='rounded-24 border-orange-2 bg-white-pure text-medium-24 text-orange-2 h-[5vh] w-[80vw] border-[3px]'
+            className='rounded-24 border-orange-2 bg-white-pure text-medium-24 text-orange-2 h-[7vh] w-[80vw] border-[3px]'
             onClick={onReturn}
           >
             <span className='relative text-xl'>Return</span>
