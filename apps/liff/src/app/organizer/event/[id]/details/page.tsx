@@ -1,15 +1,33 @@
 'use client';
+import type { Events } from '@sommhai/shared-type/src';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import HeaderBurgur from '@/components/common/HeaderBurgur';
 import DetailForm from '@/components/organizer/event/detail/DetailForm';
+import { API_BASE_URL } from '@/env';
 
 function DetailPage() {
   const params = useParams();
   const id = params?.id as string;
   const [currentPage, setCurrentPage] = useState(0);
-
+  const [event, setEvent] = useState<Events | null>(null);
+  useEffect(() => {
+    fetch(`${API_BASE_URL}/org/events/${id}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        const eventData = {
+          ...data,
+          date: new Date(data.date).toISOString().split('T')[0], // Ensure date is formatted for input
+        };
+        setEvent(eventData as Events);
+      });
+  }, [id]);
   useEffect(() => {
     if (currentPage !== 0) {
       document.body.style.overflow = 'hidden';
@@ -41,7 +59,7 @@ function DetailPage() {
           className='bg-orange-3 rounded-24 active:bg-orange-4 flex h-full w-full flex-col justify-center text-center'
           onClick={() => handleChangePage(3)}
         >
-          <h1 className='text-semi-24'>Message</h1>
+          <h1 className='text-semi-24 font-semibold text-white'>{event?.message ?? 'Message'}</h1>
           <p className='text-medium-20'>Click to edit</p>
         </div>
       </div>

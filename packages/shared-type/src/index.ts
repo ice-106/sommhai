@@ -6,6 +6,7 @@ export * from './libs/user';
 export interface Events {
   eid: string;
   name: string;
+  message: string | null;
   date: Date;
   time: Date;
   picture: string[];
