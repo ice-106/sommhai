@@ -22,7 +22,7 @@ services:
       - sommhai-dev-network
     labels:
       - traefik.enable=true
-      - traefik.http.routers.preview-default.rule=HostRegexp(`default.sommhai-dev.p-def.xyz`, `{subdomain:.+}.sommhai-dev.p-def.xyz`)
+      - traefik.http.routers.preview-default.rule=HostRegexp(`{subdomain:[a-zA-Z0-9-]+}.sommhai-dev.p-def.xyz`)
       - traefik.http.routers.preview-default.priority=1
       - traefik.http.routers.preview-default.tls=true
       - traefik.http.routers.preview-default.tls.certresolver=letsencrypt
