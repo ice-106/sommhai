@@ -169,6 +169,11 @@ export const OrganizerService = {
     try {
       const event = await prisma.event.findUnique({
         where: { eid: eventId },
+        include: {
+          attendees: true,
+          attendings: true,
+          organizers: true,
+        },
       });
 
       if (!event) {
