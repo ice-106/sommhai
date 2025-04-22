@@ -2,11 +2,11 @@ import * as line from '@line/bot-sdk';
 import { Event } from '@line/bot-sdk/dist/webhook/api';
 import { Request, Response } from 'express';
 
-import { LINE_CHANNEL_ACCESS_TOKEN, LINE_CHANNEL_SECRET } from '../../env';
+import { LINE_MSG_API_CHANNEL_ACCESS_TOKEN, LINE_MSG_API_CHANNEL_SECRET } from '../../env';
 
 export const lineConfig = {
-  channelAccessToken: LINE_CHANNEL_ACCESS_TOKEN,
-  channelSecret: LINE_CHANNEL_SECRET,
+  channelAccessToken: LINE_MSG_API_CHANNEL_ACCESS_TOKEN,
+  channelSecret: LINE_MSG_API_CHANNEL_SECRET,
 };
 export const lineClient = new line.Client(lineConfig);
 
