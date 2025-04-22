@@ -27,11 +27,18 @@ const handler = NextAuth({
     async jwt({ token, account }) {
       if (account) {
         token.accessToken = account.access_token;
+        token.refreshToken = account.refresh_token;
+        token.expires = account.expires_at;
       }
       return token;
     },
     async session({ session, token }) {
-      if (token?.accessToken) session.accessToken = token.accessToken;
+      if (token?.accessToken) {
+        session.accessToken = token.accessToken;
+      }
+      if (token?.refreshToken) {
+        session.refreshToken = token.refreshToken;
+      }
 
       return session;
     },
