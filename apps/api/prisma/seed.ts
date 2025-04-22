@@ -13,12 +13,13 @@ async function main() {
   const users = await prisma.user.createMany({
     data: Array.from({ length: 10 }, () => ({
       uid: faker.string.uuid(),
+      username: faker.internet.userName(),
       phone: faker.phone.number(),
       email: faker.internet.email(),
-      username: faker.internet.userName(),
       payment_method: faker.helpers.arrayElement(['Credit Card', 'PayPal', 'Bank Transfer']),
       subscription_plan: faker.helpers.arrayElement(['Free', 'Basic', 'Premium']),
     })),
+    skipDuplicates: true,
   });
 
   // Fetch created users
@@ -37,13 +38,60 @@ async function main() {
       host: user.username,
       host_uid: user.uid,
       picture: [faker.image.urlPicsumPhotos()],
-      status: faker.helpers.arrayElement(['Upcoming', 'Ongoing', 'Completed']),
+      status: faker.helpers.arrayElement(['UPCOMING', 'ONGOING', 'COMPLETED']),
       message: faker.lorem.sentence(),
     })),
+    skipDuplicates: true,
   });
 
   // Fetch created events
   const eventList = await prisma.event.findMany();
+
+  // Create Event Questions for each event
+  console.log('Creating event questions...');
+  for (const event of eventList) {
+    // Create a variety of question types for each event
+    const questionData = [
+      {
+        eventId: event.eid,
+        question: 'Do you have any dietary restrictions?',
+        type: QuestionType.SHORT_ANSWER,
+        required: true,
+        options: [],
+      },
+      {
+        eventId: event.eid,
+        question: 'Will you need transportation?',
+        type: QuestionType.MULTIPLE_CHOICE,
+        required: true,
+        options: ['Yes', 'No', 'Maybe'],
+      },
+      {
+        eventId: event.eid,
+        question: 'Which activities are you interested in?',
+        type: QuestionType.CHECKBOX,
+        required: false,
+        options: ['Workshops', 'Keynotes', 'Networking', 'Social Events'],
+      },
+      {
+        eventId: event.eid,
+        question: 'Any additional comments or requests?',
+        type: QuestionType.SHORT_ANSWER,
+        required: false,
+        options: [],
+      },
+    ];
+
+    for (const question of questionData) {
+      try {
+        await prisma.eventQuestion.create({
+          data: question,
+        });
+      } catch (error) {
+        console.log(`Skipping duplicate question for event ${event.eid}`);
+      }
+    }
+  }
 
   // Create Histories
   for (const event of eventList) {
@@ -210,98 +258,99 @@ async function main() {
     }
   }
 
-  // Create Event Questions
-  console.log('Creating event questions...');
-  for (const event of eventList) {
-    const questionTypes = [QuestionType.SHORT_ANSWER, QuestionType.MULTIPLE_CHOICE, QuestionType.CHECKBOX];
-
-    for (let i = 0; i < 3; i++) {
-      const questionType = questionTypes[i % questionTypes.length];
-      let options: string[] = [];
-
-      if (questionType !== QuestionType.SHORT_ANSWER) {
-        options = Array.from({ length: 4 }, () => faker.lorem.word());
-      }
-
-      try {
-        await prisma.eventQuestion.create({
-          data: {
-            eventId: event.eid,
-            question: faker.lorem.sentence() + '?',
-            type: questionType,
-            required: faker.datatype.boolean(),
-            options: options,
-          },
-        });
-      } catch (error) {
-        console.log(`Error creating question for event ${event.eid}:`, error);
-      }
-    }
-  }
+  // Fetch all event questions for seeding responses
+  const allQuestions = await prisma.eventQuestion.findMany();
 
   // Create Question Responses
   console.log('Creating question responses...');
-  const questions = await prisma.eventQuestion.findMany();
 
-  for (const question of questions) {
-    // Get a random set of users to answer the question
-    const respondents = faker.helpers.arrayElements(userList, faker.number.int({ min: 1, max: 3 }));
-
-    for (const user of respondents) {
-      try {
-        let answer: string | null = null;
-
-        switch (question.type) {
-          case QuestionType.SHORT_ANSWER:
-            answer = faker.lorem.sentence();
-            break;
-          case QuestionType.MULTIPLE_CHOICE:
-            answer = question.options.length > 0 ? faker.helpers.arrayElement(question.options) : null;
-            break;
-          case QuestionType.CHECKBOX:
-            answer =
-              question.options.length > 0
-                ? faker.helpers
-                    .arrayElements(question.options, faker.number.int({ min: 1, max: question.options.length }))
-                    .join(',')
-                : null;
-            break;
-        }
-
-        await prisma.questionResponse.create({
-          data: {
-            questionId: question.id,
-            userId: user.uid,
-            answer,
-          },
-        });
-      } catch (error) {
-        console.log(`Error creating response for question ${question.id} by user ${user.uid}:`, error);
-      }
-    }
-  }
-
-  // Create Leaderboards
-  console.log('Creating leaderboards...');
+  // For each event, have some users answer the questions
   for (const event of eventList) {
-    // Create leaderboard entries for a few random attendees
+    // Get questions for this event
+    const eventQuestions = allQuestions.filter((q) => q.eventId === event.eid);
+
+    if (eventQuestions.length === 0) continue;
+
+    // Get some attendees and some invitees to answer questions
     const attendees = await prisma.attendee.findMany({
       where: { eid: event.eid },
       select: { uid: true },
     });
 
-    for (const attendee of attendees.slice(0, 3)) {
-      try {
-        await prisma.leaderboard.create({
-          data: {
-            name: faker.lorem.words(2),
-            uid: attendee.uid,
-            eid: event.eid,
-            score: faker.number.int({ min: 0, max: 1000 }),
-          },
-        });
-      } catch (error) {
-        console.log(`Error creating leaderboard entry for user ${attendee.uid} in event ${event.eid}:`, error);
+    const invites = await prisma.invite.findMany({
+      where: { eventId: event.eid },
+      select: { userId: true },
+    });
+
+    const respondingUsers = [...attendees.map((a) => a.uid), ...invites.map((i) => i.userId)].slice(0, 5); // Limit to 5 users
+
+    // Have each user answer some questions
+    for (const userId of respondingUsers) {
+      // Each user answers a random subset of questions
+      const questionsToAnswer = faker.helpers.arrayElements(
+        eventQuestions,
+        faker.number.int({ min: 1, max: eventQuestions.length }),
+      );
+
+      for (const question of questionsToAnswer) {
+        try {
+          let answer: string | null = null;
+
+          switch (question.type) {
+            case QuestionType.SHORT_ANSWER:
+              answer = faker.lorem.sentence();
+              break;
+            case QuestionType.MULTIPLE_CHOICE:
+              if (question.options && question.options.length > 0) {
+                answer = faker.helpers.arrayElement(question.options);
+              }
+              break;
+            case QuestionType.CHECKBOX:
+              if (question.options && question.options.length > 0) {
+                const selectedOptions = faker.helpers.arrayElements(
+                  question.options,
+                  faker.number.int({ min: 1, max: question.options.length }),
+                );
+                answer = selectedOptions.join(',');
+              }
+              break;
+          }
+
+          if (answer) {
+            // Check if a response already exists
+            const existingResponse = await prisma.questionResponse.findUnique({
+              where: {
+                questionId_userId: {
+                  questionId: question.id,
+                  userId: userId,
+                },
+              },
+            });
+
+            if (existingResponse) {
+              // Update existing response
+              await prisma.questionResponse.update({
+                where: {
+                  id: existingResponse.id,
+                },
+                data: {
+                  answer: answer,
+                },
+              });
+            } else {
+              // Create new response
+              await prisma.questionResponse.create({
+                data: {
+                  questionId: question.id,
+                  userId: userId,
+                  answer: answer,
+                },
+              });
+            }
+          }
+        } catch (error) {
+          console.log(`Error creating/updating response for question ${question.id} by user ${userId}:`, error);
+        }
       }
     }
   }

@@ -54,32 +54,6 @@ export interface RespondToEventInviteOptions {
   accept: boolean;
 }
 
-export interface GetEventLeaderboardOptions {
-  eventId: string;
-}
-
-export interface CreateLeaderboardOptions {
-  eventId: string;
-  uid: string;
-  score?: number;
-}
-
-export interface UpdateLeaderboardOptions {
-  eventId: string;
-  entryId: string;
-  updates: {
-    uid?: string;
-    score?: number;
-  };
-}
-
-export interface DeleteLeaderboardEntryOptions {
-  eventId: string;
-  entryId: string;
-}
-
-export type LeaderboardEntity = Prisma.LeaderboardGetPayload<object>;
-
 export type InviteEntity = Prisma.InviteGetPayload<{
   include: {
     event: true;
