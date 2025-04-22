@@ -75,8 +75,8 @@ function OrganizerPage() {
   //   }
   // }, []);
   return (
-    <div className='bg-g flex h-screen w-screen flex-col'>
-      <HeaderBurgur name='Home' />
+    <div className='flex h-screen w-screen flex-col'>
+      <HeaderBurgur name='Tour Events' />
       <div className='mt-5 flex w-full items-center gap-2 px-7'>
         <SearchContainer />
         <SlidersHorizontal />
