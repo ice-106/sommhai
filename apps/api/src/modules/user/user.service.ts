@@ -69,7 +69,6 @@ export const UserService = {
         mediaTaken: true,
         invites: true,
         responses: true,
-        leaderboard: true,
       },
     });
 
@@ -89,7 +88,6 @@ export const UserService = {
         mediaTaken: true,
         invites: true,
         responses: true,
-        leaderboard: true,
       },
     });
 
@@ -138,7 +136,6 @@ export const UserService = {
         mediaTaken: true,
         invites: true,
         responses: true,
-        leaderboard: true,
       },
       orderBy: {
         username: 'asc',
