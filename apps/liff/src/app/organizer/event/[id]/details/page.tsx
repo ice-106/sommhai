@@ -13,6 +13,7 @@ function DetailPage() {
   const [currentPage, setCurrentPage] = useState(0);
   const [event, setEvent] = useState<Events | null>(null);
   useEffect(() => {
+    console.log(event);
     fetch(`${API_BASE_URL}/org/events/${id}`, {
       method: 'GET',
       headers: {
@@ -29,6 +30,7 @@ function DetailPage() {
       });
   }, [id]);
   useEffect(() => {
+    console.log('current id', id);
     if (currentPage !== 0) {
       document.body.style.overflow = 'hidden';
     } else {
