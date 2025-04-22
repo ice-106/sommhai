@@ -13,6 +13,11 @@ export interface GetManyEventsOptions {
   userId?: string;
 }
 
+export interface CreateEventOptions {
+  uid: string;
+  name: string;
+}
+
 export type EventEntity = Prisma.EventGetPayload<{
   include: {
     attendees: true;

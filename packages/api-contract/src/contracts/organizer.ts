@@ -46,6 +46,7 @@ export const organizerContract = c.router({
     method: 'POST',
     path: '/org/events',
     body: z.object({
+      uid: z.string(),
       name: z.string(),
     }),
     responses: {
