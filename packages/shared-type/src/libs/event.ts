@@ -74,6 +74,13 @@ export const leaderboardEntry = z.object({
   score: z.number().nullable(),
 });
 
+export const historyBaseInfo = z.object({
+  uid: z.string(),
+  eid: z.string(),
+  name: z.string(),
+  date: z.date(),
+});
+
 export const leaderboardData = z.array(leaderboardEntry);
 
 export const eventOrganizerInfo = eventBaseInfo;

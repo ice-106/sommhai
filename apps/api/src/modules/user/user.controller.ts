@@ -43,4 +43,18 @@ export const UserController: RouterImplementation<typeof contract.user> = {
       },
     };
   },
+  getUserHistory: async ({ params: { uid }, query: { search, skip, take } }) => {
+    const history = await UserService.getUserHistory({ search, uid, skip, take });
+    return {
+      status: 200,
+      body: history.simplifiedEvents,
+    };
+  },
+  createUserHistory: async ({ body: { eid, uid } }) => {
+    const history = await UserService.createUserHistory({ eid, uid });
+    return {
+      status: 201,
+      body: history,
+    };
+  },
 };
