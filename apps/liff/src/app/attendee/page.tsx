@@ -57,7 +57,13 @@ const EventContainer = () => {
   return (
     <div className='flex h-full w-full flex-col gap-5 overflow-y-auto'>
       {events.map((event) => (
-        <AtdEventCard date={event.date} key={event.eid} link={event.eid} name={event.name} />
+        <AtdEventCard
+          date={event.date}
+          detail={event.description ?? ''}
+          key={event.eid}
+          link={event.eid}
+          name={event.name}
+        />
       ))}
     </div>
   );

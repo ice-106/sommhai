@@ -1,4 +1,5 @@
 'use client';
+
 import { useParams } from 'next/navigation';
 
 import HeaderBurgur from '@/components/common/HeaderBurgur';

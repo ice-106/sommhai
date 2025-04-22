@@ -30,7 +30,8 @@ export default function EventQuestionnairePage() {
   const eventId = params?.id as string;
   const inviteId = params?.inv as string;
   const [currentStep, setCurrentStep] = useState(0);
-  const [completed, setCompleted] = useState(false);
+  const [currentQuestion, setCurrentQuestion] = useState<Question | null>(null);
+  const [completed, setCompleted] = useState(true);
   const [loading, setLoading] = useState(true);
   const [answers, setAnswers] = useState<Record<string, any>>({});
   const [eventData, setEventData] = useState<EventData | null>(null);
@@ -49,40 +50,10 @@ export default function EventQuestionnairePage() {
         })
           .then((res) => res.json())
           .then((data) => {
-            console.log(data);
+            console.log('Event', data);
             setEventData(data);
             setLoading(false);
           });
-
-        setTimeout(() => {
-          setEventData({
-            eventId: eventId || 'event123',
-            eventName: 'Birthday Party',
-            questions: [
-              {
-                id: 'name',
-                text: "What's your full name?",
-                type: 'text',
-                required: true,
-              },
-              {
-                id: 'attending',
-                text: 'Will you be attending?',
-                type: 'radio',
-                options: ["Yes, I'll be there!", "No, I can't make it", "Maybe, I'll let you know later"],
-                required: true,
-              },
-              {
-                id: 'food',
-                text: 'What food options would you prefer?',
-                type: 'checkbox',
-                options: ['Pizza', 'Burgers', 'Salad', 'Desserts'],
-                required: true,
-              },
-            ],
-          });
-          setLoading(false);
-        }, 500);
       } catch (error) {
         console.error('Error fetching event data:', error);
         setLoading(false);
@@ -194,7 +165,7 @@ export default function EventQuestionnairePage() {
     }
 
     handleComplete();
-  }, [completed, inviteId, answers, router]);
+  }, [completed, inviteId, answers, router, loading, returning]);
 
   if (loading) {
     return <Loading />;
@@ -209,15 +180,6 @@ export default function EventQuestionnairePage() {
       </div>
     );
   }
-
-  // useEffect(() => {
-  //   // Scroll to the top of the page when the question changes
-  //   setCurrentQuestion(eventData.questions[currentStep] || null);
-  //   if (eventData.questions[currentStep] == null) {
-  //     router.push('/attendee');
-  //   }
-  // }, [currentStep, eventData, router]);
-  const currentQuestion = eventData.questions[currentStep];
 
   // Render completion screen
   if (completed) {

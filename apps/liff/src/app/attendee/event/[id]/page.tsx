@@ -1,6 +1,7 @@
 'use client';
 import { Events } from '@sommhai/shared-type/src';
 import { Circle, User } from 'lucide-react';
+import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 import { useContext, useEffect, useState } from 'react';
@@ -53,8 +54,10 @@ export default function AtdEventPage() {
       })
         .then((res) => res.json())
         .then((data) => {
-          console.log(data.invites[0].inviteId);
-          setInv(data.invites[0].inviteId);
+          if (data.invites && Array.isArray(data.invites) && data.invites.length > 0) {
+            console.log('inv', data.invites[0].inviteId);
+            setInv(data.invites[0].inviteId);
+          }
           setLoading(false);
         });
     };
@@ -97,9 +100,11 @@ export default function AtdEventPage() {
           >
             Accept
           </AcceptButton>
-          <AcceptButton className='h-[64px] w-[155px]' variant={'Deny'}>
-            Deny
-          </AcceptButton>
+          <Link href={`/attendee`}>
+            <AcceptButton className='h-[64px] w-[155px]' variant={'Deny'}>
+              Deny
+            </AcceptButton>
+          </Link>
         </div>
       </div>
     </div>

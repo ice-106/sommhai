@@ -48,7 +48,7 @@ function DetailPage() {
   };
   return (
     <div className='flex h-screen w-screen flex-col'>
-      <HeaderBurgur name={id} />
+      <HeaderBurgur name={event?.name ?? id} />
       <div className='flex flex-1 flex-col items-center justify-between gap-[10vh] px-24 py-32'>
         <div
           className='bg-orange-6 flex h-full w-full flex-col justify-center rounded-3xl text-center active:bg-gray-200'

@@ -57,7 +57,13 @@ const EventContainer = () => {
   return (
     <div className='flex h-full w-full flex-col gap-5 overflow-y-auto'>
       {events.map((event) => (
-        <EventCard date={event.date} key={event.eid} link={event.eid} name={event.name} />
+        <EventCard
+          date={event.date}
+          detail={event.description ?? ''}
+          key={event.eid}
+          link={event.eid}
+          name={event.name}
+        />
       ))}
     </div>
   );
@@ -75,7 +81,7 @@ function OrganizerPage() {
   // }, []);
   return (
     <div className='flex h-screen w-screen flex-col'>
-      <HeaderBurgur name='Tour Events' />
+      <HeaderBurgur name='Your Events' />
       <div className='mt-5 flex w-full items-center gap-2 px-7'>
         <SearchContainer />
         <SlidersHorizontal />

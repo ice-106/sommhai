@@ -61,7 +61,7 @@ export const organizerContract = c.router({
     }),
     body: z.object({
       name: z.string().optional(),
-      date: z.date().optional(),
+      date: z.string().datetime().optional(),
       time: z.date().optional(),
       location: z.string().optional(),
       description: z.string().optional(),
