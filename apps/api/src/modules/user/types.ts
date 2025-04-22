@@ -26,6 +26,17 @@ export interface UpdateUserOptions {
   };
 }
 
+export interface CreateUserHistoryOptions {
+  uid: string;
+  eid: string;
+}
+export interface GetUserHistoryOptions {
+  uid: string;
+  skip?: number;
+  take?: number;
+  search?: string;
+}
+
 export type UserEntityFull = Prisma.UserGetPayload<{
   include: {
     attendees: true;
