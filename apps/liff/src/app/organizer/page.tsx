@@ -53,11 +53,11 @@ const EventContainer = () => {
     return <Loading />;
   }
   return (
-    <>
+    <div className='flex h-full w-full flex-col gap-5 overflow-y-auto'>
       {events.map((event) => (
         <EventCard key={event.eid} link={event.eid} name={event.name} />
       ))}
-    </>
+    </div>
   );
 };
 
@@ -81,7 +81,7 @@ function OrganizerPage() {
       <div className='my-5 flex w-full items-center justify-center px-7'>
         <CreateEvent />
       </div>
-      <div className='mx-24 flex h-[69%] flex-col gap-16 overflow-y-auto'>
+      <div className='w-ful mx-24 flex h-[69%] flex-col gap-16 overflow-y-auto'>
         <EventContainer />
       </div>
     </div>
