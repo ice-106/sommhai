@@ -37,19 +37,19 @@ export default function HeaderBurgur({ name }: { name: string }) {
             <div className='mx-3 w-full border-b-2 border-s-gray-600' />
             <div className='flex flex-col py-[2rem]'>
               <ul>
-                <Link href='/organizer'>
+                <Link href='/'>
                   <li className='flex py-2 pl-2'>
                     <AiFillHome size='1.2rem' />
                     <p className='ml-1'>Home</p>
                   </li>
                 </Link>
-                <Link href='/organizer/profile'>
+                <Link href='/profile'>
                   <li className='flex py-2 pl-2'>
                     <AiOutlineUser size='1.2rem' />
                     <p className='ml-1'>Profile</p>
                   </li>
                 </Link>
-                <Link href='/organizer/history'>
+                <Link href='/history'>
                   <li className='flex py-2 pl-2'>
                     <AiOutlineHistory size='1.2rem' />
                     <p className='ml-1'>History</p>
