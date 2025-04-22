@@ -90,22 +90,26 @@ export default function AtdEventPage() {
         <div className='flex flex-col items-center justify-center'>
           <AddtoCalendar />
         </div>
-        <div className='mt-[-15px] flex h-[100px] w-full items-center justify-center gap-[29px]'>
-          <AcceptButton
-            className='h-[64px] w-[155px]'
-            variant={'Accept'}
-            onClick={() => {
-              setAccepted(true);
-            }}
-          >
-            Accept
-          </AcceptButton>
-          <Link href={`/attendee`}>
-            <AcceptButton className='h-[64px] w-[155px]' variant={'Deny'}>
-              Deny
+        {!accepted ? (
+          <div className='mt-[-15px] flex h-[100px] w-full items-center justify-center gap-[29px]'>
+            <AcceptButton
+              className='h-[64px] w-[155px]'
+              variant={'Accept'}
+              onClick={() => {
+                setAccepted(true);
+              }}
+            >
+              Accept
             </AcceptButton>
-          </Link>
-        </div>
+            <Link href={`/attendee`}>
+              <AcceptButton className='h-[64px] w-[155px]' variant={'Deny'}>
+                Deny
+              </AcceptButton>
+            </Link>
+          </div>
+        ) : (
+          ''
+        )}
       </div>
     </div>
   );

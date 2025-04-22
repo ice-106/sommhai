@@ -1,4 +1,5 @@
 'use client';
+
 import type { Events } from '@sommhai/shared-type/src';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
