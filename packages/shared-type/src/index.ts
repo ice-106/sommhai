@@ -15,9 +15,6 @@ export interface Events {
   memory: string | null;
   host: string;
   host_uid: string;
-  attendees: Attendee[];
-  attendings: Attendee[];
-  organizers: Organizer[];
   status: string;
 }
 
