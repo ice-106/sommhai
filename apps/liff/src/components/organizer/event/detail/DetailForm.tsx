@@ -16,26 +16,70 @@ interface DetailFormProp {
 function DetailForm({ page, onClose, eid }: DetailFormProp) {
   const [event, setEvent] = useState<Events | null>(null);
   useEffect(() => {
-    const data = fetch(`${API_BASE_URL}/org/events/${eid}`, {
+    fetch(`${API_BASE_URL}/org/events/${eid}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
       },
     })
-      .then((res) => {
-        if (res.status === 200) {
-          console.log('Event details fetched successfully');
-          res.json().then((data) => {
-            setEvent(data as Events);
-          });
-        } else {
-          console.error('Failed to fetch event details');
-        }
-      })
-      .catch((error) => {
-        console.error('Error fetching event details:', error);
+      .then((res) => res.json())
+      .then((data) => {
+        const eventData = {
+          ...data,
+          date: new Date(data.date).toISOString().split('T')[0], // Ensure date is formatted for input
+        };
+        setEvent(eventData as Events);
       });
-  }, []);
+  }, [eid]);
+  const handleSaveEventDetails = (updatedData: {
+    name: string;
+    address: string;
+    date: string;
+    description: string;
+  }) => {
+    setEvent((prev) =>
+      prev
+        ? {
+            ...prev,
+            ...updatedData,
+            date: new Date(updatedData.date),
+          }
+        : null,
+    );
+    fetch(`${API_BASE_URL}/org/events/${eid}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(updatedData),
+    }).then(() => {
+      setEvent((prev) =>
+        prev
+          ? {
+              ...prev,
+              ...updatedData,
+              date: new Date(updatedData.date),
+            }
+          : null,
+      );
+      onClose();
+    });
+  };
+
+  const handleSaveMessage = (message: string) => {
+    setEvent((prev) => (prev ? { ...prev, message } : null));
+    fetch(`${API_BASE_URL}/org/events/${eid}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ message }),
+    }).then(() => {
+      setEvent((prev) => (prev ? { ...prev, message } : null));
+      onClose();
+    });
+  };
+
   return (
     <div className='h-full w-full'>
       {page === 2 && (
@@ -43,10 +87,11 @@ function DetailForm({ page, onClose, eid }: DetailFormProp) {
           <SlidePopUpX onClose={onClose}>
             {event ? (
               <EventTextForm
-                address={event?.location}
-                date={event?.date.toDateString()}
+                address={event?.location ?? ''}
+                date={event?.date instanceof Date ? (event.date.toISOString().split('T')[0] ?? '') : ''}
                 description={event?.description ?? ''}
-                name={event?.name}
+                name={event?.name ?? ''}
+                onSave={handleSaveEventDetails}
               />
             ) : (
               <div className='bg-white-pure flex h-[50vh] w-[80vw] items-center justify-center rounded-2xl'>
@@ -60,7 +105,7 @@ function DetailForm({ page, onClose, eid }: DetailFormProp) {
       {page === 3 && (
         <div>
           <SlidePopUpX onClose={onClose}>
-            <MessageForm />
+            <MessageForm message={event?.message ?? ''} onSave={handleSaveMessage} />
           </SlidePopUpX>
         </div>
       )}
