@@ -1,7 +1,7 @@
 import NextAuth from 'next-auth';
 import LINE from 'next-auth/providers/line';
 
-import { LINE_CHANNEL_ID, LINE_CHANNEL_SECRET } from '@/env';
+import { AUTH_SECRET, LINE_CHANNEL_ID, LINE_CHANNEL_SECRET } from '@/env';
 
 const handler = NextAuth({
   providers: [
@@ -43,6 +43,7 @@ const handler = NextAuth({
       return session;
     },
   },
+  secret: AUTH_SECRET,
   pages: {
     signIn: '/auth',
   },
