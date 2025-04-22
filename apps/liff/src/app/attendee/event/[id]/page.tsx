@@ -68,6 +68,9 @@ export default function AtdEventPage() {
             <h1 className='text-bold-20'>Organizer A</h1>
           </div>
         </div>
+        <div className='flex h-[122px] w-[292px] flex-col items-center justify-center'>
+          <AddtoCalendar />
+        </div>
       </div>
     </div>
   );
