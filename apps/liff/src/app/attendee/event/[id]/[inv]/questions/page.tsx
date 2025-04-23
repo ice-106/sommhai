@@ -30,8 +30,7 @@ export default function EventQuestionnairePage() {
   const eventId = params?.id as string;
   const inviteId = params?.inv as string;
   const [currentStep, setCurrentStep] = useState(0);
-  const [currentQuestion, setCurrentQuestion] = useState<Question | null>(null);
-  const [completed, setCompleted] = useState(true);
+  const [completed, setCompleted] = useState(false);
   const [loading, setLoading] = useState(true);
   const [answers, setAnswers] = useState<Record<string, any>>({});
   const [eventData, setEventData] = useState<EventData | null>(null);
@@ -42,18 +41,47 @@ export default function EventQuestionnairePage() {
   useEffect(() => {
     function fetchEventData() {
       try {
-        fetch(`${API_BASE_URL}/org/events/${eventId}/questions`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        })
-          .then((res) => res.json())
-          .then((data) => {
-            console.log('Event', data);
-            setEventData(data);
-            setLoading(false);
+        // fetch(`${API_BASE_URL}/org/events/${eventId}/questions`, {
+        //   method: 'GET',
+        //   headers: {
+        //     'Content-Type': 'application/json',
+        //   },
+        // })
+        //   .then((res) => res.json())
+        //   .then((data) => {
+        //     console.log('Event', data);
+        //     setEventData(data);
+        //     setLoading(false);
+        //   });
+        setTimeout(() => {
+          setEventData({
+            eventId: eventId || 'event123',
+            eventName: 'Birthday Party',
+            questions: [
+              {
+                qid: 'name',
+                text: "What's your full name?",
+                type: 'SHORT_ANSWER',
+                required: true,
+              },
+              {
+                qid: 'attending',
+                text: 'Will you bring your car?',
+                type: 'MULTIPLE_CHOICE',
+                options: ['Yes, I be driving!', 'No, I will not take my car.', "Maybe, I'll let you know later"],
+                required: true,
+              },
+              {
+                qid: 'food',
+                text: 'What food options would you prefer?',
+                type: 'CHECKBOX',
+                options: ['Pizza', 'Burgers', 'Salad', 'Desserts'],
+                required: true,
+              },
+            ],
           });
+          setLoading(false);
+        }, 500);
       } catch (error) {
         console.error('Error fetching event data:', error);
         setLoading(false);
@@ -180,6 +208,7 @@ export default function EventQuestionnairePage() {
       </div>
     );
   }
+  const currentQuestion = eventData.questions[currentStep];
 
   // Render completion screen
   if (completed) {
@@ -232,30 +261,30 @@ export default function EventQuestionnairePage() {
         <div className='mx-auto w-full max-w-md rounded-3xl bg-white p-8'>
           <h2 className='mb-6 text-2xl font-bold text-gray-800'>{currentQuestion?.text}</h2>
 
-          {/* {currentQuestion?.type === 'text' && (
+          {currentQuestion?.type === 'SHORT_ANSWER' && (
             <input
               className='w-full rounded-xl border-b-2 border-gray-300 px-10 py-2 shadow-lg focus:border-orange-400 focus:outline-none'
               placeholder='Your answer'
               type='text'
-              value={answers[currentQuestion.id] || ''}
-              onChange={(e) => handleTextChange(currentQuestion.id, e.target.value)}
+              value={answers[currentQuestion.qid] || ''}
+              onChange={(e) => handleTextChange(currentQuestion.qid, e.target.value)}
             />
           )}
 
-          {currentQuestion?.type === 'radio' && currentQuestion.options && (
+          {currentQuestion?.type === 'MULTIPLE_CHOICE' && currentQuestion.options && (
             <div className='bg-white-pure space-y-4 rounded-2xl px-20 py-32'>
               {currentQuestion.options.map((option, idx) => (
                 <label className='flex cursor-pointer items-center gap-3' key={idx}>
                   <div
-                    className={`flex h-[5vw] w-[5vw] items-center justify-center rounded-full border-2 border-orange-400 ${answers[currentQuestion.id] === option ? 'bg-orange-400' : 'bg-white'}`}
+                    className={`flex h-[5vw] w-[5vw] items-center justify-center rounded-full border-2 border-orange-400 ${answers[currentQuestion.qid] === option ? 'bg-orange-400' : 'bg-white'}`}
                   >
-                    {answers[currentQuestion.id] === option && <div className='h-3 w-3 rounded-full bg-white'></div>}
+                    {answers[currentQuestion.qid] === option && <div className='h-3 w-3 rounded-full bg-white'></div>}
                   </div>
                   <input
-                    checked={answers[currentQuestion.id] === option}
+                    checked={answers[currentQuestion.qid] === option}
                     className='hidden'
                     type='radio'
-                    onChange={() => handleRadioChange(currentQuestion.id, option)}
+                    onChange={() => handleRadioChange(currentQuestion.qid, option)}
                   />
                   <span className='font-semibold'>{option}</span>
                 </label>
@@ -263,10 +292,10 @@ export default function EventQuestionnairePage() {
             </div>
           )}
 
-          {currentQuestion?.type === 'checkbox' && currentQuestion.options && (
+          {currentQuestion?.type === 'CHECKBOX' && currentQuestion.options && (
             <div className='bg-white-pure space-y-4 rounded-2xl px-20 py-32'>
               {currentQuestion.options.map((option, idx) => {
-                const currentValues = answers[currentQuestion.id] || [];
+                const currentValues = answers[currentQuestion.qid] || [];
                 const isChecked = Array.isArray(currentValues) && currentValues.includes(option);
 
                 return (
@@ -293,14 +322,14 @@ export default function EventQuestionnairePage() {
                       checked={isChecked}
                       className='hidden'
                       type='checkbox'
-                      onChange={() => handleCheckboxChange(currentQuestion.id, option)}
+                      onChange={() => handleCheckboxChange(currentQuestion.qid, option)}
                     />
                     <span>{option}</span>
                   </label>
                 );
               })}
             </div>
-          )} */}
+          )}
         </div>
       </div>
 
