@@ -8,11 +8,11 @@ import Loading from '@/components/common/loading';
 import { API_BASE_URL } from '@/env';
 
 // Define question types
-type QuestionType = 'text' | 'radio' | 'checkbox';
+type QuestionType = 'SHORT_ANSWER' | 'MULTIPLE_CHOICE' | 'CHECKBOX';
 
 // Question interface
 interface Question {
-  id: string;
+  qid: string;
   text: string;
   type: QuestionType;
   options?: string[];
@@ -95,7 +95,7 @@ export default function EventQuestionnairePage() {
     // Validate current question
     const question = eventData?.questions[currentStep];
     if (question?.required) {
-      const answer = answers[question.id];
+      const answer = answers[question.qid];
       const isEmpty = answer === undefined || answer === '' || (Array.isArray(answer) && answer.length === 0);
 
       if (isEmpty) {
@@ -161,7 +161,7 @@ export default function EventQuestionnairePage() {
     };
 
     if (loading == false && completed == true) {
-      router.push(`/attendee`);
+      // router.push(`/attendee`);
     }
 
     handleComplete();
@@ -202,6 +202,7 @@ export default function EventQuestionnairePage() {
           <button
             className='w-full rounded-xl border border-orange-400 px-4 py-12 font-semibold text-orange-400'
             onClick={() => {
+              router.push('/attendee');
               setReturning(true);
             }}
           >
@@ -231,7 +232,7 @@ export default function EventQuestionnairePage() {
         <div className='mx-auto w-full max-w-md rounded-3xl bg-white p-8'>
           <h2 className='mb-6 text-2xl font-bold text-gray-800'>{currentQuestion?.text}</h2>
 
-          {currentQuestion?.type === 'text' && (
+          {/* {currentQuestion?.type === 'text' && (
             <input
               className='w-full rounded-xl border-b-2 border-gray-300 px-10 py-2 shadow-lg focus:border-orange-400 focus:outline-none'
               placeholder='Your answer'
@@ -299,7 +300,7 @@ export default function EventQuestionnairePage() {
                 );
               })}
             </div>
-          )}
+          )} */}
         </div>
       </div>
 

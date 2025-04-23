@@ -54,22 +54,34 @@ export default function AtdEventPage() {
       })
         .then((res) => res.json())
         .then((data) => {
-          if (data.invites && Array.isArray(data.invites) && data.invites.length > 0) {
-            console.log('inv', data.invites[0].inviteId);
-            setInv(data.invites[0].inviteId);
-          }
-          setLoading(false);
+          console.log('data', data);
+          console.log('inv', data.invites[0].inviteId);
+          setInv(data.invites[0].inviteId);
         });
     };
     if (inv !== '') {
       console.log('inv', inv);
+      fetch(`${API_BASE_URL}/atd/events/${inv}/respond`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          accept: true,
+        }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log('inv res', data);
+          setLoading(false);
+        });
 
       if (loading == false && accepted == true) {
         router.push(`/attendee/event/${id}/${inv}/questions`);
       }
     }
     handleAccept();
-  }, [userId, accepted, id]);
+  }, [userId, accepted, id, inv, loading, router]);
 
   return (
     <div className='flex h-screen w-screen flex-col'>
