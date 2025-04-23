@@ -4,7 +4,7 @@ export const getDateDifferenceLabel = (isoDateString: string): string => {
   const givenDate = parseISO(isoDateString);
 
   if (isToday(givenDate)) {
-    return 'today';
+    return 'Today';
   }
 
   const diff = differenceInCalendarDays(givenDate, new Date());
