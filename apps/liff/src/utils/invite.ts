@@ -1,8 +1,11 @@
 import liff from '@line/liff';
+import type { Events } from '@sommhai/shared-type/src';
 
 import { LIFF_ID, LIFF_URL } from '@/env';
 
-export async function inviteAttendee(eventId: string) {
+import { getDateDifferenceLabel } from './date';
+
+export async function inviteAttendee(event: Events) {
   const result = await liff.init({ liffId: LIFF_ID }).then(() =>
     liff.shareTargetPicker([
       {
@@ -22,7 +25,7 @@ export async function inviteAttendee(eventId: string) {
                 contents: [
                   {
                     type: 'text',
-                    text: 'Event title',
+                    text: `${event.name}`,
                     weight: 'bold',
                     size: 'xl',
                     flex: 1,
@@ -58,7 +61,8 @@ export async function inviteAttendee(eventId: string) {
                   },
                   {
                     type: 'text',
-                    text: 'Rounded Timer',
+                    // TODO: copy from day
+                    text: `${getDateDifferenceLabel(event.date.toString())}`,
                     size: 'md',
                     color: '#F6BB0A',
                     weight: 'regular',
@@ -67,7 +71,7 @@ export async function inviteAttendee(eventId: string) {
               },
               {
                 type: 'text',
-                text: 'Event details',
+                text: `${event.description}`,
                 color: '#575757',
                 size: 'sm',
               },
@@ -89,7 +93,7 @@ export async function inviteAttendee(eventId: string) {
                 action: {
                   type: 'uri',
                   label: 'View',
-                  uri: `${LIFF_URL}/attendee/event/${eventId}`,
+                  uri: `${LIFF_URL}/attendee/event/${event.eid}`,
                 },
                 height: 'sm',
                 color: '#F6BB0A',
@@ -99,6 +103,31 @@ export async function inviteAttendee(eventId: string) {
             paddingAll: '12px',
           },
         },
+      },
+    ]),
+  );
+  if (result) {
+    console.log('ShareTargetPicker was successful');
+  } else {
+    const [majorVer, minorVer, patchVer] = (liff.getLineVersion() || '').split('.');
+
+    if (minorVer === undefined) {
+      alert('ShareTargetPicker was canceled in external browser');
+      return;
+    }
+    if (parseInt(majorVer || '0') >= 10 && parseInt(minorVer || '0') >= 10 && parseInt(patchVer || '0') > 0) {
+      alert('ShareTargetPicker was canceled in LINE app');
+    }
+  }
+}
+
+export async function inviteAdmin(eventId: string) {
+  // TODO: fetch add admin
+  const result = await liff.init({ liffId: LIFF_ID }).then(() =>
+    liff.shareTargetPicker([
+      {
+        type: 'text',
+        text: `Join as admin on this link ${LIFF_URL}/organizer/event/${eventId}`,
       },
     ]),
   );

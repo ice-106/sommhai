@@ -1,5 +1,6 @@
 'use client';
 
+import type { Events } from '@sommhai/shared-type/src';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
@@ -40,9 +41,7 @@ export function IconButton({ icon: Icon, title: name, link: href, detail: detail
   );
 }
 
-export function IconButtonGroup() {
-  const pathName = usePathname();
-  const eventId = pathName.split('/')[3] as string;
+export function IconButtonGroup({ event }: { event: Events }) {
   const buttons = [
     //change element in icon button group here
     { icon: MdOutlineEventNote, title: 'Event Details', detail: 'Details of the event.', link: 'details' },
@@ -68,7 +67,7 @@ export function IconButtonGroup() {
             <div
               className='bg-white-bg rounded-24 flex h-[4.75rem] w-[20.375rem] shadow-lg'
               key={index}
-              onClick={() => inviteAttendee(eventId)}
+              onClick={() => inviteAttendee(event)}
             >
               <div className='mx-12 self-center'>
                 <GoPersonAdd size={45} />

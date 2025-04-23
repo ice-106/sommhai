@@ -1,10 +1,11 @@
 'use client';
 
-import { differenceInCalendarDays, isToday, parseISO } from 'date-fns';
 import Link from 'next/link';
 import React from 'react';
 import { IoIosTimer } from 'react-icons/io';
 import { MdNavigateNext } from 'react-icons/md';
+
+import { getDateDifferenceLabel } from '@/utils/date';
 
 // export function EventCardTestStatic() {
 //   const pathName = usePathname();
@@ -31,22 +32,6 @@ interface EventCardProp {
   date: Date;
   detail: string;
 }
-
-const getDateDifferenceLabel = (isoDateString: string): string => {
-  const givenDate = parseISO(isoDateString);
-
-  if (isToday(givenDate)) {
-    return 'today';
-  }
-
-  const diff = differenceInCalendarDays(givenDate, new Date());
-
-  if (diff > 0) {
-    return `In ${diff} day${diff !== 1 ? 's' : ''}`;
-  } else {
-    return `${Math.abs(diff)} day${Math.abs(diff) !== 1 ? 's' : ''} ago`;
-  }
-};
 
 function EventCard({ name: name, link: link, date: date, detail: detail }: EventCardProp) {
   return (
