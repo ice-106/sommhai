@@ -14,12 +14,12 @@ export const handleLineWebHook = async (event: Event) => {
   if (event.type === 'memberJoined') {
     return lineClient.replyMessage(event.replyToken, {
       type: 'text',
-      text: `🎉 Welcome to the group! 🎉\n✨ Add me to let Sommhai help you manage your event! 🗓️`,
+      text: `🎉 Welcome to the group! 🎉\n✨ Call Sommhai to let Sommhai help you manage your event! 🗓️`,
     });
   } else if (event.type === 'join') {
     return lineClient.replyMessage(event.replyToken, {
       type: 'text',
-      text: `Thank you for adding me to the group! 🎉\n✨ Add me to let Sommhai help you manage your event! 🗓️`,
+      text: `Thank you for adding me to the group! 🎉\n✨ Call Sommhai to let Sommhai help you manage your event! 🗓️`,
     });
   } else {
     return Promise.resolve(null);
