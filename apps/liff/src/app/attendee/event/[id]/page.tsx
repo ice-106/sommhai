@@ -23,6 +23,7 @@ export default function AtdEventPage() {
   const [loading, setLoading] = useState(true);
   const [inv, setInv] = useState('');
   const [accepted, setAccepted] = useState(false);
+  const [isAttendee, setIsAttendee] = useState(false);
   useEffect(() => {
     console.log(event);
     fetch(`${API_BASE_URL}/org/events/${id}`, {
@@ -55,8 +56,17 @@ export default function AtdEventPage() {
         .then((res) => res.json())
         .then((data) => {
           console.log('data', data);
-          console.log('inv', data.invites[0].inviteId);
-          setInv(data.invites[0].inviteId);
+          try {
+            if (data.invites[0].error == 'User is already an attendee') {
+              console.log('User is already an attendee');
+              setIsAttendee(true);
+            } else {
+              console.log('inv', data.invites[0].inviteId);
+              setInv(data.invites[0].inviteId);
+            }
+          } catch (error) {
+            console.log('error', error);
+          }
         });
     };
     if (inv !== '') {
@@ -102,25 +112,27 @@ export default function AtdEventPage() {
         <div className='flex flex-col items-center justify-center'>
           <AddtoCalendar />
         </div>
-        {!accepted ? (
+        {isAttendee ? (
+          ''
+        ) : (
           <div className='mt-[-15px] flex h-[100px] w-full items-center justify-center gap-[29px]'>
-            <AcceptButton
-              className='h-[64px] w-[155px]'
-              variant={'Accept'}
-              onClick={() => {
-                setAccepted(true);
-              }}
-            >
-              Accept
-            </AcceptButton>
+            <Link href={`/attendee`}>
+              <AcceptButton
+                className='h-[64px] w-[155px]'
+                variant={'Accept'}
+                onClick={() => {
+                  setAccepted(true);
+                }}
+              >
+                Accept
+              </AcceptButton>
+            </Link>
             <Link href={`/attendee`}>
               <AcceptButton className='h-[64px] w-[155px]' variant={'Deny'}>
                 Deny
               </AcceptButton>
             </Link>
           </div>
-        ) : (
-          ''
         )}
       </div>
     </div>
