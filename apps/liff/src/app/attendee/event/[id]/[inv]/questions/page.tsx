@@ -1,23 +1,12 @@
 'use client';
 
+import type { Question } from '@sommhai/shared-type/src';
 import Image from 'next/image';
 import { useParams, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 
 import Loading from '@/components/common/loading';
 import { API_BASE_URL } from '@/env';
-
-// Define question types
-type QuestionType = 'SHORT_ANSWER' | 'MULTIPLE_CHOICE' | 'CHECKBOX';
-
-// Question interface
-interface Question {
-  qid: string;
-  text: string;
-  type: QuestionType;
-  options?: string[];
-  required: boolean;
-}
 
 interface EventData {
   eventId: string;
