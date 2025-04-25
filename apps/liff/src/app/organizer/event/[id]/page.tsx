@@ -5,7 +5,6 @@ import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import HeaderBurgur from '@/components/common/HeaderBurgur';
-import { DeleteEventButton } from '@/components/organizer/buttons';
 import CompleteButton from '@/components/organizer/completeButton';
 import { IconButtonGroup } from '@/components/organizer/iconbutton';
 import { API_BASE_URL } from '@/env';
@@ -42,7 +41,7 @@ export default function EventPage() {
         <IconButtonGroup event={event} />
 
         <div className='my-16 flex w-full flex-col items-center justify-center gap-4'>
-          <DeleteEventButton id={id} />
+          {/* <DeleteEventButton id={id} /> */}
           <CompleteButton eid={id} />
         </div>
       </div>
