@@ -6,13 +6,12 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 
 interface SwiperTimePickerProps {
   onTimeChange: (time: { hour: number; minute: number }) => void;
+  initialTime: { hour: number; minute: number };
 }
 
-const SwiperTimePicker = ({ onTimeChange }: SwiperTimePickerProps) => {
-  const initialHour = new Date().getHours() + 1;
-  const initialMinute = new Date().getMinutes();
-  const [selectedHour, setSelectedHour] = useState(initialHour);
-  const [selectedMinute, setSelectedMinute] = useState(initialMinute);
+const SwiperTimePicker = ({ onTimeChange, initialTime }: SwiperTimePickerProps) => {
+  const [selectedHour, setSelectedHour] = useState(initialTime.hour);
+  const [selectedMinute, setSelectedMinute] = useState(initialTime.minute);
 
   // Generate hours (1-12, repeated for infinite scroll effect)
   const hours = Array.from({ length: 96 }, (_, i) => i % 24);
@@ -72,10 +71,10 @@ const SwiperTimePicker = ({ onTimeChange }: SwiperTimePickerProps) => {
               touchRatio={1.5}
               virtual={true}
               watchSlidesProgress={true}
-              onSwiper={(swiper) => {
-                const realIndex = swiper.realIndex % 24;
-                const hour = realIndex % 24;
+              onSlideChange={(swiper) => {
+                const hour = swiper.realIndex % 24;
                 setSelectedHour(hour);
+                console.log('hour', hour);
               }}
             >
               {hours.map((hour, index) => (
@@ -118,6 +117,7 @@ const SwiperTimePicker = ({ onTimeChange }: SwiperTimePickerProps) => {
               onSlideChange={(swiper) => {
                 const minute = swiper.realIndex % 60;
                 setSelectedMinute(minute);
+                console.log('minute', minute);
               }}
             >
               {minutes.map((minute, index) => (

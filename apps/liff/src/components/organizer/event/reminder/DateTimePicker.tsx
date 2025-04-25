@@ -10,18 +10,19 @@ import SwiperTimePicker from './SwiperTimePicker';
 interface DateTimePickerProps {
   onChange?: (dateTime: { date: Date; time: { hour: number; minute: number } }) => void;
   initialDate?: Date;
+  initialTime?: { hour: number; minute: number };
   onSave?: (data: { date: Date; time: { hour: number; minute: number } }) => void;
 }
 
-function DateTimeSelect({ onChange, initialDate = new Date(), onSave }: DateTimePickerProps) {
-  const [date, setDate] = useState<Date>(initialDate);
+function DateTimeSelect({ onChange, initialDate, initialTime, onSave }: DateTimePickerProps) {
+  const [date, setDate] = useState<Date>(initialDate ?? new Date());
   const [activeView, setActiveView] = useState<'date' | 'time'>('date');
   const [time, setTime] = useState<{
     hour: number;
     minute: number;
   }>({
-    hour: initialDate.getHours() + 1,
-    minute: initialDate.getMinutes(),
+    hour: initialTime?.hour ?? new Date().getHours() + 1,
+    minute: initialTime?.minute ?? new Date().getMinutes(),
   });
   useEffect(() => {
     const data = {
@@ -55,7 +56,7 @@ function DateTimeSelect({ onChange, initialDate = new Date(), onSave }: DateTime
   };
 
   const disablePastDates = (date: Date) => {
-    const today = new Date(initialDate);
+    const today = new Date();
     today.setHours(0, 0, 0, 0);
     return date < today;
   };
@@ -103,7 +104,7 @@ function DateTimeSelect({ onChange, initialDate = new Date(), onSave }: DateTime
         ) : (
           <div className='w-full px-20'>
             <div className='w-full origin-top scale-90 pt-12'>
-              <SwiperTimePicker onTimeChange={handleTimeChange} />
+              <SwiperTimePicker initialTime={time} onTimeChange={handleTimeChange} />
             </div>
           </div>
         )}
@@ -124,7 +125,12 @@ function DateTimePicker() {
 
   return (
     <div className='p-8'>
-      <DateTimeSelect initialDate={new Date()} onChange={handleDateTimeChange} onSave={handleSave} />
+      <DateTimeSelect
+        initialDate={new Date()}
+        initialTime={{ hour: new Date().getHours(), minute: new Date().getMinutes() }}
+        onChange={handleDateTimeChange}
+        onSave={handleSave}
+      />
     </div>
   );
 }

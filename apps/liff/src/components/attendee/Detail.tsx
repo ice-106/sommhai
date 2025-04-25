@@ -39,9 +39,10 @@ function DetailForm({ eid }: DetailFormProp) {
         {event ? (
           <EventText
             address={event?.location ?? ''}
-            date={event?.date.toString().split('T')[0] ?? ''}
+            date={new Date(event?.date ?? new Date()).toISOString().split('T')[0] ?? ''}
             description={event?.description ?? ''}
             name={event?.name}
+            time={new Date(event?.date ?? new Date()).toISOString().split('T')[1]?.split('.')[0] ?? ''}
           />
         ) : (
           <div className='bg-white-pure flex h-[50vh] w-[80vw] items-center justify-center rounded-2xl'>

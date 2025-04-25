@@ -16,6 +16,10 @@ interface DetailFormProp {
 function DetailForm({ page, onClose, eid }: DetailFormProp) {
   const [event, setEvent] = useState<Events | null>(null);
   useEffect(() => {
+    console.log('real event', event);
+    console.log('hour', parseInt(event?.time?.hour ?? '0', 10));
+  }, [event]);
+  useEffect(() => {
     fetch(`${API_BASE_URL}/org/events/${eid}`, {
       method: 'GET',
       headers: {
@@ -26,27 +30,43 @@ function DetailForm({ page, onClose, eid }: DetailFormProp) {
       .then((data) => {
         const eventData = {
           ...data,
-          date: new Date(data.date).toISOString().split('T')[0],
+          date: new Date(data.date),
+          time: {
+            hour: data.date.toString().split('T')[1].split(':')[0],
+            minute: data.date.toString().split('T')[1].split(':')[1],
+          },
         };
-        setEvent(eventData as Events);
+        console.log('event', eventData);
+        setEvent(eventData);
       });
   }, [eid]);
   const handleSaveEventDetails = (updatedData: {
     name: string;
     address: string;
-    date: string;
+    date: { date: Date; time: { hour: number; minute: number } };
     description: string;
   }) => {
+    // Convert Date to string format to match Events type
+    // Create formatted data with the date converted to string
+    const formattedData = {
+      ...updatedData,
+      date: updatedData.date.date.toISOString(),
+    };
     setEvent((prev) =>
       prev
         ? {
             ...prev,
-            ...updatedData,
-            date: new Date(updatedData.date),
+            ...formattedData,
           }
         : null,
     );
-    console.log('updatedData', new Date(updatedData.date));
+    console.log(
+      'updatedData',
+      new Date(updatedData.date.date).toISOString().split('T')[0] +
+        'T' +
+        `${updatedData.date.time.hour.toString().length == 1 ? '0' + updatedData.date.time.hour.toString() : updatedData.date.time.hour}:${updatedData.date.time.minute.toString().length == 1 ? '0' + updatedData.date.time.minute.toString() : updatedData.date.time.minute}` +
+        ':00.00Z',
+    );
     fetch(`${API_BASE_URL}/org/events/${eid}/details`, {
       method: 'PUT',
       headers: {
@@ -56,18 +76,13 @@ function DetailForm({ page, onClose, eid }: DetailFormProp) {
         name: updatedData.name,
         location: updatedData.address,
         description: updatedData.description,
-        date: new Date(updatedData.date),
+        date:
+          new Date(updatedData.date.date).toISOString().split('T')[0] +
+          'T' +
+          `${updatedData.date.time.hour.toString().length == 1 ? '0' + updatedData.date.time.hour.toString() : updatedData.date.time.hour}:${updatedData.date.time.minute.toString().length == 1 ? '0' + updatedData.date.time.minute.toString() : updatedData.date.time.minute}` +
+          ':00.00Z',
       }),
     }).then(() => {
-      setEvent((prev) =>
-        prev
-          ? {
-              ...prev,
-              ...updatedData,
-              date: new Date(updatedData.date),
-            }
-          : null,
-      );
       onClose();
     });
   };
@@ -89,18 +104,24 @@ function DetailForm({ page, onClose, eid }: DetailFormProp) {
   return (
     <div className='h-full w-full'>
       {page === 2 && (
-        <div className='bg-white-bg'>
+        <div className='bg-orange-6 h-full'>
           <SlidePopUpX onClose={onClose}>
             {event ? (
               <EventTextForm
                 address={event?.location ?? ''}
-                date={event?.date instanceof Date ? (event.date.toISOString().split('T')[0] ?? '') : ''}
+                date={{
+                  date:
+                    event.date && typeof event.date === 'object' && 'getTime' in event.date
+                      ? event.date
+                      : new Date(event?.date || ''),
+                  time: { hour: parseInt(event?.time?.hour ?? '0', 10), minute: parseInt(event?.time?.minute ?? '0') },
+                }}
                 description={event?.description ?? ''}
                 name={event?.name ?? ''}
                 onSave={handleSaveEventDetails}
               />
             ) : (
-              <div className='bg-white-pure flex h-[50vh] w-[80vw] items-center justify-center rounded-2xl'>
+              <div className='bg-white-pure flex h-[80vh] w-[80vw] items-center justify-center rounded-2xl'>
                 {' '}
                 Fetching...
               </div>
@@ -109,7 +130,7 @@ function DetailForm({ page, onClose, eid }: DetailFormProp) {
         </div>
       )}
       {page === 3 && (
-        <div>
+        <div className='bg-orange-6 h-full'>
           <SlidePopUpX onClose={onClose}>
             <MessageForm message={event?.message ?? ''} onSave={handleSaveMessage} />
           </SlidePopUpX>

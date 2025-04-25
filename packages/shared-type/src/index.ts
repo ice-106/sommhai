@@ -7,8 +7,8 @@ export interface Events {
   eid: string;
   name: string;
   message: string | null;
-  date: Date;
-  time: Date;
+  date: Date | string | null;
+  time: { hour: string; minute: string } | null;
   picture: string[];
   location: string;
   description: string | null;

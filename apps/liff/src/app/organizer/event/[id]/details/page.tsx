@@ -14,7 +14,7 @@ function DetailPage() {
   const [currentPage, setCurrentPage] = useState(0);
   const [event, setEvent] = useState<Events | null>(null);
   useEffect(() => {
-    console.log(event);
+    console.log('event' + event);
     fetch(`${API_BASE_URL}/org/events/${id}`, {
       method: 'GET',
       headers: {
@@ -25,7 +25,6 @@ function DetailPage() {
       .then((data) => {
         const eventData = {
           ...data,
-          date: new Date(data.date).toISOString().split('T')[0], // Ensure date is formatted for input
         };
         setEvent(eventData as Events);
       });
@@ -49,7 +48,7 @@ function DetailPage() {
   };
   return (
     <div className='flex h-screen w-screen flex-col'>
-      <HeaderBurgur name={event?.name ?? id} />
+      <HeaderBurgur name={event?.name ?? 'My Event'} />
       <div className='flex flex-1 flex-col items-center justify-between gap-[10vh] px-24 py-32'>
         <div
           className='bg-orange-6 flex h-full w-full flex-col justify-center rounded-3xl text-center active:bg-gray-200'

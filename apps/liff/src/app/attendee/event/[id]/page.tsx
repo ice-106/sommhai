@@ -20,7 +20,8 @@ export default function AtdEventPage() {
   const id = params?.id as string;
   const { userId } = useContext(LiffContext);
   const [event, setEvent] = useState<Events | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [completed, setCompleted] = useState(false);
   const [inv, setInv] = useState('');
   const [accepted, setAccepted] = useState(false);
   const [isAttendee, setIsAttendee] = useState(false);
@@ -36,7 +37,11 @@ export default function AtdEventPage() {
       .then((data) => {
         const eventData = {
           ...data,
-          date: new Date(data.date).toISOString().split('T')[0], // Ensure date is formatted for input
+          date: new Date(data.date).toISOString().split('T')[0],
+          time: {
+            hour: data.date.toString().split('T')[1].split(':')[0],
+            minute: data.date.toString().split('T')[1].split(':')[1],
+          },
         };
         setEvent(eventData as Events);
       });
@@ -83,10 +88,11 @@ export default function AtdEventPage() {
         .then((res) => res.json())
         .then((data) => {
           console.log('inv res', data);
+          setCompleted(true);
           setLoading(false);
         });
 
-      if (loading == false && accepted == true) {
+      if (completed == false && accepted == true) {
         router.push(`/attendee/event/${id}/${inv}/questions`);
       }
     }
@@ -116,7 +122,9 @@ export default function AtdEventPage() {
           ''
         ) : (
           <div className='mt-[-15px] flex h-[100px] w-full items-center justify-center gap-[29px]'>
-            <Link href={`/attendee`}>
+            {loading ? (
+              <button className='bg-orange-6 text-white-pure h-[64px] w-[155px] rounded-2xl'>Loading...</button>
+            ) : (
               <AcceptButton
                 className='h-[64px] w-[155px]'
                 variant={'Accept'}
@@ -126,7 +134,7 @@ export default function AtdEventPage() {
               >
                 Accept
               </AcceptButton>
-            </Link>
+            )}
             <Link href={`/attendee`}>
               <AcceptButton className='h-[64px] w-[155px]' variant={'Deny'}>
                 Deny
