@@ -41,6 +41,7 @@ const EventContainer = () => {
           .then((res) => res.json())
           .then((data) => {
             setEvents(data);
+            console.log(data);
             setLoading(false);
           });
       } catch (error) {
@@ -51,6 +52,9 @@ const EventContainer = () => {
 
     fetchEvents();
   }, [userId]);
+  useEffect(() => {
+    console.log(events);
+  }, [events]);
   if (loading) {
     return <Loading />;
   }
@@ -80,7 +84,7 @@ function OrganizerPage() {
   //   }
   // }, []);
   return (
-    <div className='flex h-screen w-screen flex-col'>
+    <div className='flex h-full w-full flex-col'>
       <HeaderBurgur name='Your Events' />
       <div className='mt-5 flex w-full items-center gap-2 px-7'>
         <SearchContainer />
@@ -89,7 +93,7 @@ function OrganizerPage() {
       <div className='mt-5 flex w-full items-center justify-center px-7'>
         <CreateEvent />
       </div>
-      <div className='mx-24 flex h-[69%] w-full flex-col gap-16 overflow-y-auto pt-12'>
+      <div className='flex h-[69%] w-full flex-col gap-16 overflow-y-auto px-12 pt-12'>
         <EventContainer />
       </div>
     </div>
