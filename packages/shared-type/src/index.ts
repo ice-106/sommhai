@@ -3,6 +3,14 @@ export * from './libs/event';
 export * from './libs/organizer';
 export * from './libs/user';
 
+type QuestionType = 'SHORT_ANSWER' | 'MULTIPLE_CHOICE' | 'CHECKBOX';
+export interface Question {
+  qid: string;
+  text: string;
+  type: QuestionType;
+  options?: string[];
+  required: boolean;
+}
 export interface Events {
   eid: string;
   name: string;

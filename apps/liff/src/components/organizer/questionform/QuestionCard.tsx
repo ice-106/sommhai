@@ -5,39 +5,42 @@ import { useState } from 'react';
 import { IoCloseCircleSharp } from 'react-icons/io5';
 
 import { CheckedboxQuestions, MultipleQuestions } from './MultipleQuestions';
+type QuestionCardProps = {
+  text: string;
+  qid: string;
+  type: string;
+  isRequired: boolean;
+  onDelete?: (qid: string) => void;
+};
 
-function QuestionCard() {
-  const [question, setQuestion] = useState('Question Name');
-  const [questionType, setQuestionType] = useState('');
+function QuestionCard({ text, qid, type, isRequired, onDelete }: QuestionCardProps) {
+  const [question, setQuestion] = useState(text);
+  const [questionType, setQuestionType] = useState(type);
   return (
-    <div className='bg-white-pure rounded-24 mx-auto mt-[12px] flex min-h-[136px] w-[345px] flex-col px-[24px] py-[16px]'>
-      <div className='flex w-full justify-between'>
-        <input
-          className='text-semi-18 shadow-none focus-visible:border-b-2 focus-visible:border-b-gray-300 focus-visible:outline-none'
-          type='text'
-          value={question}
-          onChange={(e) => {
-            setQuestion(e.target.value);
-          }}
-        />
-        <IoCloseCircleSharp className='mt-[3px] text-[#E74C3C]' size='24px' />
-      </div>
+    <div className='bg-white-pure rounded-24 mx-auto mt-2 flex h-full w-full flex-col px-[24px] py-12'>
       <div className='mt-[7.5px]'>
         <Select value={questionType} onValueChange={setQuestionType}>
-          <SelectTrigger className='bg-orange-3 text-regular-14 w-[180px] pl-[15px]'>
-            <SelectValue className='placeholder-black-pure' placeholder='Type' />
-          </SelectTrigger>
+          <div className='flex w-full items-center justify-start gap-2'>
+            <SelectTrigger className='bg-orange-4 text-regular-14 focus:border-orange-4 w-full pl-[15px] text-[5vw] font-semibold text-gray-600 focus:outline-none'>
+              <SelectValue className='placeholder-white-pure text-white-pure' placeholder='Type' />
+            </SelectTrigger>
+            <IoCloseCircleSharp
+              className='h-[8vw] w-[8vw] cursor-pointer text-[#E74C3C]'
+              onClick={() => onDelete?.(qid)}
+            />
+          </div>
+
           <SelectContent>
-            <SelectItem value='short'>Short answer</SelectItem>
-            <SelectItem value='multi'>Multiple choices</SelectItem>
-            <SelectItem value='check'>Checkbox</SelectItem>
+            <SelectItem value='SHORT_ANSWER'>Short answer</SelectItem>
+            <SelectItem value='MULTIPLE_CHOICE'>Multiple choices</SelectItem>
+            <SelectItem value='CHECKBOX'>Checkbox</SelectItem>
           </SelectContent>
         </Select>
       </div>
       <div className='mt-12 flex w-full flex-col'>
-        {questionType === 'short' && ShortQuestion()}
-        {questionType === 'multi' && <MultipleQuestions />}
-        {questionType === 'check' && <CheckedboxQuestions />}
+        {questionType === 'SHORT_ANSWER' && ShortQuestion()}
+        {questionType === 'MULTIPLE_CHOICE' && <MultipleQuestions />}
+        {questionType === 'CHECKBOX' && <CheckedboxQuestions />}
       </div>
     </div>
   );
@@ -45,7 +48,7 @@ function QuestionCard() {
 
 function ShortQuestion() {
   return (
-    <Input className='focus-visible:border-b-black-pure !border-l-0 !border-r-0 !border-t-0 border-b-2 border-b-gray-300 shadow-none focus-visible:outline-none focus-visible:ring-0' />
+    <Input className='focus-visible:border-orange-1 shadow-orange-5 !border-l-0 !border-r-0 !border-t-0 border-b-2 border-b-gray-300 shadow-md shadow-none focus-visible:outline-none focus-visible:ring-0' />
   );
 }
 
