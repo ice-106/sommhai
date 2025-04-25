@@ -16,6 +16,9 @@ export const AttendeeService = {
       skip,
       where: {
         date,
+        status: {
+          not: 'Completed',
+        },
         AND: {
           name: {
             contains: search,

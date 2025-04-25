@@ -28,6 +28,9 @@ export const OrganizerService = {
       skip,
       where: {
         date,
+        status: {
+          not: 'Completed',
+        },
         AND: [
           {
             OR: [

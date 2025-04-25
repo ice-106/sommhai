@@ -227,6 +227,15 @@ export const UserService = {
         },
       });
 
+      if (historyEntry) {
+        await prisma.event.update({
+          where: { eid: eid },
+          data: {
+            status: 'Completed',
+          },
+        });
+      }
+
       if (!historyEntry) {
         throw new InternalServerErrorException('Failed to create user history');
       }
