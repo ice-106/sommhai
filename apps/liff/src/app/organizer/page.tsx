@@ -58,7 +58,7 @@ const EventContainer = () => {
     <div className='flex h-full w-full flex-col gap-5 overflow-y-auto'>
       {events.map((event) => (
         <EventCard
-          date={event.date}
+          date={typeof event.date === 'string' ? new Date(event.date) : (event.date ?? new Date())}
           detail={event.description ?? ''}
           key={event.eid}
           link={event.eid}
