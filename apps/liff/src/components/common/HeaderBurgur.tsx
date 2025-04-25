@@ -11,9 +11,9 @@ export default function HeaderBurgur({ name }: { name: string }) {
 
   return (
     <nav className=''>
-      <div className='flex h-[4rem] w-dvw justify-between shadow-md'>
-        <div className='flex h-full w-[70%] items-center justify-center'>
-          <p className='mx-7 truncate text-center text-3xl font-bold'>{name}</p>
+      <div className='flex h-[4rem] w-full justify-between shadow-md'>
+        <div className='flex h-full w-[70%] items-center'>
+          <p className='truncate px-32 text-center text-3xl font-bold'>{name}</p>
         </div>
         <div className='mx-6 flex h-full items-center' onClick={handleOpenmenu}>
           <AiOutlineMenu size='2rem' />
