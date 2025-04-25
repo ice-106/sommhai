@@ -62,7 +62,7 @@ export async function inviteAttendee(event: Events) {
                   {
                     type: 'text',
                     // TODO: copy from day
-                    text: `${getDateDifferenceLabel(event.date.toString())}`,
+                    text: `${getDateDifferenceLabel(event.date?.toString() ?? "The host hasn't set the date")}`,
                     size: 'md',
                     color: '#F6BB0A',
                     weight: 'regular',
