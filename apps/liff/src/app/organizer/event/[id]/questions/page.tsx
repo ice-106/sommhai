@@ -38,12 +38,29 @@ function QueationPage() {
   if (loading) {
     return <Loading />;
   }
+
+  const handleSubmit = () => {
+    console.log('questions', JSON.stringify({ questions: questions }));
+    fetch(`${API_BASE_URL}/org/events/${id}/questions`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ questions: questions }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log('data', data);
+        //setLoading(false);
+      });
+  };
+
   return (
     <div className='flex h-full w-full flex-col'>
       <HeaderBurgur name={'Questionaire'} />
       <QuestionContainer questions={questions} setQuestion={setQuestions} />
       <div className='flex h-full w-full flex-col items-center justify-end pb-24'>
-        <ConfirmButton onClick={() => {}} />
+        <ConfirmButton onClick={handleSubmit} />
       </div>
     </div>
   );

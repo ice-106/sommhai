@@ -20,6 +20,7 @@ function QuestionContainer({
   if (!questions) {
     questions = [];
   }
+  console.log(questions);
   return (
     <div className='bg-white-bg flex h-full w-full flex-col'>
       <div className='flex flex-col'>
@@ -28,6 +29,7 @@ function QuestionContainer({
           <QuestionCard
             isRequired={question.required}
             key={question.qid}
+            options={question.options}
             qid={question.qid}
             text={question.question}
             type={question.type}
