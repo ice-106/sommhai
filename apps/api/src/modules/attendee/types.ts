@@ -44,3 +44,8 @@ export interface RespondWithQuestionsOptions {
     answer: string;
   }[];
 }
+
+export interface isAttendingOptions {
+  eventId: string;
+  userId: string;
+}

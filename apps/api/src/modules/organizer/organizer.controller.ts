@@ -113,7 +113,10 @@ export const OrganizerController: RouterImplementation<typeof contract.organizer
 
     return {
       status: 200,
-      body: result.map((invite) => OrganizerAdapter.toEventInviteInfo(invite)),
+      body: {
+        invites: result.invites.map((invite) => OrganizerAdapter.toEventInviteInfo(invite)),
+        total: result.total,
+      },
     };
   },
   getEventInvite: async ({ params: { eventId, inviteId } }) => {
@@ -225,7 +228,10 @@ export const OrganizerController: RouterImplementation<typeof contract.organizer
     const result = await OrganizerService.respondToInviteWithQuestions({
       inviteId,
       accepted,
-      responses,
+      responses: responses.map((response) => ({
+        ...response,
+        answer: Array.isArray(response.answer) ? response.answer.join(', ') : (response.answer ?? ''),
+      })),
     });
 
     return {

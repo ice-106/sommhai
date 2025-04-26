@@ -59,12 +59,31 @@ export const attendeeContract = c.router({
       responses: z.array(
         z.object({
           questionId: z.string(),
-          answer: z.string(),
+          answer: z.union([z.string(), z.array(z.string()), z.null()]),
         }),
       ),
     }),
     responses: {
       200: eventInviteWithResponsesOutput,
+      404: z.object({ message: z.string() }),
+      500: z.object({ message: z.string() }),
+    },
+  },
+  isAttending: {
+    method: 'GET',
+    path: '/atd/events/:eventId/attending',
+    pathParams: z.object({
+      eventId: z.string(),
+    }),
+    query: z.object({
+      userId: z.string(),
+    }),
+    responses: {
+      200: z.object({
+        isAttending: z.boolean(),
+        userId: z.string(),
+        eventId: z.string(),
+      }),
       404: z.object({ message: z.string() }),
       500: z.object({ message: z.string() }),
     },

@@ -131,7 +131,10 @@ export const organizerContract = c.router({
       skip: z.string().regex(/^\d+$/).transform(Number).optional(),
     }),
     responses: {
-      200: z.array(eventInviteBaseInfo),
+      200: z.object({
+        invites: z.array(eventInviteBaseInfo),
+        total: z.number(),
+      }),
       404: z.object({ message: z.string() }),
       500: z.object({ message: z.string() }),
     },
@@ -296,7 +299,7 @@ export const organizerContract = c.router({
       responses: z.array(
         z.object({
           questionId: z.string(),
-          answer: z.string(),
+          answer: z.union([z.string(), z.array(z.string()), z.null()]),
         }),
       ),
     }),
