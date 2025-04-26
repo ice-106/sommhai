@@ -29,7 +29,7 @@ function QuestionContainer({
             isRequired={question.required}
             key={question.qid}
             qid={question.qid}
-            text={question.text}
+            text={question.question}
             type={question.type}
             onDelete={() => {
               setQuestion(questions.filter((q) => q.qid !== question.qid));
@@ -41,7 +41,7 @@ function QuestionContainer({
         className='mx-24 flex items-center justify-center pt-8'
         onClick={() => {
           const uniqueId = `q_${Date.now()}_${Math.random().toString(36)}`;
-          setQuestion([...questions, { qid: uniqueId, text: '', type: 'SHORT_ANSWER', required: false }]);
+          setQuestion([...questions, { qid: uniqueId, question: '', type: 'SHORT_ANSWER', required: false }]);
         }}
       >
         <AddQuestionbox />

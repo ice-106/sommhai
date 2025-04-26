@@ -27,7 +27,7 @@ export default function AtdEventPage() {
   const [isAttendee, setIsAttendee] = useState(false);
   useEffect(() => {
     console.log(event);
-    fetch(`${API_BASE_URL}/org/events/${id}`, {
+    fetch(`${API_BASE_URL}/atd/events/${id}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
