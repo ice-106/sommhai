@@ -31,7 +31,7 @@ function CreateEventForm() {
   });
 
   function createEvent(name: string) {
-    const res = fetch(`${API_BASE_URL}/org/events`, {
+    fetch(`${API_BASE_URL}/org/events`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -52,7 +52,6 @@ function CreateEventForm() {
   };
 
   const onReturn = () => {
-    // Move this to server action ASAP!!!!
     redirect('/organizer');
   };
   if (loading === true && step === 2) {
@@ -62,9 +61,9 @@ function CreateEventForm() {
   return (
     <div className='bg-orange-4 flex h-full w-full flex-col items-center justify-between bg-[url(/create-bg.svg)] bg-cover'>
       <div className='flex w-full justify-between gap-[2vw] px-16 pt-16'>
-        <div className='w-full rounded-[24px] bg-gray-50 px-20'></div>
-        {step === 1 && <div className='h-4 w-full rounded-[24px] bg-gray-300'></div>}
-        {step === 2 && <div className='h-4 w-full rounded-[24px] bg-gray-50'></div>}
+        <div className='w-full rounded-[24px] bg-gray-50 px-20' data-testid='progressbar'></div>
+        {step === 1 && <div className='h-4 w-full rounded-[24px] bg-gray-300' data-testid='progressbar'></div>}
+        {step === 2 && <div className='h-4 w-full rounded-[24px] bg-gray-50' data-testid='progressbar'></div>}
       </div>
       <div className='flex max-h-[85vh] w-full justify-center px-16'>
         {step === 1 && (
@@ -86,10 +85,9 @@ function CreateEventForm() {
         {step === 2 && (
           <div className='bg-white-bg rounded-12 mx-[2vw] my-[8vh] flex max-h-full min-h-[50vh] w-full flex-col items-center justify-between text-center'>
             <div className='flex min-h-[30vh] w-full flex-col items-center justify-between overflow-hidden'>
-              <h2 className='text-medium w-full pt-[3vh] text-[6vw] font-semibold'>
-                {eventName} <br />
-                is created!
-              </h2>
+              <h2 className='text-medium-20 font-semibold'>{eventName}</h2>
+              <br />
+              <h2 className='text-medium-20 font-semibold'>is created!</h2>
               <p className='text-medium font-semibol h-full w-full text-wrap px-[12vw] pt-[2vh] text-[4vw]'>
                 Click on your new event to manage and customize your event invitation.
               </p>

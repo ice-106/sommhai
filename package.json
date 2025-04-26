@@ -4,10 +4,10 @@
   "scripts": {
     "build": "turbo build",
     "dev": "turbo run dev",
-    "test": "turbo test",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "prepare": "husky",
+    "test": "pnpm test --filter liff",
     "check-types": "turbo run check-types",
     "ui:add": "pnpm --filter @sommhai/ui ui:add",
     "db:seed:local": "pnpm --filter api seed:local",
