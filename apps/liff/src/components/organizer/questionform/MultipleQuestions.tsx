@@ -67,6 +67,7 @@ export function CheckedboxQuestions({
 }) {
   const handleClick = () => {
     setOptions((prev) => [...prev, '']);
+    console.log('qoptions', options);
   };
 
   return (
