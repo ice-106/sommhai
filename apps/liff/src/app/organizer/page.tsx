@@ -5,7 +5,7 @@ import { Suspense } from 'react';
 
 import HeaderBurgur from '@/components/common/HeaderBurgur';
 import Loading from '@/components/common/loading';
-import CreateEvent from '@/components/organizer/CreateEvent';
+import CreateEvent from '@/components/organizer/CreateEventbutton';
 
 const SearchContainer = () => {
   // Using dynamic import with React.lazy for the component using useSearchParams
