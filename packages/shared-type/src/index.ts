@@ -6,7 +6,7 @@ export * from './libs/user';
 type QuestionType = 'SHORT_ANSWER' | 'MULTIPLE_CHOICE' | 'CHECKBOX';
 export interface Question {
   qid: string;
-  text: string;
+  question: string;
   type: QuestionType;
   options?: string[];
   required: boolean;
