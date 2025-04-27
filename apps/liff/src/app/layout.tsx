@@ -35,11 +35,11 @@ export default function RootLayout({
         <StrictMode>
           {/* <AuthProvider> */}
           <QueryProvider>
-            <LiffProvider>
-              <GoogleOAuthProvider clientId={CLIENT_ID}>
+            <GoogleOAuthProvider clientId={CLIENT_ID}>
+              <LiffProvider>
                 <AppLayout>{children}</AppLayout>
-              </GoogleOAuthProvider>
-            </LiffProvider>
+              </LiffProvider>
+            </GoogleOAuthProvider>
           </QueryProvider>
           {/* </AuthProvider> */}
         </StrictMode>

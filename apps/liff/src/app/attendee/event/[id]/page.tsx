@@ -1,18 +1,22 @@
 'use client';
 import { Events } from '@sommhai/shared-type/src';
 import { Circle, User } from 'lucide-react';
-import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 import { useContext, useEffect, useState } from 'react';
+import { IoIosTimer } from 'react-icons/io';
 
 import DetailForm from '@/components/attendee/Detail';
 import Message from '@/components/attendee/Message';
+import AcceptModal from '@/components/common/Accept';
 import { AcceptButton } from '@/components/common/acceptdeny-button';
 import AddtoCalendar from '@/components/common/AddtoCalendar-Button';
 import HeaderBurgur from '@/components/common/HeaderBurgur';
+import RejectModal from '@/components/common/Reject';
+import { SlidePopUpX } from '@/components/common/SlidePopup';
 import { LiffContext } from '@/contexts/global/liff';
 import { API_BASE_URL } from '@/env';
+import { getDateDifferenceLabel } from '@/utils/date';
 
 export default function AtdEventPage() {
   const router = useRouter();
@@ -23,6 +27,7 @@ export default function AtdEventPage() {
   const [loading, setLoading] = useState(false);
   const [completed, setCompleted] = useState(false);
   const [inv, setInv] = useState('');
+  const [page, setPage] = useState(0);
   const [accepted, setAccepted] = useState(false);
   const [isAttendee, setIsAttendee] = useState(false);
   useEffect(() => {
@@ -43,71 +48,96 @@ export default function AtdEventPage() {
             minute: data.date.toString().split('T')[1].split(':')[1],
           },
         };
+        console.log('eventData', eventData);
         setEvent(eventData as Events);
       });
   }, [id]);
-  useEffect(() => {
-    const handleAccept = () => {
-      if (accepted == true) setLoading(true);
-      fetch(`${API_BASE_URL}/org/events/${id}/inv`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          uids: [userId],
-        }),
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          console.log('data', data);
-          try {
-            if (data.invites[0].error == 'User is already an attendee') {
-              console.log('User is already an attendee');
-              setIsAttendee(true);
-            } else {
-              console.log('inv', data.invites[0].inviteId);
-              setInv(data.invites[0].inviteId);
-            }
-          } catch (error) {
-            console.log('error', error);
-          }
-        });
-    };
-    if (inv !== '') {
-      console.log('inv', inv);
-      fetch(`${API_BASE_URL}/atd/events/${inv}/respond`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          accept: true,
-        }),
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          console.log('inv res', data);
-          setCompleted(true);
-          setLoading(false);
-        });
 
-      if (completed == false && accepted == true) {
+  const handleInvite = () => {
+    fetch(`${API_BASE_URL}/org/events/${id}/inv`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        uids: [userId],
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log('data', data);
+        try {
+          if (data.invites[0].error == 'User is already an attendee') {
+            console.log('User is already an attendee');
+            setIsAttendee(true);
+          } else {
+            console.log('inv', data.invites[0].inviteId);
+            setInv(data.invites[0].inviteId);
+          }
+        } catch (error) {
+          console.log('error', error);
+        }
+      });
+  };
+
+  const handleAccept = () => {
+    setLoading(true);
+    fetch(`${API_BASE_URL}/atd/events/${inv}/respond`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        accept: true,
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log('inv res', data);
+        setCompleted(true);
+        setPage(0);
         router.push(`/attendee/event/${id}/${inv}/questions`);
-      }
-    }
-    handleAccept();
-  }, [userId, accepted, id, inv, loading, router]);
+      });
+  };
+
+  const handleReject = () => {
+    setLoading(true);
+    fetch(`${API_BASE_URL}/atd/events/${inv}/respond`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        accept: false,
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log('inv res', data);
+        setCompleted(true);
+        setPage(0);
+        router.push(`/attendee`);
+      });
+  };
 
   return (
     <div className='flex h-screen w-screen flex-col'>
-      <HeaderBurgur name={'Events'} />
+      <HeaderBurgur name={`Events`} />
       <div className='flex flex-1 flex-col items-center justify-between gap-24 px-24 py-16'>
-        <div className='flex flex-col items-center justify-center gap-24'>
+        <div>
+          <h1 className='text-3xl font-semibold'>{event?.name}</h1>
+          <h2 className='text-orange-1 flex flex-row items-center gap-2 text-xl font-semibold'>
+            <IoIosTimer className='text-orange-2 mt-[4px]' />
+            {getDateDifferenceLabel(
+              typeof event?.date === 'string' ? event.date : (event?.date?.toString() ?? new Date().toString()),
+            )}
+          </h2>
+        </div>
+        <div className='flex w-full flex-col items-center justify-center gap-24'>
           <DetailForm eid={id} />
         </div>
         <div className='flex flex-col items-center justify-center gap-24'>
-          <Message message={event?.message ?? ''} />
+          {event?.message ? <Message message={event?.message ?? ''} /> : <></>}
           <div className='mt-[-15px] flex w-full items-center justify-center gap-16'>
             <Circle className='text-grey-light bg-grey-light border-grey-light !size-36 rounded-full border-[3px]'>
               <User className='text-black-pure' />
@@ -121,25 +151,57 @@ export default function AtdEventPage() {
         {isAttendee ? (
           ''
         ) : (
-          <div className='mt-[-15px] flex h-[100px] w-full items-center justify-center gap-[29px]'>
+          <div className='flex w-full items-center justify-between gap-20'>
             {loading ? (
               <button className='bg-orange-6 text-white-pure h-[64px] w-[155px] rounded-2xl'>Loading...</button>
             ) : (
-              <AcceptButton
-                className='h-[64px] w-[155px]'
-                variant={'Accept'}
-                onClick={() => {
-                  setAccepted(true);
-                }}
-              >
-                Accept
-              </AcceptButton>
+              <div className='w-full'>
+                <AcceptButton
+                  className='h-[64px] w-full'
+                  variant={'Accept'}
+                  onClick={() => {
+                    handleInvite();
+                    setPage(1);
+                  }}
+                >
+                  Accept
+                </AcceptButton>
+                {page === 1 && (
+                  <SlidePopUpX
+                    onClose={() => {
+                      setPage(0);
+                    }}
+                  >
+                    <AcceptModal handleAccept={handleAccept} setPage={setPage} />
+                  </SlidePopUpX>
+                )}
+              </div>
             )}
-            <Link href={`/attendee`}>
-              <AcceptButton className='h-[64px] w-[155px]' variant={'Deny'}>
-                Deny
-              </AcceptButton>
-            </Link>
+            {loading ? (
+              <button className='text-white-pure h-[64px] w-[155px] rounded-2xl bg-red-600'>Loading...</button>
+            ) : (
+              <div className='w-full'>
+                <AcceptButton
+                  className='h-[64px] w-full'
+                  variant={'Deny'}
+                  onClick={() => {
+                    setPage(2);
+                    handleInvite();
+                  }}
+                >
+                  Deny
+                </AcceptButton>
+                {page === 2 && (
+                  <SlidePopUpX
+                    onClose={() => {
+                      setPage(0);
+                    }}
+                  >
+                    <RejectModal handleReject={handleReject} setPage={setPage} />
+                  </SlidePopUpX>
+                )}
+              </div>
+            )}
           </div>
         )}
       </div>

@@ -15,10 +15,10 @@ function EventTextForm({
 }) {
   return (
     <div
-      className={`flex min-h-[236px] w-[333px] flex-col items-center gap-10 overflow-y-auto rounded-[25px] p-[16px] pt-32`}
+      className={`flex min-h-[236px] w-full flex-col items-center gap-10 overflow-y-auto rounded-[25px] p-16 pt-32`}
       onClick={(e) => e.stopPropagation()}
     >
-      <h1 className='text-3xl font-bold'>{name}</h1>
+      {/* <h1 className='text-3xl font-bold'>{name}</h1> */}
       <p className='text-xl font-semibold'>{address}</p>
       <p className='text-2xl font-semibold'>{date}</p>
       <p className='text-xl font-semibold'>{time}</p>

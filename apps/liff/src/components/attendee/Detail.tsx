@@ -34,8 +34,8 @@ function DetailForm({ eid }: DetailFormProp) {
       });
   }, []);
   return (
-    <div className='h-full w-full px-8'>
-      <div className='bg-orange-6 flex w-full items-center justify-center rounded-3xl'>
+    <div className='h-full w-full px-4'>
+      <div className='border-orange-1 bg-orange-6 flex w-full items-center justify-center rounded-3xl border'>
         {event ? (
           <EventText
             address={event?.location ?? ''}
@@ -45,7 +45,7 @@ function DetailForm({ eid }: DetailFormProp) {
             time={new Date(event?.date ?? new Date()).toISOString().split('T')[1]?.split('.')[0] ?? ''}
           />
         ) : (
-          <div className='bg-white-pure flex h-[50vh] w-[80vw] items-center justify-center rounded-2xl'>
+          <div className='bg-orange-6 flex h-[50vh] w-[80vw] items-center justify-center rounded-2xl text-3xl'>
             {' '}
             Fetching...
           </div>
