@@ -25,11 +25,20 @@ export interface Events {
   host: string;
   host_uid: string;
   status: string;
+  attendees: Attendee[];
+  attending: Attendee[];
+}
+
+export interface Invite {
+  inviteId: string;
+  eventId: string;
+  userId: string;
+  role: string;
+  accept: boolean;
 }
 
 export interface Attendee {
   uid: string;
-  name: string;
   eid: string;
 }
 export interface Organizer {
