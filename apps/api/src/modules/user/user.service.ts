@@ -12,12 +12,13 @@ import {
 } from './types';
 
 export const UserService = {
-  createUser: async ({ uid, username }: CreateUserOptions) => {
+  createUser: async ({ uid, username, picture }: CreateUserOptions) => {
     try {
       const existingUser = await prisma.user.findUnique({
         where: {
           uid,
           username,
+          picture,
         },
       });
 
@@ -28,6 +29,7 @@ export const UserService = {
       const userData: Prisma.UserCreateInput = {
         uid,
         username,
+        picture,
       };
 
       const newUser = await prisma.user.create({

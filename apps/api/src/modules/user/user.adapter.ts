@@ -9,6 +9,7 @@ export const UserAdapter = {
       email: user.email,
       payment_method: user.payment_method,
       subscription_plan: user.subscription_plan,
+      picture: user.picture,
     };
   },
 };
