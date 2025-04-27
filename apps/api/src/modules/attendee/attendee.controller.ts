@@ -13,8 +13,8 @@ export const AttendeeController: RouterImplementation<typeof contract.attendee> 
       body: AttendeeAdapter.toEventAttendeeInfo(event),
     };
   },
-  getAtdEvents: async ({ query: { search, date, take, skip, status } }) => {
-    const events = await AttendeeService.getAtdEvents({ search, date, take, skip, status });
+  getAtdEvents: async ({ query: { search, date, take, skip, status, userId } }) => {
+    const events = await AttendeeService.getAtdEvents({ search, date, take, skip, status, userId });
 
     return {
       status: 200,

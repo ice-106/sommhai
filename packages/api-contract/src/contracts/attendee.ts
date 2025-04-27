@@ -14,6 +14,7 @@ export const attendeeContract = c.router({
       take: z.string().regex(/^\d+$/).transform(Number).optional(),
       skip: z.string().regex(/^\d+$/).transform(Number).optional(),
       status: z.string().optional(),
+      userId: z.string().optional(),
     }),
     responses: {
       200: z.array(eventAttendeeInfo),

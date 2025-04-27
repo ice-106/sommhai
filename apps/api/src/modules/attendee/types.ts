@@ -10,6 +10,7 @@ export interface GetManyEventsOptions {
   take?: number;
   skip?: number;
   status?: string;
+  userId?: string;
 }
 
 export type EventEntity = Prisma.EventGetPayload<{

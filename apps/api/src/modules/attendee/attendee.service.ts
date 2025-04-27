@@ -11,7 +11,7 @@ import {
 } from './types';
 
 export const AttendeeService = {
-  getAtdEvents: async ({ search, date, take, skip, status }: GetManyEventsOptions) => {
+  getAtdEvents: async ({ search, date, take, skip, status, userId }: GetManyEventsOptions) => {
     const events = await prisma.event.findMany({
       take,
       skip,
@@ -20,27 +20,51 @@ export const AttendeeService = {
         status: {
           not: 'Completed',
         },
-        AND: {
-          name: {
-            contains: search,
-            mode: 'insensitive',
+        AND: [
+          {
+            OR: [
+              {
+                name: {
+                  contains: search,
+                  mode: 'insensitive',
+                },
+              },
+              {
+                description: {
+                  contains: search,
+                  mode: 'insensitive',
+                },
+              },
+            ],
           },
-          description: {
-            contains: search,
-            mode: 'insensitive',
-          },
-          status: {
-            contains: status,
-            mode: 'insensitive',
-          },
-        },
+          status
+            ? {
+                status: {
+                  contains: status,
+                  mode: 'insensitive',
+                },
+              }
+            : {},
+          userId
+            ? {
+                OR: [
+                  {
+                    attendees: {
+                      some: {
+                        uid: userId,
+                      },
+                    },
+                  },
+                ],
+              }
+            : {},
+        ],
       },
       include: {
         attendees: true,
         attendings: true,
         organizers: true,
       },
-
       orderBy: {
         date: 'desc',
       },
