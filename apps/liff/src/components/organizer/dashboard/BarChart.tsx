@@ -1,5 +1,6 @@
 'use client';
 
+import { Invite } from '@sommhai/shared-type/src';
 import { Card, CardContent, CardHeader, CardTitle } from '@sommhai/ui/components/ui/card';
 import { ChartConfig, ChartContainer } from '@sommhai/ui/components/ui/chart';
 import { Bar, BarChart, CartesianGrid, LabelList, XAxis } from 'recharts';
@@ -19,7 +20,7 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export function PreferChart() {
+export function PreferChart({ invites }: { invites: Invite[] }) {
   return (
     <Card className='bg-white-pure rounded-24 mx-auto mt-[19px] min-h-[196px] max-w-full px-24 py-12'>
       <CardHeader>

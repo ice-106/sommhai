@@ -6,8 +6,8 @@ import { useRouter } from 'next/navigation';
 import React, { useContext, useEffect, useState } from 'react';
 
 import HeaderBurgur from '@/components/common/HeaderBurgur';
+import { SlidePopUpX } from '@/components/common/SlidePopup';
 import { ConfirmButton } from '@/components/organizer/buttons';
-import { SlidePopUpX } from '@/components/organizer/event/detail/SlidePopup';
 import { LiffContext } from '@/contexts/global/liff';
 import { API_BASE_URL, LIFF_ID } from '@/env';
 

@@ -2,9 +2,9 @@
 import type { Events } from '@sommhai/shared-type/src';
 import { useEffect, useState } from 'react';
 
+import { SlidePopUpX } from '@/components/common/SlidePopup';
 import EventTextForm from '@/components/organizer/event/detail/EventTextForm';
 import MessageForm from '@/components/organizer/event/detail/MessageForm';
-import { SlidePopUpX } from '@/components/organizer/event/detail/SlidePopup';
 import { API_BASE_URL } from '@/env';
 
 interface DetailFormProp {
