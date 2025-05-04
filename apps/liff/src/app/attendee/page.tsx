@@ -69,19 +69,21 @@ const EventContainer = () => {
   );
 };
 
-function OrganizerPage() {
+function AttendeePage() {
   return (
     <div className='flex h-full w-full flex-col'>
       <HeaderBurgur name='Your Events' />
-      <div className='my-5 flex w-full items-center gap-2 px-7'>
-        <SearchContainer />
-        <SlidersHorizontal />
-      </div>
-      <div className='mx-24 flex h-[75%] w-full flex-col gap-16 overflow-y-auto pt-12'>
-        <EventContainer />
+      <div className='bg-orange-5 h-full w-full bg-[url(/create-bg.svg)]'>
+        <div className='my-5 flex w-full items-center gap-2 rounded-lg px-7'>
+          <SearchContainer />
+          <SlidersHorizontal />
+        </div>
+        <div className='mx-24 flex h-[75%] w-full flex-col gap-16 overflow-y-auto pt-12'>
+          <EventContainer />
+        </div>
       </div>
     </div>
   );
 }
 
-export default OrganizerPage;
+export default AttendeePage;

@@ -1,6 +1,5 @@
 'use client';
 import { Question } from '@sommhai/shared-type/src';
-import { SlidersHorizontal } from 'lucide-react';
 import { redirect, useParams } from 'next/navigation';
 
 import AddQuestionbox from './AddQuestionbox';
@@ -24,13 +23,14 @@ function QuestionContainer({
   return (
     <div className='bg-white-bg flex h-full w-full flex-col'>
       <div className='flex flex-col'>
-        <SlidersHorizontal />
+        {/* <SlidersHorizontal /> */}
         {questions.map((question) => (
           <QuestionCard
             isRequired={question.required}
             key={question.qid}
-            options={question.options}
+            option={question.options}
             qid={question.qid}
+            setQuestions={setQuestion}
             text={question.question}
             type={question.type}
             onDelete={() => {
