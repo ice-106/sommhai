@@ -15,6 +15,7 @@ export const userContract = c.router({
       email: z.string().optional(),
       payment_method: z.string().optional(),
       subscription_plan: z.string().optional(),
+      picture: z.string(),
     }),
     responses: {
       201: userInfo,

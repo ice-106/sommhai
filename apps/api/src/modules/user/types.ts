@@ -13,6 +13,7 @@ export interface GetManyUsersOptions {
 export interface CreateUserOptions {
   uid: string;
   username: string;
+  picture: string;
 }
 
 export interface UpdateUserOptions {

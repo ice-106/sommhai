@@ -13,8 +13,8 @@ export const AttendeeController: RouterImplementation<typeof contract.attendee> 
       body: AttendeeAdapter.toEventAttendeeInfo(event),
     };
   },
-  getAtdEvents: async ({ query: { search, date, take, skip, status } }) => {
-    const events = await AttendeeService.getAtdEvents({ search, date, take, skip, status });
+  getAtdEvents: async ({ query: { search, date, take, skip, status, userId } }) => {
+    const events = await AttendeeService.getAtdEvents({ search, date, take, skip, status, userId });
 
     return {
       status: 200,
@@ -36,12 +36,27 @@ export const AttendeeController: RouterImplementation<typeof contract.attendee> 
     const result = await AttendeeService.respondToInviteWithQuestions({
       inviteId,
       accepted,
-      responses,
+      responses: responses.map((response) => ({
+        ...response,
+        answer: Array.isArray(response.answer) ? response.answer.join(', ') : (response.answer ?? ''),
+      })),
     });
 
     return {
       status: 200,
       body: result,
+    };
+  },
+  isAttending: async ({ params: { eventId }, query: { userId } }) => {
+    const result = await AttendeeService.isAttending({ eventId, userId });
+
+    return {
+      status: 200,
+      body: {
+        isAttending: result,
+        userId,
+        eventId,
+      },
     };
   },
 };

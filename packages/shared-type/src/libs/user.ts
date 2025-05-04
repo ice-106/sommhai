@@ -7,4 +7,5 @@ export const userInfo = z.object({
   email: z.string().optional().nullable(),
   payment_method: z.string().optional().nullable(),
   subscription_plan: z.string().optional(),
+  picture: z.string(),
 });

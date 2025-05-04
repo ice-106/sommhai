@@ -87,7 +87,7 @@ export const eventInviteWithResponsesOutput = z.object({
   responses: z.array(
     z.object({
       questionId: z.string(),
-      submitted: z.boolean(),
+      answer: z.union([z.string(), z.array(z.string()), z.null()]),
     }),
   ),
 });

@@ -12,12 +12,13 @@ import {
 } from './types';
 
 export const UserService = {
-  createUser: async ({ uid, username }: CreateUserOptions) => {
+  createUser: async ({ uid, username, picture }: CreateUserOptions) => {
     try {
       const existingUser = await prisma.user.findUnique({
         where: {
           uid,
           username,
+          picture,
         },
       });
 
@@ -28,6 +29,7 @@ export const UserService = {
       const userData: Prisma.UserCreateInput = {
         uid,
         username,
+        picture,
       };
 
       const newUser = await prisma.user.create({
@@ -226,6 +228,15 @@ export const UserService = {
           eid,
         },
       });
+
+      if (historyEntry) {
+        await prisma.event.update({
+          where: { eid: eid },
+          data: {
+            status: 'Completed',
+          },
+        });
+      }
 
       if (!historyEntry) {
         throw new InternalServerErrorException('Failed to create user history');

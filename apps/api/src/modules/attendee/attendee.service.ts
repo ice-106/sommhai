@@ -5,38 +5,66 @@ import prisma from '../../common/libs/prisma';
 import {
   GetEventOptions,
   GetManyEventsOptions,
+  isAttendingOptions,
   RespondToEventInviteOptions,
   RespondWithQuestionsOptions,
 } from './types';
 
 export const AttendeeService = {
-  getAtdEvents: async ({ search, date, take, skip, status }: GetManyEventsOptions) => {
+  getAtdEvents: async ({ search, date, take, skip, status, userId }: GetManyEventsOptions) => {
     const events = await prisma.event.findMany({
       take,
       skip,
       where: {
         date,
-        AND: {
-          name: {
-            contains: search,
-            mode: 'insensitive',
-          },
-          description: {
-            contains: search,
-            mode: 'insensitive',
-          },
-          status: {
-            contains: status,
-            mode: 'insensitive',
-          },
+        status: {
+          not: 'Completed',
         },
+        AND: [
+          {
+            OR: [
+              {
+                name: {
+                  contains: search,
+                  mode: 'insensitive',
+                },
+              },
+              {
+                description: {
+                  contains: search,
+                  mode: 'insensitive',
+                },
+              },
+            ],
+          },
+          status
+            ? {
+                status: {
+                  contains: status,
+                  mode: 'insensitive',
+                },
+              }
+            : {},
+          userId
+            ? {
+                OR: [
+                  {
+                    attendees: {
+                      some: {
+                        uid: userId,
+                      },
+                    },
+                  },
+                ],
+              }
+            : {},
+        ],
       },
       include: {
         attendees: true,
         attendings: true,
         organizers: true,
       },
-
       orderBy: {
         date: 'desc',
       },
@@ -165,9 +193,6 @@ export const AttendeeService = {
         throw new NotFoundException('Invitation not found');
       }
 
-      if (invite.role !== InviteRole.ATTENDEE) {
-        throw new NotFoundException('Only attendees can respond to attendee invitations');
-      }
       await prisma.invite.update({
         where: { id: inviteId },
         data: { accept: accepted },
@@ -212,30 +237,28 @@ export const AttendeeService = {
 
           responseResults.push({
             questionId: response.questionId,
-            submitted: true,
+            answer: response.answer,
           });
         }
       }
 
       if (accepted) {
-        if (invite.role === InviteRole.ATTENDEE) {
-          const existingAttendee = await prisma.attendee.findUnique({
-            where: {
-              uid_eid: {
-                uid: invite.userId,
-                eid: invite.event.eid,
-              },
+        const existingAttendee = await prisma.attendee.findUnique({
+          where: {
+            uid_eid: {
+              uid: invite.userId,
+              eid: invite.event.eid,
+            },
+          },
+        });
+
+        if (!existingAttendee) {
+          await prisma.attendee.create({
+            data: {
+              uid: invite.userId,
+              eid: invite.event.eid,
             },
           });
-
-          if (!existingAttendee) {
-            await prisma.attendee.create({
-              data: {
-                uid: invite.userId,
-                eid: invite.event.eid,
-              },
-            });
-          }
         }
       }
 
@@ -251,6 +274,42 @@ export const AttendeeService = {
       }
       console.error('Error responding to invitation with questions:', error);
       throw new InternalServerErrorException('Failed to respond to invitation');
+    }
+  },
+  isAttending: async ({ eventId, userId }: isAttendingOptions) => {
+    try {
+      const event = await prisma.event.findUnique({
+        where: { eid: eventId },
+      });
+
+      if (!event) {
+        throw new NotFoundException(`Event with ID ${eventId} not found`);
+      }
+
+      const user = await prisma.user.findUnique({
+        where: { uid: userId },
+      });
+
+      if (!user) {
+        throw new NotFoundException(`User with ID ${userId} not found`);
+      }
+
+      const attendee = await prisma.attendee.findUnique({
+        where: {
+          uid_eid: {
+            uid: userId,
+            eid: eventId,
+          },
+        },
+      });
+
+      return !!attendee;
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      console.error('Error checking attendance status:', error);
+      throw new InternalServerErrorException(error, 'Failed to check attendance status');
     }
   },
 };

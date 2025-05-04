@@ -9,6 +9,7 @@ export const UserController: RouterImplementation<typeof contract.user> = {
     const newUser = await UserService.createUser({
       username: body.username,
       uid: body.uid,
+      picture: body.picture,
     });
 
     return {

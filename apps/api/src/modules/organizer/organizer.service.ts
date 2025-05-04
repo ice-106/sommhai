@@ -28,6 +28,9 @@ export const OrganizerService = {
       skip,
       where: {
         date,
+        status: {
+          not: 'Completed',
+        },
         AND: [
           {
             OR: [
@@ -322,6 +325,15 @@ export const OrganizerService = {
       if (!event) {
         throw new NotFoundException('Event not found');
       }
+
+      const total = await prisma.invite.count({
+        where: {
+          eventId,
+          ...(role ? { role } : {}),
+          ...(accept !== undefined ? { accept } : {}),
+        },
+      });
+
       const invites = await prisma.invite.findMany({
         where: {
           eventId,
@@ -338,7 +350,7 @@ export const OrganizerService = {
           createdAt: 'desc',
         },
       });
-      return invites;
+      return { invites, total };
     } catch (error) {
       if (error instanceof NotFoundException) {
         throw error;
@@ -767,7 +779,7 @@ export const OrganizerService = {
 
           responseResults.push({
             questionId: response.questionId,
-            submitted: true,
+            answer: response.answer,
           });
         }
       }

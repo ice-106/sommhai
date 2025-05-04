@@ -18,6 +18,7 @@ async function main() {
       email: faker.internet.email(),
       payment_method: faker.helpers.arrayElement(['Credit Card', 'PayPal', 'Bank Transfer']),
       subscription_plan: faker.helpers.arrayElement(['Free', 'Basic', 'Premium']),
+      picture: faker.image.urlPicsumPhotos(),
     })),
     skipDuplicates: true,
   });
