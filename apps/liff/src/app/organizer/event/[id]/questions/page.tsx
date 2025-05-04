@@ -1,6 +1,7 @@
 'use client';
 import { Question } from '@sommhai/shared-type/src';
 import { useParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import HeaderBurgur from '@/components/common/HeaderBurgur';
@@ -13,6 +14,8 @@ function QueationPage() {
   const { id } = useParams();
   const [questions, setQuestions] = useState<Question[]>([]);
   const [loading, setLoading] = useState(true);
+  const [submiting, setSubmiting] = useState(false);
+  const router = useRouter();
   useEffect(() => {
     const getQuestion = () =>
       fetch(`${API_BASE_URL}/org/events/${id}/questions`, {
@@ -25,9 +28,9 @@ function QueationPage() {
         .then((data) => {
           console.log('data', data);
           setQuestions(data);
-          //setLoading(false);
+          setLoading(false);
         });
-    getQuestion();
+    if (loading) getQuestion();
   }, [id]);
   useEffect(() => {
     console.log(questions);
@@ -35,11 +38,9 @@ function QueationPage() {
       setLoading(false);
     }
   }, [questions]);
-  if (loading) {
-    return <Loading />;
-  }
 
   const handleSubmit = () => {
+    setSubmiting(true);
     console.log('questions', JSON.stringify({ questions: questions }));
     fetch(`${API_BASE_URL}/org/events/${id}/questions`, {
       method: 'POST',
@@ -51,10 +52,14 @@ function QueationPage() {
       .then((res) => res.json())
       .then((data) => {
         console.log('data', data);
-        //setLoading(false);
+        setSubmiting(false);
+        router.push(`/organizer/event/${id}`);
       });
   };
 
+  if (submiting) {
+    return <Loading />;
+  }
   return (
     <div className='flex h-full w-full flex-col'>
       <HeaderBurgur name={'Questionaire'} />

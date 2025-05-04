@@ -47,7 +47,7 @@ export function IconButtonGroup({ event }: { event: Events }) {
     { icon: MdOutlineEventNote, title: 'Event Details', detail: 'Details of the event.', link: 'details' },
     { icon: FiPieChart, title: 'Dashboard', detail: 'Participant chart', link: 'dashboard' },
     { icon: GoPersonAdd, title: 'Invite Attendees', detail: 'Invite attendee', link: 'invite' },
-    { icon: TbCalendarQuestion, title: 'Question Form', detail: 'Edit the question form.', link: 'question' },
+    { icon: TbCalendarQuestion, title: 'Question Form', detail: 'Edit the question form.', link: 'questions' },
     { icon: LuCalendarClock, title: 'Reminder', detail: 'Add a reminder to Google Calendar', link: 'reminder' },
     { icon: LuUserRoundCog, title: 'Admin List', detail: 'Add admins to the event.', link: 'admin' },
   ];

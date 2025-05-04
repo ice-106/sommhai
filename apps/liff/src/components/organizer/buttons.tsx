@@ -40,7 +40,7 @@ type ConfirmButtonProps = {
 export function ConfirmButton({ onClick }: ConfirmButtonProps) {
   return (
     <button
-      className='rounded-24 bg-orange-3 text-medium-20 mx-auto mt-24 h-[56px] w-full max-w-[345px]'
+      className='rounded-24 bg-orange-3 mx-auto mt-24 h-[56px] w-full max-w-[345px] text-2xl font-semibold text-gray-800'
       onClick={onClick}
     >
       Confirm
