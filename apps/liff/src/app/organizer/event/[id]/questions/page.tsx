@@ -83,23 +83,6 @@ function QueationPage() {
   if (submiting) {
     return <Loading />;
   }
-
-  const handleSubmit = () => {
-    console.log('questions', JSON.stringify({ questions: questions }));
-    fetch(`${API_BASE_URL}/org/events/${id}/questions`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ questions: questions }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log('data', data);
-        //setLoading(false);
-      });
-  };
-
   return (
     <div className='flex h-full w-full flex-col'>
       <HeaderBurgur name={'Questionaire'} />
