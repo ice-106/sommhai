@@ -29,7 +29,7 @@ function SearchContent({ placeholder }: { placeholder: string }) {
   }, 300);
 
   return (
-    <div className='bg-white-pure flex flex-1'>
+    <div className='bg-white-pure flex flex-1 rounded-lg'>
       <Input
         defaultValue={searchParams.get('query')?.toString()}
         placeholder={placeholder}
