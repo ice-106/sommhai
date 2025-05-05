@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import { FiPieChart } from 'react-icons/fi';
 import { GoPersonAdd } from 'react-icons/go';
-import { LuCalendarClock, LuUserRoundCog } from 'react-icons/lu';
+import { LuCalendarClock } from 'react-icons/lu';
 import { MdOutlineEventNote } from 'react-icons/md';
 import { MdNavigateNext } from 'react-icons/md';
 import { TbCalendarQuestion } from 'react-icons/tb';
@@ -49,7 +49,7 @@ export function IconButtonGroup({ event }: { event: Events }) {
     { icon: GoPersonAdd, title: 'Invite Attendees', detail: 'Invite attendee', link: 'invite' },
     { icon: TbCalendarQuestion, title: 'Question Form', detail: 'Edit the question form.', link: 'questions' },
     { icon: LuCalendarClock, title: 'Reminder', detail: 'Add a reminder to Google Calendar', link: 'reminder' },
-    { icon: LuUserRoundCog, title: 'Admin List', detail: 'Add admins to the event.', link: 'admin' },
+    // { icon: LuUserRoundCog, title: 'Admin List', detail: 'Add admins to the event.', link: 'admin' },
   ];
   const [seeMore, setSeeMore] = useState(false);
   const initialDisplayed = 3;

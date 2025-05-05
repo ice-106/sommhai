@@ -21,7 +21,9 @@ export const LiffContext = createContext<LiffContextProps>({
 export function LiffProvider({ children }: { children: React.ReactNode }): React.JSX.Element {
   const [liffObject, setLiffObject] = useState<Liff | null>(null);
   const [liffError, setLiffError] = useState<string | null>(null);
-  const [userId, setUserId] = useState<string | null>(null);
+  //const [userId, setUserId] = useState<string | null>('14ed8a94-a34e-4d67-8167-b97c4e383b0c');
+  const [userId, setUserId] = useState<string | null>('Uca4f9bf5fc3d6a5c242b96491d0574c9');
+  //const [userId, setUserId] = useState<string | null>('123456');
 
   useEffect(() => {
     import('@line/liff')
