@@ -48,6 +48,9 @@ export default function EventQuestionnairePage() {
           .then((data) => {
             console.log('Event', data);
             setEventData(data);
+            if (data.length == 0) {
+              setCompleted(true);
+            }
             setCurrentQuestion(data[0]);
             setLoading(false);
           });
@@ -135,6 +138,10 @@ export default function EventQuestionnairePage() {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(responses),
+      }).then((res) => {
+        console.log('Form submitted successfully');
+        setCompleted(true);
+        console.log(res.json());
       });
 
       console.log('Form submitted:', answers);

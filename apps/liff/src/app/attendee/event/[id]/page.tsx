@@ -1,6 +1,5 @@
 'use client';
 import { Events } from '@sommhai/shared-type/src';
-import { Circle, User } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 import { useContext, useEffect, useState } from 'react';
@@ -32,25 +31,42 @@ export default function AtdEventPage() {
   const [isAttendee, setIsAttendee] = useState(false);
   useEffect(() => {
     console.log(event);
-    fetch(`${API_BASE_URL}/atd/events/${id}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        const eventData = {
-          ...data,
-          date: new Date(data.date).toISOString().split('T')[0],
-          time: {
-            hour: data.date.toString().split('T')[1].split(':')[0],
-            minute: data.date.toString().split('T')[1].split(':')[1],
-          },
-        };
-        console.log('eventData', eventData);
-        setEvent(eventData as Events);
-      });
+    const getData = () =>
+      fetch(`${API_BASE_URL}/atd/events/${id}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          const eventData = {
+            ...data,
+            date: new Date(data.date).toISOString().split('T')[0],
+            time: {
+              hour: data.date.toString().split('T')[1].split(':')[0],
+              minute: data.date.toString().split('T')[1].split(':')[1],
+            },
+          };
+          console.log('eventData', eventData);
+          setEvent(eventData as Events);
+        });
+    const getAttending = () =>
+      fetch(`${API_BASE_URL}/atd/events/${id}/attending?userId=${userId}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log('attending', data);
+          if (data.isAttending) {
+            setIsAttendee(true);
+          }
+        });
+    getData();
+    getAttending();
   }, [id]);
 
   const handleInvite = () => {
@@ -68,7 +84,7 @@ export default function AtdEventPage() {
         console.log('data', data);
         try {
           if (data.invites[0].error == 'User is already an attendee') {
-            console.log('User is already an attendee');
+            console.log('User i s already an attendee', data);
             setIsAttendee(true);
           } else {
             console.log('inv', data.invites[0].inviteId);
@@ -139,9 +155,9 @@ export default function AtdEventPage() {
         <div className='flex flex-col items-center justify-center gap-24'>
           {event?.message ? <Message message={event?.message ?? ''} /> : <></>}
           <div className='mt-[-15px] flex w-full items-center justify-center gap-16'>
-            <Circle className='text-grey-light bg-grey-light border-grey-light !size-36 rounded-full border-[3px]'>
-              <User className='text-black-pure' />
-            </Circle>
+            {/* <Circle className='text-grey-light bg-grey-light border-grey-light !size-36 rounded-full border-[3px]'>
+              
+            </Circle> */}
             <h1 className='text-bold-20 py-2'>{event?.host}</h1>
           </div>
         </div>
@@ -149,7 +165,28 @@ export default function AtdEventPage() {
           <AddtoCalendar />
         </div>
         {isAttendee ? (
-          ''
+          <div>
+            <h1 className='text-bold-20 py-2'>You are attending this event.</h1>
+            {/* <AcceptButton
+              className='h-[64px] w-full'
+              variant={'Deny'}
+              onClick={() => {
+                setPage(2);
+                handleInvite();
+              }}
+            >
+              Not attending
+            </AcceptButton>
+            {page === 2 && (
+              <SlidePopUpX
+                onClose={() => {
+                  setPage(0);
+                }}
+              >
+                <RejectModal handleReject={handleReject} setPage={setPage} />
+              </SlidePopUpX>
+            )} */}
+          </div>
         ) : (
           <div className='flex w-full items-center justify-between gap-20'>
             {loading ? (
