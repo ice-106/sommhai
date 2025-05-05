@@ -14,6 +14,7 @@ export const AttendeeAdapter = {
       memory: event.memory,
       host: event.host,
       host_uid: event.host_uid,
+      host_picture: event.hostUser?.picture,
       attendees: event.attendees,
       attendings: event.attendings,
       organizers: event.organizers,

@@ -15,6 +15,7 @@ export const eventBaseInfo = z.object({
   memory: z.string().nullable(),
   host: z.string(),
   host_uid: z.string(),
+  host_picture: z.string(),
   attendees: z.array(attendee),
   attendings: z.array(attendee),
   organizers: z.array(organizer),

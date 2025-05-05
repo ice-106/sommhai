@@ -64,6 +64,7 @@ export const AttendeeService = {
         attendees: true,
         attendings: true,
         organizers: true,
+        hostUser: true,
       },
       orderBy: {
         date: 'desc',
@@ -81,6 +82,7 @@ export const AttendeeService = {
         attendees: true,
         attendings: true,
         organizers: true,
+        hostUser: true,
       },
     });
 
@@ -303,7 +305,18 @@ export const AttendeeService = {
         },
       });
 
-      return !!attendee;
+      const invite = await prisma.invite.findFirst({
+        where: {
+          eventId: eventId,
+          userId: userId,
+          role: InviteRole.ATTENDEE,
+        },
+      });
+
+      return {
+        isAttending: !!attendee,
+        inviteId: invite?.id || null,
+      };
     } catch (error) {
       if (error instanceof NotFoundException) {
         throw error;

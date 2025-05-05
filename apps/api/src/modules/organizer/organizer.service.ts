@@ -85,6 +85,7 @@ export const OrganizerService = {
         attendees: true,
         attendings: true,
         organizers: true,
+        hostUser: true,
       },
       orderBy: {
         date: 'desc',
@@ -102,6 +103,7 @@ export const OrganizerService = {
         attendees: true,
         attendings: true,
         organizers: true,
+        hostUser: true,
       },
     });
 

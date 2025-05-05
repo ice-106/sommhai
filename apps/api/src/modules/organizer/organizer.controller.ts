@@ -32,7 +32,7 @@ export const OrganizerController: RouterImplementation<typeof contract.organizer
 
     return {
       status: 201,
-      body: event,
+      body: OrganizerAdapter.toEventOrganizerInfo(event),
     };
   },
 

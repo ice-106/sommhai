@@ -53,7 +53,8 @@ export const AttendeeController: RouterImplementation<typeof contract.attendee> 
     return {
       status: 200,
       body: {
-        isAttending: result,
+        isAttending: result.isAttending,
+        inviteId: result.inviteId,
         userId,
         eventId,
       },
