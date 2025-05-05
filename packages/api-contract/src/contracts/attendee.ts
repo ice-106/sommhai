@@ -84,6 +84,7 @@ export const attendeeContract = c.router({
         isAttending: z.boolean(),
         userId: z.string(),
         eventId: z.string(),
+        inviteId: z.string().nullable(),
       }),
       404: z.object({ message: z.string() }),
       500: z.object({ message: z.string() }),

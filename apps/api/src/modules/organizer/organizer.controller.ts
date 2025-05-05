@@ -32,7 +32,7 @@ export const OrganizerController: RouterImplementation<typeof contract.organizer
 
     return {
       status: 201,
-      body: event,
+      body: OrganizerAdapter.toEventOrganizerInfo(event),
     };
   },
 
@@ -153,7 +153,7 @@ export const OrganizerController: RouterImplementation<typeof contract.organizer
     const questions = await OrganizerService.getEventQuestions({ eventId });
     return {
       status: 200,
-      body: questions.map((questions) => OrganizerAdapter.toEventQuestionInfo(questions)),
+      body: OrganizerAdapter.toEventQuestionsWithResponses(questions),
     };
   },
   getEventQuestion: async ({ params: { eventId, questionId } }) => {
@@ -161,7 +161,7 @@ export const OrganizerController: RouterImplementation<typeof contract.organizer
 
     return {
       status: 200,
-      body: OrganizerAdapter.toEventQuestionInfo(question),
+      body: OrganizerAdapter.toEventQuestionWithResponses(question),
     };
   },
   createEventQuestions: async ({ params: { eventId }, body: { questions } }) => {

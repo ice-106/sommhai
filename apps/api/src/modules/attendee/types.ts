@@ -18,6 +18,7 @@ export type EventEntity = Prisma.EventGetPayload<{
     attendees: true;
     attendings: true;
     organizers: true;
+    hostUser: true;
   };
 }>;
 

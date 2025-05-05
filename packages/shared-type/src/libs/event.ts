@@ -15,6 +15,7 @@ export const eventBaseInfo = z.object({
   memory: z.string().nullable(),
   host: z.string(),
   host_uid: z.string(),
+  host_picture: z.string(),
   attendees: z.array(attendee),
   attendings: z.array(attendee),
   organizers: z.array(organizer),
@@ -57,6 +58,14 @@ export const questionBaseInfo = z.object({
   options: z.array(z.string()).optional(),
   createdAt: z.date(),
   updatedAt: z.date(),
+  responses: z
+    .array(
+      z.object({
+        answer: z.string(),
+        uid: z.string(),
+      }),
+    )
+    .optional(),
 });
 
 export const userResponseBaseInfo = z.object({
