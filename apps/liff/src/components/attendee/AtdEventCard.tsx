@@ -17,7 +17,7 @@ interface EventCardProp {
 function AtdEventCard({ name: name, link: link, date: date, detail: detail }: EventCardProp) {
   return (
     <Link href={`attendee/event/${link}`}>
-      <div className='bg-white-bg flex w-[345px] flex-col justify-between gap-4 rounded-[25px] p-16 shadow-lg'>
+      <div className='bg-white-bg flex w-full flex-col justify-between gap-4 rounded-[25px] p-16 shadow-lg'>
         <div className='flex justify-between'>
           <h1 className='text-bold-20 font-inter'>{name}</h1>
           <MdNavigateNext className='self-center' size={25} />

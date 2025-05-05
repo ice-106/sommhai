@@ -12,9 +12,9 @@ const AcceptModal = ({ setPage, handleAccept }: AcceptModalProps) => {
       <div className='bg-white-bg mx-32 flex w-full flex-col rounded-xl border border-gray-200 p-32 shadow-lg'>
         <div className='flex flex-col items-center'>
           <div className='mb-2 flex items-center text-2xl font-bold text-green-500'>
-            Going to the Event <AlertTriangle className='ml-2' size={24} />
+            Joining Event <AlertTriangle className='ml-2' size={24} />
           </div>
-          <p className='text-center text-sm text-gray-600'>You will be listed as going to the Event!</p>
+          <p className='text-balance text-center text-sm text-gray-600'>You will be listed as going to the Event!</p>
           <p className='mb-6 text-center text-sm text-gray-600'>Changes can't be made later.</p>
           <div className='flex w-full gap-4 pt-20'>
             <button

@@ -27,6 +27,7 @@ export interface Events {
   status: string;
   attendees: Attendee[];
   attending: Attendee[];
+  organizers: Organizer[];
 }
 
 export interface Invite {
