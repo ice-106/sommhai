@@ -1,6 +1,6 @@
 import { EventQuestion } from '@prisma/client';
 
-import { EventEntity, InviteEntity, QuestionWithResponses } from './types';
+import { EventEntity, InviteEntity, QuestionsWithResponses, QuestionWithResponses } from './types';
 
 export const OrganizerAdapter = {
   toEventOrganizerInfo: (event: EventEntity) => {
@@ -58,5 +58,19 @@ export const OrganizerAdapter = {
       updatedAt: data.question.updatedAt,
       responses: data.responses,
     };
+  },
+
+  toEventQuestionsWithResponses: (data: QuestionsWithResponses) => {
+    return data.map((item) => ({
+      qid: item.question.id,
+      eventId: item.question.eventId,
+      question: item.question.question,
+      type: item.question.type,
+      required: item.question.required,
+      options: item.question.options,
+      createdAt: item.question.createdAt,
+      updatedAt: item.question.updatedAt,
+      responses: item.responses,
+    }));
   },
 };

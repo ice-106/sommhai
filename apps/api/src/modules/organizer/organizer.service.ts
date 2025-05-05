@@ -530,7 +530,42 @@ export const OrganizerService = {
         orderBy: { createdAt: 'asc' },
       });
 
-      return questions;
+      const allResponses = await prisma.questionResponse.findMany({
+        where: {
+          questionId: {
+            in: questions.map((q) => q.id),
+          },
+        },
+        include: {
+          user: true,
+        },
+        orderBy: {
+          createdAt: 'asc',
+        },
+      });
+
+      const responsesByQuestionId = new Map<string, { answer: string; uid: string }[]>();
+
+      questions.forEach((question) => {
+        responsesByQuestionId.set(question.id, []);
+      });
+
+      allResponses.forEach((response) => {
+        const responses = responsesByQuestionId.get(response.questionId);
+        if (responses) {
+          responses.push({
+            answer: response.answer || '',
+            uid: response.userId,
+          });
+        }
+      });
+
+      const questionsWithResponses = questions.map((question) => ({
+        question,
+        responses: responsesByQuestionId.get(question.id) || [],
+      }));
+
+      return questionsWithResponses;
     } catch (error) {
       if (error instanceof NotFoundException) {
         throw error;

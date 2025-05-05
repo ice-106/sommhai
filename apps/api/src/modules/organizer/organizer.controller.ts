@@ -153,7 +153,7 @@ export const OrganizerController: RouterImplementation<typeof contract.organizer
     const questions = await OrganizerService.getEventQuestions({ eventId });
     return {
       status: 200,
-      body: questions.map((questions) => OrganizerAdapter.toEventQuestionInfo(questions)),
+      body: OrganizerAdapter.toEventQuestionsWithResponses(questions),
     };
   },
   getEventQuestion: async ({ params: { eventId, questionId } }) => {

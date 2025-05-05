@@ -128,3 +128,5 @@ export interface QuestionWithResponses {
   question: EventQuestion;
   responses: QuestionResponseTuple[];
 }
+
+export type QuestionsWithResponses = QuestionWithResponses[];
