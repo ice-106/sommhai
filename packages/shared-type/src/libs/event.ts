@@ -58,6 +58,14 @@ export const questionBaseInfo = z.object({
   options: z.array(z.string()).optional(),
   createdAt: z.date(),
   updatedAt: z.date(),
+  responses: z
+    .array(
+      z.object({
+        answer: z.string(),
+        uid: z.string(),
+      }),
+    )
+    .optional(),
 });
 
 export const userResponseBaseInfo = z.object({

@@ -161,7 +161,7 @@ export const OrganizerController: RouterImplementation<typeof contract.organizer
 
     return {
       status: 200,
-      body: OrganizerAdapter.toEventQuestionInfo(question),
+      body: OrganizerAdapter.toEventQuestionWithResponses(question),
     };
   },
   createEventQuestions: async ({ params: { eventId }, body: { questions } }) => {

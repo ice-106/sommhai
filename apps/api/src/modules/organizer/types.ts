@@ -1,4 +1,4 @@
-import { InviteRole, Prisma, QuestionType } from '@prisma/client';
+import { EventQuestion, InviteRole, Prisma, QuestionType } from '@prisma/client';
 
 export interface GetEventOptions {
   eventId: string;
@@ -117,4 +117,14 @@ export interface RespondWithQuestionsOptions {
     questionId: string;
     answer: string;
   }[];
+}
+
+export interface QuestionResponseTuple {
+  answer: string;
+  uid: string;
+}
+
+export interface QuestionWithResponses {
+  question: EventQuestion;
+  responses: QuestionResponseTuple[];
 }

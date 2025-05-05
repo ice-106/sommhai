@@ -552,7 +552,27 @@ export const OrganizerService = {
         throw new NotFoundException('Question not found for this event');
       }
 
-      return question;
+      const responses = await prisma.questionResponse.findMany({
+        where: {
+          questionId,
+        },
+        include: {
+          user: true,
+        },
+        orderBy: {
+          createdAt: 'asc',
+        },
+      });
+
+      const answerUidTuples = responses.map((response) => ({
+        answer: response.answer || '',
+        uid: response.userId,
+      }));
+
+      return {
+        question,
+        responses: answerUidTuples,
+      };
     } catch (error) {
       if (error instanceof NotFoundException) {
         throw error;
