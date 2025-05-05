@@ -15,6 +15,7 @@ function QueationPage() {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [loading, setLoading] = useState(true);
   const [submiting, setSubmiting] = useState(false);
+  const [initQuestion, setInitQuestion] = useState<Question[]>([]);
   const router = useRouter();
   useEffect(() => {
     const getQuestion = () =>
@@ -27,6 +28,7 @@ function QueationPage() {
         .then((res) => res.json())
         .then((data) => {
           console.log('data', data);
+          setInitQuestion(data);
           setQuestions(data);
           setLoading(false);
         });
@@ -38,10 +40,21 @@ function QueationPage() {
       setLoading(false);
     }
   }, [questions]);
-
-  const handleSubmit = () => {
-    setSubmiting(true);
-    console.log('questions', JSON.stringify({ questions: questions }));
+  const deleteQuestion = async () => {
+    fetch(`${API_BASE_URL}/org/events/${id}/questions`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ questionIds: initQuestion.map((question) => question.qid) }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log('data', data);
+        setSubmiting(false);
+      });
+  };
+  const postQuestion = async () => {
     fetch(`${API_BASE_URL}/org/events/${id}/questions`, {
       method: 'POST',
       headers: {
@@ -55,6 +68,16 @@ function QueationPage() {
         setSubmiting(false);
         router.push(`/organizer/event/${id}`);
       });
+  };
+  const handleSubmit = async () => {
+    setSubmiting(true);
+    console.log('questions', JSON.stringify({ questions: questions }));
+    if (initQuestion.length == 0) {
+      await postQuestion();
+    } else {
+      await deleteQuestion();
+      await postQuestion();
+    }
   };
 
   if (submiting) {

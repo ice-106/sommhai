@@ -24,10 +24,10 @@ function DashboardPage() {
     })
       .then((res) => res.json())
       .then((data) => {
-        setData(data);
+        setData(data.invites);
         console.log('data', data);
       });
-  });
+  }, []);
 
   return (
     <div className='bg-white-bg flex min-h-screen w-screen flex-col'>
