@@ -29,7 +29,7 @@ import { API_BASE_URL } from '@/env';
 const EventContainer = () => {
   const [events, setEvents] = useState<Events[]>([]);
   const [filteredEvents, setFilteredEvents] = useState<Events[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const { userId } = useContext(LiffContext);
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [activeFilter, setActiveFilter] = useState('');
@@ -37,6 +37,7 @@ const EventContainer = () => {
 
   useEffect(() => {
     function fetchEvents() {
+      setLoading(true);
       try {
         const res = fetch(`${API_BASE_URL}/org/events?userId=${userId}`, {
           method: 'GET',

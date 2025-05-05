@@ -1,18 +1,23 @@
 'use client';
 
 import { Events } from '@sommhai/shared-type/src';
+import { Button } from '@sommhai/ui/components/ui/button';
+import { Home } from 'lucide-react';
+import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 
 import HeaderBurgur from '@/components/common/HeaderBurgur';
 import CompleteButton from '@/components/organizer/completeButton';
 import { IconButtonGroup } from '@/components/organizer/iconbutton';
+import { LiffContext } from '@/contexts/global/liff';
 import { API_BASE_URL } from '@/env';
 
 export default function EventPage() {
   const param = useParams();
   const [event, setEvent] = useState<Events | null>(null);
   const id = param.id as string;
+  const { userId } = useContext(LiffContext);
 
   useEffect(() => {
     console.log(event);
@@ -33,6 +38,19 @@ export default function EventPage() {
   }, [id]);
   if (!event) {
     return <div>Loading...</div>;
+  }
+  if (userId !== event.host_uid) {
+    return (
+      <div className='flex h-full w-full flex-col items-center justify-center gap-2 text-wrap px-8 text-center text-2xl font-bold'>
+        You are not authorized to edit this event
+        <Link href={'/organizer'}>
+          <Button>
+            <Home className='mr-2 h-4 w-4' />
+            Back to Home
+          </Button>
+        </Link>
+      </div>
+    );
   }
   return (
     <div className='flex h-full w-full flex-col'>

@@ -34,7 +34,6 @@ function DashboardPage() {
       <HeaderBurgur name='Dashboard' />
 
       <ParticipantCard invites={data} />
-      {/* <PeferenceCard/> */}
       <PreferChart invites={data} />
       <div className='my-5 flex w-full items-center gap-2 px-7'>
         <SearchContainer placeholder='Search...' />
