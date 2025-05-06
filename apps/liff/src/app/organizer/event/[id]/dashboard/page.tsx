@@ -1,38 +1,14 @@
 'use client';
-import { Invite, Question } from '@sommhai/shared-type/src';
-import { useParams, useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
-
-('use client');
-import { Invite, Question } from '@sommhai/shared-type/src';
+import { Answer, Invite } from '@sommhai/shared-type/src';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import HeaderBurgur from '@/components/common/HeaderBurgur';
-import { CollabsibleAccepted, CollabsibleDenied } from '@/components/organizer/dashboard/Collabsible';
+import { PreferChart } from '@/components/organizer/dashboard/BarChart';
 import { CollabsibleAccepted, CollabsibleDenied } from '@/components/organizer/dashboard/Collabsible';
 import ParticipantCard from '@/components/organizer/dashboard/ParticipantCard';
 import { SearchContainer } from '@/components/organizer/Search';
 import { API_BASE_URL } from '@/env';
-
-interface Answer extends Question {
-  responses: [
-    {
-      answer: string;
-      uid: string;
-    },
-  ];
-}
-import { API_BASE_URL } from '@/env';
-
-interface Answer extends Question {
-  responses: [
-    {
-      answer: string;
-      uid: string;
-    },
-  ];
-}
 
 function DashboardPage() {
   const router = useRouter();
@@ -88,14 +64,10 @@ function DashboardPage() {
       <HeaderBurgur name='Dashboard' />
 
       <ParticipantCard invites={data} />
-      {/* <PreferChart invites={data} /> */}
-      <ParticipantCard invites={data} />
-      {/* <PreferChart invites={data} /> */}
+      <PreferChart data={answer} />
       <div className='my-5 flex w-full items-center gap-2 px-7'>
         <SearchContainer placeholder='Search...' />
       </div>
-      <CollabsibleAccepted invites={attendee} />
-      <CollabsibleDenied invites={notAttendee} />
       <CollabsibleAccepted invites={attendee} />
       <CollabsibleDenied invites={notAttendee} />
       <div className='mt-[19px]'></div>

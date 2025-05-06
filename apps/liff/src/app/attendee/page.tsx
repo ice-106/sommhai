@@ -31,7 +31,7 @@ const EventContainer = () => {
   useEffect(() => {
     function fetchEvents() {
       try {
-        const res = fetch(`${API_BASE_URL}/org/events?userId=${userId}`, {
+        const res = fetch(`${API_BASE_URL}/atd/events?userId=${userId}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',

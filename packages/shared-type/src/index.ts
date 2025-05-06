@@ -11,6 +11,14 @@ export interface Question {
   options?: string[];
   required: boolean;
 }
+export interface Answer extends Question {
+  responses: [
+    {
+      answer: string;
+      uid: string;
+    },
+  ];
+}
 export interface Events {
   eid: string;
   name: string;
