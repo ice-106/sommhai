@@ -4,7 +4,6 @@ import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import HeaderBurgur from '@/components/common/HeaderBurgur';
-import { PreferChart } from '@/components/organizer/dashboard/BarChart';
 import { CollabsibleAccepted, CollabsibleDenied } from '@/components/organizer/dashboard/Collabsible';
 import ParticipantCard from '@/components/organizer/dashboard/ParticipantCard';
 import { SearchContainer } from '@/components/organizer/Search';

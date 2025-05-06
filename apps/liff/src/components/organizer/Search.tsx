@@ -45,7 +45,7 @@ export function SearchContainer({ placeholder }: { placeholder: string }) {
   const Search = React.lazy(() => import('@/components/organizer/Search'));
 
   return (
-    <Suspense fallback={<div className='h-10 flex-1 animate-pulse rounded bg-gray-100'>Loading...</div>}>
+    <Suspense fallback={<div>Loading...</div>}>
       <Search placeholder={`⌕ ${placeholder}`} />
     </Suspense>
   );

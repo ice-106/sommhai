@@ -1,9 +1,19 @@
 'use client';
 
-import { Invite } from '@sommhai/shared-type/src';
+import { Invite, Question } from '@sommhai/shared-type/src';
 import { Card, CardContent, CardHeader, CardTitle } from '@sommhai/ui/components/ui/card';
 import { ChartConfig, ChartContainer } from '@sommhai/ui/components/ui/chart';
 import { Bar, BarChart, CartesianGrid, LabelList, XAxis } from 'recharts';
+
+interface Answer extends Question {
+  responses: [
+    {
+      answer: string;
+      uid: string;
+    },
+  ];
+}
+
 const chartData = [
   { month: 'January', desktop: 186 },
   { month: 'February', desktop: 305 },
