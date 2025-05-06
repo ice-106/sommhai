@@ -1,19 +1,21 @@
 'use client';
 
 import { Invite } from '@sommhai/shared-type/src';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { DonutChart } from './DonutChart';
-
-const Pages = [1, 2, 3, 4];
 
 function ParticipantCard({ invites }: { invites: Invite[] }) {
   const [attendee, setAttendee] = useState<Invite[]>([]);
   const [attendeePercen, setAttendeePercen] = useState(0);
-  if (invites.length > 0) {
-    setAttendee(invites.filter((invite) => invite.accept === true));
-    setAttendeePercen((attendee.length / invites.length) * 100);
-  }
+
+  useEffect(() => {
+    console.log('invites', invites);
+    if (invites.length > 0) {
+      setAttendee(invites.filter((invite) => invite.accept === true));
+      setAttendeePercen((attendee.length / invites.length) * 100);
+    }
+  }, [invites, attendee.length]);
 
   return (
     <div className='bg-white-pure mx-auto mt-12 flex min-h-[40vh] w-[342px] flex-col pt-24'>

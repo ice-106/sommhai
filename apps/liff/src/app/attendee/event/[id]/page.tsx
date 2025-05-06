@@ -135,6 +135,9 @@ export default function AtdEventPage() {
         router.push(`/attendee`);
       });
   };
+  if (event === null) {
+    return <div className='flex h-screen w-screen items-center justify-center'>Event not found</div>;
+  }
 
   return (
     <div className='flex h-screen w-screen flex-col'>
