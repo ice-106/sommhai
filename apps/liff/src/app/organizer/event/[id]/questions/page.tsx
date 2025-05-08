@@ -88,19 +88,6 @@ function QueationPage() {
   if (submiting) {
     return <Loading />;
   }
-  const getHostId = () => {
-    fetch(`${API_BASE_URL}/org/events/${id}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log('data', data);
-        return data.host_uid;
-      });
-  };
   const [hostId, setHostId] = useState<string | null>(null);
 
   useEffect(() => {
