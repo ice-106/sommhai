@@ -1,9 +1,12 @@
 'use client';
 import { Events } from '@sommhai/shared-type/src';
+import { Circle, User, UserIcon } from 'lucide-react';
+import Image from 'next/image';
 import { useParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 import { useContext, useEffect, useState } from 'react';
 import { IoIosTimer } from 'react-icons/io';
+import { IoCloseOutline } from 'react-icons/io5';
 
 import DetailForm from '@/components/attendee/Detail';
 import Message from '@/components/attendee/Message';
@@ -17,6 +20,13 @@ import { LiffContext } from '@/contexts/global/liff';
 import { API_BASE_URL } from '@/env';
 import { getDateDifferenceLabel } from '@/utils/date';
 
+interface User {
+  username: 'Suntoh5';
+  phone: string | null;
+  email: null;
+  picture: '';
+}
+
 export default function AtdEventPage() {
   const router = useRouter();
   const params = useParams();
@@ -27,8 +37,11 @@ export default function AtdEventPage() {
   const [completed, setCompleted] = useState(false);
   const [inv, setInv] = useState('');
   const [page, setPage] = useState(0);
-  const [accepted, setAccepted] = useState(false);
   const [isAttendee, setIsAttendee] = useState(false);
+  const [pictureUrl, setPictureUrl] = useState<string | undefined>(undefined);
+  const [host, setHost] = useState<User | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   useEffect(() => {
     console.log(event);
     const getData = () =>
@@ -50,6 +63,7 @@ export default function AtdEventPage() {
           };
           console.log('eventData', eventData);
           setEvent(eventData as Events);
+          setPictureUrl(data.hostPicture);
         });
     const getAttending = () =>
       fetch(`${API_BASE_URL}/atd/events/${id}/attending?userId=${userId}`, {
@@ -135,12 +149,33 @@ export default function AtdEventPage() {
         router.push(`/attendee`);
       });
   };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
   if (event === null) {
     return <div className='flex h-screen w-screen items-center justify-center'>Event not found</div>;
   }
 
+  const getUserInfo = () => {
+    fetch(`${API_BASE_URL}/users/${userId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log('user', data);
+        setHost(data);
+      });
+  };
+  const openModal = () => {
+    setIsModalOpen(true);
+    getUserInfo();
+  };
   return (
-    <div className='flex h-screen w-screen flex-col'>
+    <div className='bg-white-bg flex h-screen w-screen flex-col'>
       <HeaderBurgur name={`Events`} />
       <div className='flex flex-1 flex-col items-center justify-between gap-24 px-24 py-16'>
         <div>
@@ -152,17 +187,25 @@ export default function AtdEventPage() {
             )}
           </h2>
         </div>
-        <div className='flex w-full flex-col items-center justify-center gap-24'>
+        <div className='flex w-full flex-col items-center justify-center'>
           <DetailForm eid={id} />
         </div>
-        <div className='flex flex-col items-center justify-center gap-24'>
+        <div className='flex flex-col items-center justify-center gap-3 px-8'>
           {event?.message ? <Message message={event?.message ?? ''} /> : <></>}
-          <div className='mt-[-15px] flex w-full items-center justify-center gap-16'>
-            {/* <Circle className='text-grey-light bg-grey-light border-grey-light !size-36 rounded-full border-[3px]'>
-              
-            </Circle> */}
+          <div
+            className='bg-white-pure flex w-full items-center justify-center gap-16 rounded-xl px-32'
+            onClick={openModal}
+          >
+            <Circle className='text-grey-light bg-grey-light border-grey-light !size-36 rounded-full border-[3px]'>
+              {pictureUrl ? (
+                <Image alt='Profile' height={290} src={pictureUrl} width={290} />
+              ) : (
+                <User className='text-black-pure h-[20vw]' />
+              )}
+            </Circle>
             <h1 className='text-bold-20 py-2'>{event?.host}</h1>
           </div>
+          <HostInfoModal host={host} isOpen={isModalOpen} userId={userId ?? ''} onClose={closeModal} />
         </div>
         <div className='flex flex-col items-center justify-center'>
           <AddtoCalendar />
@@ -242,6 +285,66 @@ export default function AtdEventPage() {
                 )}
               </div>
             )}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+export function HostInfoModal({
+  isOpen,
+  onClose,
+  userId,
+  host,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  userId: string;
+  host: User | null;
+}) {
+  if (!isOpen) return null;
+
+  return (
+    <div className='bg-white-pure fixed inset-0 z-50 flex items-center justify-center rounded-2xl bg-opacity-50'>
+      <div className='w-full max-w-md rounded-[24px] p-6'>
+        <div className='mb-2 flex justify-end'>
+          <button className='text-gray-500 hover:text-gray-700' onClick={onClose}>
+            <IoCloseOutline size={24} />
+          </button>
+        </div>
+
+        {!host ? (
+          <div className='py-8 text-center'>Loading host information...</div>
+        ) : (
+          <div className='flex flex-col items-center'>
+            <div className='bg-white-pure flex w-full flex-col items-center justify-center gap-6 rounded-xl p-4'>
+              <div className='text-grey-light bg-grey-light border-grey-light mt-16 flex size-36 items-center justify-center rounded-full border-[3px]'>
+                {host.picture ? (
+                  <Image
+                    alt='Profile'
+                    className='rounded-full object-cover'
+                    height={144}
+                    src={host.picture}
+                    width={144}
+                  />
+                ) : (
+                  <UserIcon className='text-black-pure h-20 w-20' />
+                )}
+              </div>
+              <h1 className='text-bold-20 py-2 text-xl font-bold'>{host.username}</h1>
+
+              <div className='mb-16 mt-4 w-full space-y-3'>
+                <div className='border-b pb-2'>
+                  <p className='text-sm text-gray-500'>Phone</p>
+                  <p className='font-medium'>{host.phone || 'Not provided'}</p>
+                </div>
+                <div className='border-b pb-2'>
+                  <p className='text-sm text-gray-500'>Email</p>
+                  <p className='font-medium'>{host.email || 'Not provided'}</p>
+                </div>
+              </div>
+            </div>
           </div>
         )}
       </div>

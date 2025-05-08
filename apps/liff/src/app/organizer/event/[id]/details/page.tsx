@@ -1,14 +1,16 @@
 'use client';
 
 import type { Events } from '@sommhai/shared-type/src';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
+import EventText from '@/components/attendee/EventText';
 import HeaderBurgur from '@/components/common/HeaderBurgur';
 import DetailForm from '@/components/organizer/event/detail/DetailForm';
 import { API_BASE_URL } from '@/env';
 
 function DetailPage() {
+  const router = useRouter();
   const params = useParams();
   const id = params?.id as string;
   const [currentPage, setCurrentPage] = useState(0);
@@ -36,7 +38,9 @@ function DetailPage() {
     } else {
       document.body.style.overflow = '';
     }
-
+    if (currentPage === 0) {
+      router.refresh();
+    }
     // Cleanup on unmount
     return () => {
       document.body.style.overflow = '';
@@ -54,8 +58,13 @@ function DetailPage() {
           className='bg-orange-6 flex h-full w-full flex-col justify-center rounded-3xl text-center active:bg-gray-200'
           onClick={() => handleChangePage(2)}
         >
-          <h1 className='text-semi-24'>Event Details</h1>
-          <p className='text-medium-20'>Click to edit</p>
+          <EventText
+            address={event?.location ?? ''}
+            date={new Date(event?.date ?? new Date()).toISOString().split('T')[0] ?? ''}
+            description={event?.description ?? ''}
+            name={event?.name ?? ''}
+            time={new Date(event?.date ?? new Date()).toISOString().split('T')[1]?.split('.')[0] ?? ''}
+          />
         </div>
         <div
           className='bg-orange-3 rounded-24 active:bg-orange-4 flex h-full w-full flex-col justify-center text-center'

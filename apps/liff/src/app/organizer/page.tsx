@@ -1,27 +1,13 @@
 'use client';
+import { Events } from '@sommhai/shared-type/src';
 import { Button } from '@sommhai/ui/components/ui/button';
+import { Input } from '@sommhai/ui/components/ui/input';
 import { SlidersHorizontal, X } from 'lucide-react';
 import React, { useContext, useEffect, useState } from 'react';
-import { Suspense } from 'react';
 
 import HeaderBurgur from '@/components/common/HeaderBurgur';
 import Loading from '@/components/common/loading';
 import CreateEvent from '@/components/organizer/CreateEvent';
-
-const SearchContainer = () => {
-  // Using dynamic import with React.lazy for the component using useSearchParams
-  const Search = React.lazy(() => import('@/components/organizer/Search'));
-
-  return (
-    <Suspense fallback={<Loading />}>
-      <Search placeholder='Search...' />
-    </Suspense>
-  );
-};
-
-import { Events } from '@sommhai/shared-type/src';
-import { Input } from '@sommhai/ui/components/ui/input';
-
 import EventCard from '@/components/organizer/EventCard';
 import { LiffContext } from '@/contexts/global/liff';
 import { API_BASE_URL } from '@/env';

@@ -14,12 +14,9 @@ function EventTextForm({
   time: string;
 }) {
   return (
-    <div className='bg-orange-6 flex h-full w-full flex-col items-center justify-center gap-10 rounded-3xl pt-2'>
+    <div className='bg-orange-6 flex h-full w-full flex-col items-center justify-center gap-10 rounded-3xl py-[5vh]'>
       <h1 className='text-3xl font-semibold'>Details</h1>
-      <div
-        className={`flex h-full w-full flex-col items-center gap-8 overflow-y-auto px-8 py-12`}
-        onClick={(e) => e.stopPropagation()}
-      >
+      <div className={`flex h-full w-full flex-col items-center gap-8 overflow-y-auto px-8 py-12`}>
         <p className='text-xl font-medium'>{address}</p>
         <p className='text-2xl font-medium'>{date}</p>
         <p className='text-xl font-medium'>{time}</p>
