@@ -181,7 +181,7 @@ function OrganizerPage() {
   // }, []);
   return (
     <div className='flex h-full w-full flex-col'>
-      <HeaderBurgur name='Your Events' />
+      <HeaderBurgur name='Organizer' />
       <div className='mt-5 flex w-full items-center gap-2 px-7'></div>
       <div className='mt-5 flex w-full items-center justify-center px-7'>
         <CreateEvent />

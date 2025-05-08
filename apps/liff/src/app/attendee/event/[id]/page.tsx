@@ -199,107 +199,114 @@ export default function AtdEventPage() {
     getUserInfo();
   };
   return (
-    <div className='bg-white-bg flex h-screen w-screen flex-col'>
-      <HeaderBurgur name={`Events`} />
-      <div className='flex flex-1 flex-col items-center justify-between gap-24 px-24 py-16'>
-        <div>
-          <h1 className='text-3xl font-semibold'>{event?.name}</h1>
-          <h2 className='text-orange-1 flex flex-row items-center gap-2 text-xl font-semibold'>
-            <IoIosTimer className='text-orange-2 mt-[4px]' />
-            {getDateDifferenceLabel(
-              typeof event?.date === 'string' ? event.date : (event?.date?.toString() ?? new Date().toString()),
-            )}
-          </h2>
-        </div>
-        <div className='flex w-full flex-col items-center justify-center'>
-          <DetailForm eid={id} />
-        </div>
-        <div className='flex flex-col items-center justify-center gap-3 px-8'>
-          {event?.message ? <Message message={event?.message ?? ''} /> : <></>}
-          <div
-            className='bg-white-pure flex w-full items-center justify-center gap-16 rounded-xl px-32'
-            onClick={openModal}
-          >
-            <Circle className='text-grey-light bg-grey-light border-grey-light !size-36 rounded-full border-[3px]'>
-              {pictureUrl ? (
-                <Image alt='Profile' height={290} src={pictureUrl} width={290} />
-              ) : (
-                <User className='text-black-pure h-[20vw]' />
-              )}
-            </Circle>
-            <h1 className='text-bold-20 py-2'>{event?.host}</h1>
-          </div>
-          <HostInfoModal host={host} isOpen={isModalOpen} userId={userId ?? ''} onClose={closeModal} />
-        </div>
-        <div className='flex items-center justify-center gap-12'>
-          <AddtoCalendar />
-          <Link className='flex h-full min-h-[120px] w-full flex-col' href={`/attendee/event/${id}/${inv}/questions`}>
-            <Button className='bg-orange-4 hover:bg-orange-3-hover text-black-pure border-orange-3 mt-[-16px] h-full w-full flex-col items-start rounded-3xl border-[3px] text-2xl font-medium'>
-              <div className='text-white-bg w-full justify-items-center truncate'>
-                Questions Form
-                <HiClipboardDocumentList className='text-white-bg !size-40' />
-              </div>
-            </Button>
-          </Link>
-        </div>
-        {isAttendee ? (
+    <div className='bg-white-bg flex h-full w-full flex-col'>
+      <HeaderBurgur name={`Attendee`} />
+      <div className='flex h-full w-full flex-col'>
+        <div className='flex flex-1 flex-col items-center justify-between gap-24 py-16'>
           <div>
-            <h1 className='text-bold-20 py-2'>You are attending this event.</h1>
+            <h1 className='text-3xl font-semibold'>{event?.name}</h1>
+            <h2 className='text-orange-1 flex flex-row items-center gap-2 text-xl font-semibold'>
+              <IoIosTimer className='text-orange-2 mt-[4px]' />
+              {getDateDifferenceLabel(
+                typeof event?.date === 'string' ? event.date : (event?.date?.toString() ?? new Date().toString()),
+              )}
+            </h2>
           </div>
-        ) : (
-          <div className='flex w-full items-center justify-between gap-20'>
-            {loading ? (
-              <button className='bg-orange-6 text-white-pure h-[64px] w-[155px] rounded-2xl'>Loading...</button>
-            ) : (
-              <div className='w-full'>
-                <AcceptButton
-                  className='h-[64px] w-full'
-                  variant={'Accept'}
-                  onClick={() => {
-                    handleInvite();
-                    setPage(1);
-                  }}
-                >
-                  Accept
-                </AcceptButton>
-                {page === 1 && (
-                  <SlidePopUpX
-                    onClose={() => {
-                      setPage(0);
+          <div className='flex w-full flex-col items-center justify-center'>
+            <DetailForm eid={id} />
+          </div>
+          <div className='flex flex-col items-center justify-center gap-3'>
+            {event?.message ? <Message message={event?.message ?? ''} /> : <></>}
+            <div
+              className='bg-white-pure flex w-full items-center justify-center gap-16 rounded-xl px-32'
+              onClick={openModal}
+            >
+              <Circle className='text-grey-light bg-grey-light border-grey-light !size-36 rounded-full border-[3px]'>
+                {pictureUrl ? (
+                  <Image alt='Profile' height={290} src={pictureUrl} width={290} />
+                ) : (
+                  <User className='text-black-pure h-[20vw]' />
+                )}
+              </Circle>
+              <h1 className='text-bold-20 py-2'>{event?.host}</h1>
+            </div>
+            <HostInfoModal host={host} isOpen={isModalOpen} userId={userId ?? ''} onClose={closeModal} />
+          </div>
+          <div className='flex w-full items-center justify-center'>
+            <div className='flex w-full items-center justify-center gap-4'>
+              <AddtoCalendar />
+              <Link
+                className='flex h-full max-w-[40vw] flex-col items-center justify-center'
+                href={`/attendee/event/${id}/${inv}/questions`}
+              >
+                <Button className='bg-orange-4 hover:bg-orange-3-hover text-black-pure border-orange-3 mx-12 h-full w-full flex-col items-start rounded-3xl border-[3px] text-xl font-medium'>
+                  <div className='text-white-bg w-full justify-items-center truncate text-wrap'>
+                    Questions Form
+                    <HiClipboardDocumentList className='text-white-bg !size-40' />
+                  </div>
+                </Button>
+              </Link>
+            </div>
+          </div>
+          {isAttendee ? (
+            <div>
+              <h1 className='text-bold-20 py-2'>You are attending this event.</h1>
+            </div>
+          ) : (
+            <div className='flex w-full items-center justify-between gap-20'>
+              {loading ? (
+                <button className='bg-orange-6 text-white-pure h-[64px] w-[155px] rounded-2xl'>Loading...</button>
+              ) : (
+                <div className='w-full'>
+                  <AcceptButton
+                    className='h-[64px] w-full'
+                    variant={'Accept'}
+                    onClick={() => {
+                      handleInvite();
+                      setPage(1);
                     }}
                   >
-                    <AcceptModal handleAccept={handleAccept} setPage={setPage} />
-                  </SlidePopUpX>
-                )}
-              </div>
-            )}
-            {loading ? (
-              <button className='text-white-pure h-[64px] w-[155px] rounded-2xl bg-red-600'>Loading...</button>
-            ) : (
-              <div className='w-full'>
-                <AcceptButton
-                  className='h-[64px] w-full'
-                  variant={'Deny'}
-                  onClick={() => {
-                    setPage(2);
-                    handleInvite();
-                  }}
-                >
-                  Deny
-                </AcceptButton>
-                {page === 2 && (
-                  <SlidePopUpX
-                    onClose={() => {
-                      setPage(0);
+                    Accept
+                  </AcceptButton>
+                  {page === 1 && (
+                    <SlidePopUpX
+                      onClose={() => {
+                        setPage(0);
+                      }}
+                    >
+                      <AcceptModal handleAccept={handleAccept} setPage={setPage} />
+                    </SlidePopUpX>
+                  )}
+                </div>
+              )}
+              {loading ? (
+                <button className='text-white-pure h-[64px] w-[155px] rounded-2xl bg-red-600'>Loading...</button>
+              ) : (
+                <div className='w-full'>
+                  <AcceptButton
+                    className='h-[64px] w-full'
+                    variant={'Deny'}
+                    onClick={() => {
+                      setPage(2);
+                      handleInvite();
                     }}
                   >
-                    <RejectModal handleReject={handleReject} setPage={setPage} />
-                  </SlidePopUpX>
-                )}
-              </div>
-            )}
-          </div>
-        )}
+                    Deny
+                  </AcceptButton>
+                  {page === 2 && (
+                    <SlidePopUpX
+                      onClose={() => {
+                        setPage(0);
+                      }}
+                    >
+                      <RejectModal handleReject={handleReject} setPage={setPage} />
+                    </SlidePopUpX>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

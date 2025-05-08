@@ -8,6 +8,7 @@ import { useParams } from 'next/navigation';
 import { useContext, useEffect, useState } from 'react';
 
 import HeaderBurgur from '@/components/common/HeaderBurgur';
+import Loading from '@/components/common/loading';
 import CompleteButton from '@/components/organizer/completeButton';
 import { IconButtonGroup } from '@/components/organizer/iconbutton';
 import { LiffContext } from '@/contexts/global/liff';
@@ -37,7 +38,7 @@ export default function EventPage() {
       });
   }, [id]);
   if (!event) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
   if (userId !== event.host_uid) {
     return (

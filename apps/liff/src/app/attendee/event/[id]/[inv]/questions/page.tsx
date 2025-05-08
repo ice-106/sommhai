@@ -2,6 +2,7 @@
 
 import type { Question } from '@sommhai/shared-type/src';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 
@@ -198,10 +199,11 @@ export default function EventQuestionnairePage() {
           <div className='mb-6 flex h-[20vh] w-[20vh] items-center justify-center rounded-full text-white'>
             <Image alt='sommhai' className='w-full' height={100} src={'/sommhai-pose-2.svg'} width={100} />
           </div>
-
-          <button className='mb-4 flex w-full items-center justify-center gap-2 rounded-xl bg-orange-400 px-4 py-12 font-semibold text-white'>
-            Add Reminder to Google Calendar
-          </button>
+          <Link href={'/reminder'}>
+            <button className='mb-4 flex w-full items-center justify-center gap-2 rounded-xl bg-orange-400 px-4 py-12 font-semibold text-white'>
+              Add Reminder to Google Calendar
+            </button>
+          </Link>
 
           <button
             className='w-full rounded-xl border border-orange-400 px-4 py-12 font-semibold text-orange-400'
