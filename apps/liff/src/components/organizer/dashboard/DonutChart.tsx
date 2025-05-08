@@ -4,13 +4,6 @@ import { ChartConfig, ChartContainer } from '@sommhai/ui/components/ui/chart';
 import * as React from 'react';
 import { Label, Pie, PieChart } from 'recharts';
 
-const attendeePercen = 25;
-
-const chartData = [
-  { data: 'attendee', value: attendeePercen, fill: '#F6BB0A' },
-  { data: 'missing', value: 100 - attendeePercen, fill: '#FDE88D' },
-];
-
 const chartConfig = {
   attendee: {
     label: 'attendee',
@@ -20,11 +13,15 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export function DonutChart() {
+export function DonutChart({ attendeePercen }: { attendeePercen: number }) {
+  const chartData = [
+    { data: 'attendee', value: attendeePercen, fill: '#F6BB0A' },
+    { data: 'missing', value: 100 - attendeePercen, fill: '#FDE88D' },
+  ];
   return (
     <ChartContainer className='min-h-full' config={chartConfig}>
       <PieChart className='h-full w-full'>
-        <Pie data={chartData} dataKey='value' innerRadius={44} nameKey='data' outerRadius={72} strokeWidth={5}>
+        <Pie data={chartData} dataKey='value' innerRadius={54} nameKey='data' outerRadius={96} strokeWidth={5}>
           <Label
             content={({ viewBox }) => {
               if (viewBox && 'cx' in viewBox && 'cy' in viewBox) {

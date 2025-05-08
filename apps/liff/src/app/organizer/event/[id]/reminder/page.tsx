@@ -4,6 +4,7 @@ import { useParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 import { FormEvent, useState } from 'react';
 
+import HeaderBurgur from '@/components/common/HeaderBurgur';
 import { DateTimeSelect } from '@/components/organizer/event/reminder/DateTimePicker';
 
 function ReminderPage() {
@@ -128,6 +129,7 @@ function ReminderPage() {
 
   return (
     <div className='h-full w-full py-20'>
+      <HeaderBurgur name={'Reminder'} />
       <h1 className='mb-6 px-8 text-2xl font-bold'>Create Event Reminder</h1>
 
       {message && (

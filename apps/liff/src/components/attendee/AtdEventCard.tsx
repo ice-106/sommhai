@@ -16,19 +16,21 @@ interface EventCardProp {
 
 function AtdEventCard({ name: name, link: link, date: date, detail: detail }: EventCardProp) {
   return (
-    <Link href={`attendee/event/${link}`}>
-      <div className='bg-white-bg flex w-[345px] flex-col justify-between gap-4 rounded-[25px] p-16 shadow-lg'>
-        <div className='flex justify-between'>
-          <h1 className='text-bold-20 font-inter'>{name}</h1>
-          <MdNavigateNext className='self-center' size={25} />
+    <div className='flex w-full items-center justify-center px-12'>
+      <Link className='w-full' href={`attendee/event/${link}`}>
+        <div className='bg-white-bg flex w-full flex-col justify-between gap-4 rounded-[25px] p-16 shadow-lg'>
+          <div className='flex w-full justify-between'>
+            <h1 className='text-bold-20 font-inter'>{name}</h1>
+            <MdNavigateNext className='self-center' size={25} />
+          </div>
+          <div className='flex'>
+            <IoIosTimer className='text-orange-2 mt-[4px]' />
+            <p className='text-regular-16 text-orange-2'>{getDateDifferenceLabel(date.toString())}</p>
+          </div>
+          <p className='font-inter text-regular-16-low'>{detail}</p>
         </div>
-        <div className='flex'>
-          <IoIosTimer className='text-orange-2 mt-[4px]' />
-          <p className='text-regular-16 text-orange-2'>{getDateDifferenceLabel(date.toString())}</p>
-        </div>
-        <p className='font-inter text-regular-16-low'>{detail}</p>
-      </div>
-    </Link>
+      </Link>
+    </div>
   );
 }
 

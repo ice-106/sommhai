@@ -1,5 +1,6 @@
 'use client';
 
+import type { Question } from '@sommhai/shared-type/src';
 import Image from 'next/image';
 import { useParams, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
@@ -7,81 +8,52 @@ import React, { useEffect, useState } from 'react';
 import Loading from '@/components/common/loading';
 import { API_BASE_URL } from '@/env';
 
-// Define question types
-type QuestionType = 'SHORT_ANSWER' | 'MULTIPLE_CHOICE' | 'CHECKBOX';
-
-// Question interface
-interface Question {
-  qid: string;
-  text: string;
-  type: QuestionType;
-  options?: string[];
-  required: boolean;
-}
-
-interface EventData {
-  eventId: string;
-  eventName: string;
-  questions: Question[];
-}
-
 export default function EventQuestionnairePage() {
   const params = useParams();
   const eventId = params?.id as string;
   const inviteId = params?.inv as string;
   const [currentStep, setCurrentStep] = useState(0);
+  const [currentQuestion, setCurrentQuestion] = useState<Question | null>(null);
   const [completed, setCompleted] = useState(false);
   const [loading, setLoading] = useState(true);
   const [answers, setAnswers] = useState<Record<string, any>>({});
-  const [eventData, setEventData] = useState<EventData | null>(null);
+  const [eventData, setEventData] = useState<Question[] | null>(null);
   const [returning, setReturning] = useState(false);
+  const [eventName, setEventName] = useState<string | null>(null);
   const router = useRouter();
+
+  const formatAnswer = (answersRecord: Record<string, any>) => {
+    const responses = Object.entries(answersRecord).map(([questionId, answer]) => ({
+      questionId,
+      answer,
+    }));
+
+    return {
+      accepted: true,
+      responses,
+    };
+  };
 
   // Fetch event data and questions
   useEffect(() => {
     function fetchEventData() {
       try {
-        // fetch(`${API_BASE_URL}/org/events/${eventId}/questions`, {
-        //   method: 'GET',
-        //   headers: {
-        //     'Content-Type': 'application/json',
-        //   },
-        // })
-        //   .then((res) => res.json())
-        //   .then((data) => {
-        //     console.log('Event', data);
-        //     setEventData(data);
-        //     setLoading(false);
-        //   });
-        setTimeout(() => {
-          setEventData({
-            eventId: eventId || 'event123',
-            eventName: 'Birthday Party',
-            questions: [
-              {
-                qid: 'name',
-                text: "What's your full name?",
-                type: 'SHORT_ANSWER',
-                required: true,
-              },
-              {
-                qid: 'attending',
-                text: 'Will you bring your car?',
-                type: 'MULTIPLE_CHOICE',
-                options: ['Yes, I be driving!', 'No, I will not take my car.', "Maybe, I'll let you know later"],
-                required: true,
-              },
-              {
-                qid: 'food',
-                text: 'What food options would you prefer?',
-                type: 'CHECKBOX',
-                options: ['Pizza', 'Burgers', 'Salad', 'Desserts'],
-                required: true,
-              },
-            ],
+        fetch(`${API_BASE_URL}/org/events/${eventId}/questions`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            console.log('Event', data);
+            setEventData(data);
+            if (data.length == 0) {
+              setCompleted(true);
+            }
+            setCurrentQuestion(data[0]);
+            setLoading(false);
           });
-          setLoading(false);
-        }, 500);
       } catch (error) {
         console.error('Error fetching event data:', error);
         setLoading(false);
@@ -115,13 +87,14 @@ export default function EventQuestionnairePage() {
   // Handle next button click
   const handleNext = () => {
     // If this is the last question, submit the form
-    if (eventData && currentStep === eventData.questions.length - 1) {
+    if (eventData && currentStep === eventData.length - 1) {
       handleSubmit();
       return;
     }
 
     // Validate current question
-    const question = eventData?.questions[currentStep];
+    const question = eventData?.[currentStep];
+
     if (question?.required) {
       const answer = answers[question.qid];
       const isEmpty = answer === undefined || answer === '' || (Array.isArray(answer) && answer.length === 0);
@@ -133,18 +106,43 @@ export default function EventQuestionnairePage() {
     }
 
     // Move to next question
+    if (eventData) {
+      const nextQuestion = eventData[currentStep + 1] || null;
+      setCurrentQuestion(nextQuestion);
+    }
     setCurrentStep((prev) => prev + 1);
+  };
+
+  // Handle previous button click
+  const handlePrevious = () => {
+    // If this is the first question, stay on the current question
+    if (currentStep === 0) {
+      return;
+    }
+
+    // Move to previous question
+    if (eventData) {
+      const prevQuestion = eventData[currentStep - 1] || null;
+      setCurrentQuestion(prevQuestion);
+    }
+    setCurrentStep((prev) => prev - 1);
   };
 
   // Handle form submission
   const handleSubmit = () => {
     try {
+      const responses = formatAnswer(answers);
+      console.log(responses);
       // Submit answers to API
-      // const response = await fetch(`${API_BASE_URL}/events/${eventId}/responses`, {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({ answers }),
-      // });
+      fetch(`${API_BASE_URL}/atd/events/${inviteId}/respond-with-questions`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(responses),
+      }).then((res) => {
+        console.log('Form submitted successfully');
+        setCompleted(true);
+        console.log(res.json());
+      });
 
       console.log('Form submitted:', answers);
 
@@ -157,43 +155,21 @@ export default function EventQuestionnairePage() {
 
   // Handle return button
   useEffect(() => {
-    const handleComplete = () => {
-      if (returning == true) setLoading(true);
-      fetch(`${API_BASE_URL}/atd/events/${inviteId}/response-with-questions`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          accepted: true,
-          responses: [
-            {
-              questionId: 'name',
-              answer: answers['name'],
-            },
-            {
-              questionId: 'attending',
-              answer: answers['attending'],
-            },
-            {
-              questionId: 'food',
-              answer: answers['food'],
-            },
-          ],
-        }),
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          setLoading(false);
-        });
-    };
+    fetch(`${API_BASE_URL}/atd/events/${eventId}/`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setEventName(data.name);
+      });
+  }, [eventId]);
 
-    if (loading == false && completed == true) {
-      // router.push(`/attendee`);
-    }
-
-    handleComplete();
-  }, [completed, inviteId, answers, router, loading, returning]);
+  useEffect(() => {
+    console.log('answer', formatAnswer(answers));
+  }, [currentStep]);
 
   if (loading) {
     return <Loading />;
@@ -208,7 +184,6 @@ export default function EventQuestionnairePage() {
       </div>
     );
   }
-  const currentQuestion = eventData.questions[currentStep];
 
   // Render completion screen
   if (completed) {
@@ -216,7 +191,7 @@ export default function EventQuestionnairePage() {
       <div className='bg-orange-3 flex min-h-full flex-col items-center justify-center bg-[url(/create-bg.svg)] bg-cover p-4 px-12'>
         <div className='bg-white-pure flex min-h-[50vh] w-full max-w-md flex-col items-center justify-center gap-10 rounded-3xl bg-white px-20 py-20'>
           <h2 className='mb-4 text-center text-xl font-bold'>
-            Thank you for accepting the invitation to "{eventData.eventName}"
+            Thank you for accepting the invitation to "{eventName}"
           </h2>
           <p className='mb-6 text-center'>See you at the Event!!</p>
 
@@ -247,7 +222,7 @@ export default function EventQuestionnairePage() {
       {/* Progress indicator */}
       <div className='w-full px-4 py-6'>
         <div className='flex w-full gap-2'>
-          {eventData.questions.map((_, idx) => (
+          {eventData.map((_, idx) => (
             <div
               className={`h-2 flex-1 rounded-full ${idx <= currentStep ? 'bg-orange-1' : 'bg-grey-light'}`}
               key={idx}
@@ -259,7 +234,7 @@ export default function EventQuestionnairePage() {
       {/* Question content */}
       <div className='flex flex-1 flex-col justify-center px-4 py-6'>
         <div className='mx-auto w-full max-w-md rounded-3xl bg-white p-8'>
-          <h2 className='mb-6 text-2xl font-bold text-gray-800'>{currentQuestion?.text}</h2>
+          <h2 className='mb-6 text-2xl font-bold text-gray-800'>{currentQuestion?.question}</h2>
 
           {currentQuestion?.type === 'SHORT_ANSWER' && (
             <input
@@ -334,7 +309,13 @@ export default function EventQuestionnairePage() {
       </div>
 
       {/* Next button */}
-      <div className='flex items-center justify-center p-4 px-20 py-20'>
+      <div className='flex items-center justify-center gap-10 p-4 px-20 py-20'>
+        <button
+          className='text-orange-2 bg-white-bg border-orange-2 w-full rounded-3xl border px-8 py-12 text-center text-xl font-bold'
+          onClick={handlePrevious}
+        >
+          Previous
+        </button>
         <button
           className='text-orange-2 bg-white-bg border-orange-2 w-full rounded-3xl border px-8 py-12 text-center text-xl font-bold'
           onClick={handleNext}

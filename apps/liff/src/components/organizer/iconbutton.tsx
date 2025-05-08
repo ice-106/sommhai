@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import { FiPieChart } from 'react-icons/fi';
 import { GoPersonAdd } from 'react-icons/go';
-import { LuCalendarClock, LuUserRoundCog } from 'react-icons/lu';
+import { LuCalendarClock } from 'react-icons/lu';
 import { MdOutlineEventNote } from 'react-icons/md';
 import { MdNavigateNext } from 'react-icons/md';
 import { TbCalendarQuestion } from 'react-icons/tb';
@@ -24,8 +24,8 @@ export function IconButton({ icon: Icon, title: name, link: href, detail: detail
   const pathName = usePathname();
 
   return (
-    <Link href={`${pathName}/${href}`}>
-      <div className='bg-white-bg rounded-24 flex h-[4.75rem] w-[20.375rem] shadow-lg'>
+    <Link className='w-full' href={`${pathName}/${href}`}>
+      <div className='bg-white-bg rounded-24 flex h-[4.75rem] w-full px-4 shadow-lg'>
         <div className='mx-12 self-center'>
           <Icon size={45} />
         </div>
@@ -47,9 +47,9 @@ export function IconButtonGroup({ event }: { event: Events }) {
     { icon: MdOutlineEventNote, title: 'Event Details', detail: 'Details of the event.', link: 'details' },
     { icon: FiPieChart, title: 'Dashboard', detail: 'Participant chart', link: 'dashboard' },
     { icon: GoPersonAdd, title: 'Invite Attendees', detail: 'Invite attendee', link: 'invite' },
-    { icon: TbCalendarQuestion, title: 'Question Form', detail: 'Edit the question form.', link: 'question' },
+    { icon: TbCalendarQuestion, title: 'Question Form', detail: 'Edit the question form.', link: 'questions' },
     { icon: LuCalendarClock, title: 'Reminder', detail: 'Add a reminder to Google Calendar', link: 'reminder' },
-    { icon: LuUserRoundCog, title: 'Admin List', detail: 'Add admins to the event.', link: 'admin' },
+    // { icon: LuUserRoundCog, title: 'Admin List', detail: 'Add admins to the event.', link: 'admin' },
   ];
   const [seeMore, setSeeMore] = useState(false);
   const initialDisplayed = 3;
@@ -61,11 +61,11 @@ export function IconButtonGroup({ event }: { event: Events }) {
 
   return (
     <div className='flex h-full w-full flex-col items-center'>
-      <div className='flex flex-col items-center gap-[16px]'>
+      <div className='flex w-full flex-col items-center gap-[16px] px-16'>
         {displayedButtons.map(({ icon, title, link, detail }, index) =>
           link === 'invite' ? (
             <div
-              className='bg-white-bg rounded-24 flex h-[4.75rem] w-[20.375rem] shadow-lg'
+              className='bg-white-bg rounded-24 flex h-[4.75rem] w-full shadow-lg'
               key={index}
               onClick={() => inviteAttendee(event)}
             >
@@ -81,7 +81,9 @@ export function IconButtonGroup({ event }: { event: Events }) {
               </div>
             </div>
           ) : (
-            <IconButton detail={detail} icon={icon} key={index} link={link} title={title} />
+            <div className='flex w-full' key={index}>
+              <IconButton detail={detail} icon={icon} key={index} link={link} title={title} />
+            </div>
           ),
         )}
       </div>
