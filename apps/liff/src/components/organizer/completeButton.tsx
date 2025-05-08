@@ -1,13 +1,17 @@
 'use client';
 import { Button } from '@sommhai/ui/components/ui/button';
-import Link from 'next/link';
-import { useContext } from 'react';
+import { redirect } from 'next/navigation';
+import { useContext, useState } from 'react';
 
 import { LiffContext } from '@/contexts/global/liff';
 import { API_BASE_URL } from '@/env';
 
+import { SlidePopUpX } from '../common/SlidePopup';
+import DeleteModal from './DeleteModal';
+
 function CompleteButton({ eid }: { eid: string }) {
-  const { userId } = useContext(LiffContext); // Replace with actual user ID
+  const { userId } = useContext(LiffContext);
+  const [page, setPage] = useState(0);
   const handleClick = () => {
     fetch(`${API_BASE_URL}/users/history`, {
       method: 'POST',
@@ -21,6 +25,7 @@ function CompleteButton({ eid }: { eid: string }) {
     }).then((res) => {
       if (res.ok) {
         console.log('Event added to history successfully', res);
+        redirect('/history');
       } else {
         console.error('Failed to add event to history');
       }
@@ -28,15 +33,24 @@ function CompleteButton({ eid }: { eid: string }) {
   };
   return (
     <div className='flex w-full flex-col items-center justify-center pt-2'>
-      <Link className='inline-flex w-full' href={'/history'}>
-        <Button
-          className='hover:bg-orange-3-hover relative h-56 w-full items-center justify-between gap-40 rounded-3xl bg-red-500 px-20 py-20 text-2xl font-semibold'
-          onClick={handleClick}
+      <Button
+        className='hover:bg-orange-3-hover relative h-56 w-full items-center justify-between gap-40 rounded-3xl bg-red-500 px-20 py-20 text-2xl font-semibold'
+        onClick={() => {
+          setPage(1);
+        }}
+      >
+        <div className='absolute left-0 top-0 h-56 w-full rounded-3xl shadow-[0px_4px_4px_0px_rgba(0,0,0,0.3)]'></div>
+        <div className='w-full justify-start text-center font-medium'>End Event</div>
+      </Button>
+      {page === 1 && (
+        <SlidePopUpX
+          onClose={() => {
+            setPage(0);
+          }}
         >
-          <div className='absolute left-0 top-0 h-56 w-full rounded-3xl shadow-[0px_4px_4px_0px_rgba(0,0,0,0.3)]'></div>
-          <div className='w-full justify-start text-center font-medium'>End Event.</div>
-        </Button>
-      </Link>
+          <DeleteModal handleDelete={handleClick} setPage={setPage} />
+        </SlidePopUpX>
+      )}
     </div>
   );
 }

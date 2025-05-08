@@ -35,7 +35,7 @@ export function PreferChart({ data }: { data: Answer[] }) {
   useEffect(() => {
     if (validQuestions[0] == undefined) return;
     setCurrentQuestion(validQuestions[0]);
-  }, [validQuestions]);
+  }, [data]);
 
   useEffect(() => {
     console.log('currentQuestion', currentQuestion);
@@ -153,7 +153,13 @@ export function PreferChart({ data }: { data: Answer[] }) {
               }}
             >
               <CartesianGrid vertical={false} />
-              <XAxis axisLine={false} dataKey='answer' tickLine={false} tickMargin={10} />
+              <XAxis
+                axisLine={false}
+                className='text-2=xs text-balance'
+                dataKey='answer'
+                tickLine={false}
+                tickMargin={10}
+              />
               <Bar dataKey='count' fill='var(--color-desktop)' radius={8}>
                 <LabelList className='fill-foreground' fontSize={12} offset={12} position='top' />
               </Bar>

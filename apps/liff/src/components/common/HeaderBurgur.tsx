@@ -1,31 +1,15 @@
 'use client';
 import Link from 'next/link';
-import { redirect, usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import { AiFillHome, AiOutlineHistory, AiOutlineMenu, AiOutlineUser } from 'react-icons/ai';
 import { MdChangeCircle } from 'react-icons/md';
 
 export default function HeaderBurgur({ name }: { name: string }) {
-  const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
   const pathName = usePathname();
   const handleOpenmenu = () => {
     setMenuOpen(!menuOpen);
-  };
-
-  const handleChange = () => {
-    if (pathName.includes('/organizer')) {
-      router.push('/attendee');
-    } else if (pathName.includes('/attendee')) {
-      router.push('/organizer');
-    }
-  };
-  const handleHome = () => {
-    if (pathName.includes('/organizer')) {
-      window.location.href = '/organizer';
-    } else if (pathName.includes('/attendee')) {
-      redirect('/attendee');
-    }
   };
 
   return (

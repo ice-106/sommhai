@@ -1,6 +1,7 @@
 'use client';
 import { Checkbox } from '@sommhai/ui/components/ui/checkbox';
 import { Input } from '@sommhai/ui/components/ui/input';
+import { Trash } from 'lucide-react';
 
 export function MultipleQuestions({
   question,
@@ -15,6 +16,9 @@ export function MultipleQuestions({
 }) {
   const handleClick = () => {
     setOptions((prev) => [...prev, '']);
+  };
+  const handleDeleteOption = (index: number) => {
+    setOptions((prev) => prev.filter((_, idx) => idx !== index));
   };
 
   return (
@@ -42,6 +46,7 @@ export function MultipleQuestions({
               setOptions(newOptions);
             }}
           />
+          <Trash className='w-[64px]' onClick={() => handleDeleteOption(idx)} />
         </label>
       ))}
       <div className='flex w-full flex-row gap-4' onClick={handleClick}>
@@ -68,6 +73,9 @@ export function CheckedboxQuestions({
   const handleClick = () => {
     setOptions((prev) => [...prev, '']);
   };
+  const handleDeleteOption = (index: number) => {
+    setOptions((prev) => prev.filter((_, idx) => idx !== index));
+  };
 
   return (
     <div className='flex w-full flex-1 flex-col gap-[12px]'>
@@ -92,6 +100,7 @@ export function CheckedboxQuestions({
               setOptions(newOptions);
             }}
           />
+          <Trash className='w-[64px]' onClick={() => handleDeleteOption(idx)} />
         </label>
       ))}
       <div className='flex w-full flex-row gap-4' onClick={handleClick}>

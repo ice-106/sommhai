@@ -52,7 +52,7 @@ export function IconButtonGroup({ event }: { event: Events }) {
     // { icon: LuUserRoundCog, title: 'Admin List', detail: 'Add admins to the event.', link: 'admin' },
   ];
   const [seeMore, setSeeMore] = useState(false);
-  const initialDisplayed = 3;
+  const initialDisplayed = 4;
   const displayedButtons = seeMore ? buttons : buttons.slice(0, initialDisplayed);
 
   const handleSeeMore = () => {
@@ -65,7 +65,7 @@ export function IconButtonGroup({ event }: { event: Events }) {
         {displayedButtons.map(({ icon, title, link, detail }, index) =>
           link === 'invite' ? (
             <div
-              className='bg-white-bg rounded-24 flex h-[4.75rem] w-full shadow-lg'
+              className='bg-white-bg rounded-24 flex h-[4.75rem] w-full px-4 shadow-lg'
               key={index}
               onClick={() => inviteAttendee(event)}
             >
