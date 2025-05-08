@@ -1,18 +1,23 @@
 'use client';
 
 import type { Events } from '@sommhai/shared-type/src';
+import { Button } from '@sommhai/ui/components/ui/button';
+import { Home } from 'lucide-react';
+import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 
 import EventText from '@/components/attendee/EventText';
 import HeaderBurgur from '@/components/common/HeaderBurgur';
 import DetailForm from '@/components/organizer/event/detail/DetailForm';
+import { LiffContext } from '@/contexts/global/liff';
 import { API_BASE_URL } from '@/env';
 
 function DetailPage() {
   const router = useRouter();
   const params = useParams();
   const id = params?.id as string;
+  const { userId } = useContext(LiffContext);
   const [currentPage, setCurrentPage] = useState(0);
   const [event, setEvent] = useState<Events | null>(null);
   useEffect(() => {
@@ -50,6 +55,19 @@ function DetailPage() {
   const handleChangePage = (page: number) => {
     setCurrentPage(page);
   };
+  if (userId !== event?.host_uid) {
+    return (
+      <div className='flex h-full w-full flex-col items-center justify-center gap-2 text-wrap px-8 text-center text-2xl font-bold'>
+        You are not authorized to edit this event
+        <Link href={'/organizer'}>
+          <Button>
+            <Home className='mr-2 h-4 w-4' />
+            Back to Home
+          </Button>
+        </Link>
+      </div>
+    );
+  }
   return (
     <div className='flex h-screen w-screen flex-col'>
       <HeaderBurgur name={event?.name ?? 'My Event'} />

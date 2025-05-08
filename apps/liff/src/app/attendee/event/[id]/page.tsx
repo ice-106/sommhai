@@ -292,7 +292,7 @@ export default function AtdEventPage() {
   );
 }
 
-export function HostInfoModal({
+function HostInfoModal({
   isOpen,
   onClose,
   userId,
