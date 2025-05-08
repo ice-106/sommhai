@@ -168,7 +168,7 @@ const EventContainer = () => {
 function AttendeePage() {
   return (
     <div className='flex h-full w-full flex-col'>
-      <HeaderBurgur name='Your Events' />
+      <HeaderBurgur name='Attending Events' />
       <div className='bg-orange-5 h-full w-full bg-[url(/create-bg.svg)]'>
         {/* <div className='my-5 flex w-full items-center gap-2 rounded-lg px-7'>
         

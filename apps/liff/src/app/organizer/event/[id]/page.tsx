@@ -54,7 +54,7 @@ export default function EventPage() {
   }
   return (
     <div className='flex h-full w-full flex-col'>
-      <HeaderBurgur name={'My Event'} />
+      <HeaderBurgur name={'Organizing Event'} />
       <div className='mt-[10px] flex flex-1 flex-col justify-between px-24 py-16'>
         <IconButtonGroup event={event} />
 
