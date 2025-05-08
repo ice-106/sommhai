@@ -96,7 +96,7 @@ function CreateEventForm() {
             </div>
             <Image
               alt={'sommhai-logo'}
-              className='mb-12 max-h-full w-full max-w-[70vw] overflow-hidden'
+              className='mb-12 w-[400px] overflow-hidden'
               height='200'
               src={'/create-finsih.png'}
               width='200'
@@ -111,7 +111,7 @@ function CreateEventForm() {
             form='Create-event-form'
             type='submit'
           >
-            <span className='relative top-[-3px]'>Confirm</span>
+            <span className='relative top-[3px]'>Confirm</span>
           </button>
         )}
         {step === 2 && (
