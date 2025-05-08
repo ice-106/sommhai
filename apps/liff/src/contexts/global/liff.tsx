@@ -49,6 +49,7 @@ export function LiffProvider({ children }: { children: React.ReactNode }): React
                 body: JSON.stringify({
                   uid: userId,
                   username: displayName,
+                  picture: profile.pictureUrl,
                 }),
               });
               console.log('User not found, creating new user...');
