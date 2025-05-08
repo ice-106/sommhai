@@ -8,7 +8,6 @@ import { useRouter } from 'next/navigation';
 import { useContext, useEffect, useState } from 'react';
 
 import HeaderBurgur from '@/components/common/HeaderBurgur';
-import Loading from '@/components/common/loading';
 import { ConfirmButton } from '@/components/organizer/buttons';
 import QuestionContainer from '@/components/organizer/questionform/QuestionContainer';
 import { LiffContext } from '@/contexts/global/liff';
@@ -60,6 +59,7 @@ function QueationPage() {
       });
   };
   const postQuestion = async () => {
+    console.log('questions', questions);
     fetch(`${API_BASE_URL}/org/events/${id}/questions`, {
       method: 'POST',
       headers: {
@@ -69,9 +69,8 @@ function QueationPage() {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log('data', data);
+        console.log('respond', data);
         setSubmiting(false);
-        router.push(`/organizer/event/${id}`);
       });
   };
   const handleSubmit = async () => {
@@ -79,15 +78,14 @@ function QueationPage() {
     console.log('questions', JSON.stringify({ questions: questions }));
     if (initQuestion.length == 0) {
       await postQuestion();
+      router.push(`/organizer/event/${id}`);
     } else {
       await deleteQuestion();
       await postQuestion();
+      router.push(`/organizer/event/${id}`);
     }
   };
 
-  if (submiting) {
-    return <Loading />;
-  }
   const [hostId, setHostId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -110,9 +108,9 @@ function QueationPage() {
     fetchHostId();
   }, [id]);
 
-  if (loading) {
-    return <Loading />;
-  }
+  // if (loading) {
+  //   return <Loading />;
+  // }
 
   if (hostId && userId !== hostId) {
     return (

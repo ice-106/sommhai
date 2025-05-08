@@ -1,10 +1,13 @@
 'use client';
-import { Events } from '@sommhai/shared-type/src';
+import { Events, Invite } from '@sommhai/shared-type/src';
+import { Button } from '@sommhai/ui/components/ui/button';
 import { Circle, User, UserIcon } from 'lucide-react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 import { useContext, useEffect, useState } from 'react';
+import { HiClipboardDocumentList } from 'react-icons/hi2';
 import { IoIosTimer } from 'react-icons/io';
 import { IoCloseOutline } from 'react-icons/io5';
 
@@ -41,6 +44,7 @@ export default function AtdEventPage() {
   const [pictureUrl, setPictureUrl] = useState<string | undefined>(undefined);
   const [host, setHost] = useState<User | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [invites, setInvites] = useState<any[]>([]);
 
   useEffect(() => {
     console.log(event);
@@ -98,7 +102,8 @@ export default function AtdEventPage() {
         console.log('data', data);
         try {
           if (data.invites[0].error == 'User is already an attendee') {
-            console.log('User i s already an attendee', data);
+            console.log('User is already an attendee', data);
+
             setIsAttendee(true);
           } else {
             console.log('inv', data.invites[0].inviteId);
@@ -110,6 +115,25 @@ export default function AtdEventPage() {
       });
   };
 
+  useEffect(() => {
+    fetch(`${API_BASE_URL}/org/events/${id}/invites`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log('Invites all', data);
+        setInvites(data);
+        const matchingInvite = data.invites.find((invite: Invite) => invite.userId === userId);
+        if (matchingInvite) {
+          setInv(matchingInvite.inviteId);
+        } else {
+          console.log('No invite found for this userId');
+        }
+      });
+  }, [id]);
   const handleAccept = () => {
     setLoading(true);
     fetch(`${API_BASE_URL}/atd/events/${inv}/respond`, {
@@ -207,8 +231,16 @@ export default function AtdEventPage() {
           </div>
           <HostInfoModal host={host} isOpen={isModalOpen} userId={userId ?? ''} onClose={closeModal} />
         </div>
-        <div className='flex flex-col items-center justify-center'>
+        <div className='flex items-center justify-center gap-12'>
           <AddtoCalendar />
+          <Link className='flex h-full min-h-[120px] w-full flex-col' href={`/attendee/event/${id}/${inv}/questions`}>
+            <Button className='bg-orange-4 hover:bg-orange-3-hover text-black-pure border-orange-3 mt-[-16px] h-full w-full flex-col items-start rounded-3xl border-[3px] text-2xl font-medium'>
+              <div className='text-white-bg w-full items-start justify-items-center truncate'>
+                Questions Form
+                <HiClipboardDocumentList className='text-white-bg !size-40' />
+              </div>
+            </Button>
+          </Link>
         </div>
         {isAttendee ? (
           <div>
