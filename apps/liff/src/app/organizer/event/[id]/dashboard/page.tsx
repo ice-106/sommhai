@@ -19,6 +19,10 @@ function DashboardPage() {
   const [loadQuestion, setLoadQuestion] = useState(true);
   const [attendee, setAttendee] = useState<Invite[]>([]);
   const [notAttendee, setNotAttendee] = useState<Invite[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+  };
 
   useEffect(() => {
     if (loading) {
@@ -66,10 +70,10 @@ function DashboardPage() {
       <ParticipantCard invites={data} />
       <PreferChart data={answer} />
       <div className='my-5 flex w-full items-center gap-2 px-7'>
-        <SearchContainer placeholder='Search...' />
+        <SearchContainer placeholder='Search...' onSearch={handleSearch} />
       </div>
-      <CollabsibleAccepted invites={attendee} />
-      <CollabsibleDenied invites={notAttendee} />
+      <CollabsibleAccepted answers={answer} invites={attendee} searchQuery={searchQuery} />
+      <CollabsibleDenied invites={notAttendee} searchQuery={searchQuery} />
       <div className='mt-[19px]'></div>
     </div>
   );

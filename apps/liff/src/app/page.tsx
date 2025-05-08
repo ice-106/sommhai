@@ -8,9 +8,9 @@ function LandingPage() {
   const [isLargeScreen, setIsLargeScreen] = useState(false);
 
   useEffect(() => {
-    setIsLargeScreen(window.innerWidth > 1000);
+    setIsLargeScreen(window.innerWidth > 500);
     const handleResize = () => {
-      setIsLargeScreen(window.innerWidth > 1000);
+      setIsLargeScreen(window.innerWidth > 500);
     };
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);

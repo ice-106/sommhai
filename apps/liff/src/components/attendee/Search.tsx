@@ -1,52 +1,39 @@
 'use client';
 import { Input } from '@sommhai/ui/components/ui/input';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
 import React from 'react';
-import { useDebouncedCallback } from 'use-debounce';
+import { FiSearch } from 'react-icons/fi';
 
-function Search({ placeholder }: { placeholder: string }) {
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <SearchContent placeholder={placeholder} />
-    </Suspense>
-  );
-}
+function SearchContent({ placeholder, onSearch }: { placeholder: string; onSearch: (query: string) => void }) {
+  const [searchValue, setSearchValue] = React.useState('');
 
-function SearchContent({ placeholder }: { placeholder: string }) {
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
-  const { replace } = useRouter();
-
-  const handleSearch = useDebouncedCallback((term: any) => {
-    const params = new URLSearchParams(searchParams.toString());
-    if (term) {
-      params.set('query', term);
-    } else {
-      params.delete('query');
-    }
-    replace(`${pathname}?${params.toString()}`);
-  }, 300);
+  const handleSearch = (value: string) => {
+    setSearchValue(value);
+    onSearch(value);
+  };
 
   return (
-    <div className='bg-white-pure flex flex-1 rounded-lg'>
+    <div className='bg-white-pure flex w-full flex-1 items-center rounded-lg px-3 py-2'>
+      <FiSearch className='mr-2 text-gray-400' />
       <Input
-        defaultValue={searchParams.get('query')?.toString()}
+        className='w-full border-none placeholder-gray-400 shadow-none focus-visible:ring-0 focus-visible:ring-offset-0'
         placeholder={placeholder}
+        value={searchValue}
         onChange={(e) => handleSearch(e.target.value)}
       />
     </div>
   );
 }
-export default Search;
 
-export function SearchContainer({ placeholder }: { placeholder: string }) {
+export function SearchContainer({ placeholder, onSearch }: { placeholder: string; onSearch: (query: string) => void }) {
   // Using dynamic import with React.lazy for the component using useSearchParams
   const Search = React.lazy(() => import('@/components/attendee/Search'));
 
   return (
     <Suspense fallback={<div className='h-10 flex-1 animate-pulse rounded bg-gray-100'>Loading...</div>}>
-      <Search placeholder={`⌕ ${placeholder}`} />
+      <SearchContent placeholder={`⌕ ${placeholder}`} onSearch={onSearch} />
     </Suspense>
   );
 }
+
+export default SearchContainer;

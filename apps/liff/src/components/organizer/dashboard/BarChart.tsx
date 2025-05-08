@@ -32,13 +32,17 @@ export function PreferChart({ data }: { data: Answer[] }) {
   );
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [chartData, setChartData] = useState<Array<{ answer: string; count: number }>>([]);
+  useEffect(() => {
+    if (validQuestions[0] == undefined) return;
+    setCurrentQuestion(validQuestions[0]);
+  }, [validQuestions]);
 
   useEffect(() => {
+    console.log('currentQuestion', currentQuestion);
     if (!currentQuestion || !currentQuestion.options) {
       setChartData([]);
       return;
     }
-
     // Initialize counts for all options
     const optionCounts: Record<string, number> = {};
     currentQuestion.options.forEach((option) => {

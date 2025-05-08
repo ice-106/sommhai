@@ -21,7 +21,7 @@ export function DonutChart({ attendeePercen }: { attendeePercen: number }) {
   return (
     <ChartContainer className='min-h-full' config={chartConfig}>
       <PieChart className='h-full w-full'>
-        <Pie data={chartData} dataKey='value' innerRadius={44} nameKey='data' outerRadius={72} strokeWidth={5}>
+        <Pie data={chartData} dataKey='value' innerRadius={54} nameKey='data' outerRadius={96} strokeWidth={5}>
           <Label
             content={({ viewBox }) => {
               if (viewBox && 'cx' in viewBox && 'cy' in viewBox) {
