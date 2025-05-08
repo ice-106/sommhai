@@ -24,8 +24,8 @@ export function IconButton({ icon: Icon, title: name, link: href, detail: detail
   const pathName = usePathname();
 
   return (
-    <Link href={`${pathName}/${href}`}>
-      <div className='bg-white-bg rounded-24 flex h-[4.75rem] w-[20.375rem] shadow-lg'>
+    <Link className='w-full' href={`${pathName}/${href}`}>
+      <div className='bg-white-bg rounded-24 flex h-[4.75rem] w-full px-4 shadow-lg'>
         <div className='mx-12 self-center'>
           <Icon size={45} />
         </div>
@@ -61,11 +61,11 @@ export function IconButtonGroup({ event }: { event: Events }) {
 
   return (
     <div className='flex h-full w-full flex-col items-center'>
-      <div className='flex flex-col items-center gap-[16px]'>
+      <div className='flex w-full flex-col items-center gap-[16px] px-16'>
         {displayedButtons.map(({ icon, title, link, detail }, index) =>
           link === 'invite' ? (
             <div
-              className='bg-white-bg rounded-24 flex h-[4.75rem] w-[20.375rem] shadow-lg'
+              className='bg-white-bg rounded-24 flex h-[4.75rem] w-full shadow-lg'
               key={index}
               onClick={() => inviteAttendee(event)}
             >
@@ -81,7 +81,9 @@ export function IconButtonGroup({ event }: { event: Events }) {
               </div>
             </div>
           ) : (
-            <IconButton detail={detail} icon={icon} key={index} link={link} title={title} />
+            <div className='flex w-full' key={index}>
+              <IconButton detail={detail} icon={icon} key={index} link={link} title={title} />
+            </div>
           ),
         )}
       </div>
