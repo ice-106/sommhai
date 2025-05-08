@@ -133,7 +133,7 @@ export default function AtdEventPage() {
           console.log('No invite found for this userId');
         }
       });
-  }, [id]);
+  }, [id, userId]);
   const handleAccept = () => {
     setLoading(true);
     fetch(`${API_BASE_URL}/atd/events/${inv}/respond`, {
@@ -182,7 +182,7 @@ export default function AtdEventPage() {
   }
 
   const getUserInfo = () => {
-    fetch(`${API_BASE_URL}/users/${userId}`, {
+    fetch(`${API_BASE_URL}/users/${event.host_uid}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -235,7 +235,7 @@ export default function AtdEventPage() {
           <AddtoCalendar />
           <Link className='flex h-full min-h-[120px] w-full flex-col' href={`/attendee/event/${id}/${inv}/questions`}>
             <Button className='bg-orange-4 hover:bg-orange-3-hover text-black-pure border-orange-3 mt-[-16px] h-full w-full flex-col items-start rounded-3xl border-[3px] text-2xl font-medium'>
-              <div className='text-white-bg w-full items-start justify-items-center truncate'>
+              <div className='text-white-bg w-full justify-items-center truncate'>
                 Questions Form
                 <HiClipboardDocumentList className='text-white-bg !size-40' />
               </div>
@@ -245,25 +245,6 @@ export default function AtdEventPage() {
         {isAttendee ? (
           <div>
             <h1 className='text-bold-20 py-2'>You are attending this event.</h1>
-            {/* <AcceptButton
-              className='h-[64px] w-full'
-              variant={'Deny'}
-              onClick={() => {
-                setPage(2);
-                handleInvite();
-              }}
-            >
-              Not attending
-            </AcceptButton>
-            {page === 2 && (
-              <SlidePopUpX
-                onClose={() => {
-                  setPage(0);
-                }}
-              >
-                <RejectModal handleReject={handleReject} setPage={setPage} />
-              </SlidePopUpX>
-            )} */}
           </div>
         ) : (
           <div className='flex w-full items-center justify-between gap-20'>

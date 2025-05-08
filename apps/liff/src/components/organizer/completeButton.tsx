@@ -30,11 +30,11 @@ function CompleteButton({ eid }: { eid: string }) {
     <div className='flex w-full flex-col items-center justify-center pt-2'>
       <Link className='inline-flex w-full' href={'/history'}>
         <Button
-          className='bg-orange-3 hover:bg-orange-3-hover relative h-56 w-full items-center justify-between gap-40 rounded-3xl px-20 py-20 text-2xl font-semibold'
+          className='hover:bg-orange-3-hover relative h-56 w-full items-center justify-between gap-40 rounded-3xl bg-red-500 px-20 py-20 text-2xl font-semibold'
           onClick={handleClick}
         >
           <div className='absolute left-0 top-0 h-56 w-full rounded-3xl shadow-[0px_4px_4px_0px_rgba(0,0,0,0.3)]'></div>
-          <div className='w-full justify-start text-center font-medium'>Completed</div>
+          <div className='w-full justify-start text-center font-medium'>End Event.</div>
         </Button>
       </Link>
     </div>
