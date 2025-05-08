@@ -69,13 +69,6 @@ export const OrganizerService = {
                       },
                     },
                   },
-                  {
-                    attendees: {
-                      some: {
-                        uid: userId,
-                      },
-                    },
-                  },
                 ],
               }
             : {},
