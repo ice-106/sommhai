@@ -174,7 +174,7 @@ function AttendeePage() {
         
           <SlidersHorizontal />
         </div> */}
-        <div className='flex h-[75%] w-full flex-col gap-16 overflow-y-auto px-4 pt-12'>
+        <div className='flex h-full w-full flex-col gap-16 overflow-y-auto px-4 pt-12'>
           <EventContainer />
         </div>
       </div>

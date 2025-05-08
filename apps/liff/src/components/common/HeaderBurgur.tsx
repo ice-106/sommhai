@@ -1,6 +1,6 @@
 'use client';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { redirect, usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { AiFillHome, AiOutlineHistory, AiOutlineMenu, AiOutlineUser } from 'react-icons/ai';
 import { MdChangeCircle } from 'react-icons/md';
@@ -15,16 +15,16 @@ export default function HeaderBurgur({ name }: { name: string }) {
 
   const handleChange = () => {
     if (pathName.includes('/organizer')) {
-      router.push('attendee');
+      router.push('/attendee');
     } else if (pathName.includes('/attendee')) {
-      router.push('organizer');
+      router.push('/organizer');
     }
   };
   const handleHome = () => {
     if (pathName.includes('/organizer')) {
-      router.push('organizer');
+      window.location.href = '/organizer';
     } else if (pathName.includes('/attendee')) {
-      router.push('attendee');
+      redirect('/attendee');
     }
   };
 
@@ -56,20 +56,42 @@ export default function HeaderBurgur({ name }: { name: string }) {
             <div className='mx-3 w-full border-b-2 border-s-gray-600' />
             <div className='flex flex-col py-[2rem]'>
               <ul>
-                <li className='flex py-2 pl-2' onClick={handleHome}>
-                  <AiFillHome size='1.2rem' />
-                  <p className='ml-4'>Home</p>
-                </li>
+                {pathName.includes('/organizer') ? (
+                  <Link href={'/organizer'}>
+                    <li className='flex py-2 pl-2'>
+                      <AiFillHome size='1.2rem' />
+                      <p className='ml-4'>Home</p>
+                    </li>
+                  </Link>
+                ) : (
+                  <Link href={'/attendee'}>
+                    <li className='flex py-2 pl-2'>
+                      <AiFillHome size='1.2rem' />
+                      <p className='ml-4'>Home</p>
+                    </li>
+                  </Link>
+                )}
                 <Link href='/profile'>
                   <li className='flex py-2 pl-2'>
                     <AiOutlineUser size='1.2rem' />
                     <p className='ml-4'>Profile</p>
                   </li>
                 </Link>
-                <li className='flex py-2 pl-2' onClick={handleChange}>
-                  <MdChangeCircle size='1.2rem' />
-                  <p className='ml-4'>Switch Role</p>
-                </li>
+                {pathName.includes('organizer') ? (
+                  <Link href={'/attendee'}>
+                    <li className='flex py-2 pl-2'>
+                      <MdChangeCircle size='1.2rem' />
+                      <p className='ml-4'>Switch to Attendee</p>
+                    </li>
+                  </Link>
+                ) : (
+                  <Link href={'/organizer'}>
+                    <li className='flex py-2 pl-2'>
+                      <MdChangeCircle size='1.2rem' />
+                      <p className='ml-4'>Switch to Organizer</p>
+                    </li>
+                  </Link>
+                )}
                 <Link href='/history'>
                   <li className='flex py-2 pl-2'>
                     <AiOutlineHistory size='1.2rem' />
