@@ -67,7 +67,7 @@ export default function AtdEventPage() {
           };
           console.log('eventData', eventData);
           setEvent(eventData as Events);
-          setPictureUrl(data.hostPicture);
+          setPictureUrl(data.host_picture);
         });
     const getAttending = () =>
       fetch(`${API_BASE_URL}/atd/events/${id}/attending?userId=${userId}`, {

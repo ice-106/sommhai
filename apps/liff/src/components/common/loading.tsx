@@ -5,7 +5,7 @@ export default function Loading() {
         <div className='relative mx-auto mb-6 h-[50vw] w-[50vw]'>
           {/* Spinner circle */}
           <div className='border-orange-6 absolute left-0 top-0 h-full w-full rounded-full border-[20px]'></div>
-          <div className='border-t-orange-4 absolute left-0 top-0 h-full w-full animate-spin rounded-full border-4 border-transparent'></div>
+          <div className='border-t-orange-1 absolute left-0 top-0 h-full w-full animate-spin rounded-full border-4 border-transparent'></div>
         </div>
         <h2 className='text-xl font-medium text-gray-700'>sommhai is loading...</h2>
       </div>
