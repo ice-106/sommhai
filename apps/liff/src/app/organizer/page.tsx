@@ -7,7 +7,7 @@ import React, { useContext, useEffect, useState } from 'react';
 
 import HeaderBurgur from '@/components/common/HeaderBurgur';
 import Loading from '@/components/common/loading';
-import CreateEvent from '@/components/organizer/CreateEvent';
+import CreateEvent from '@/components/organizer/CreateEventbutton';
 import EventCard from '@/components/organizer/EventCard';
 import { LiffContext } from '@/contexts/global/liff';
 import { API_BASE_URL } from '@/env';
