@@ -25,7 +25,9 @@ function AtdEventCard({ name: name, link: link, date: date, detail: detail }: Ev
           </div>
           <div className='flex'>
             <IoIosTimer className='text-orange-2 mt-[4px]' />
-            <p className='text-regular-16 text-orange-2'>{getDateDifferenceLabel(date.toString())}</p>
+            <p className='text-regular-16 text-orange-2'>
+              {getDateDifferenceLabel(date.toISOString().split('T')[0] || '')}
+            </p>
           </div>
           <p className='font-inter text-regular-16-low'>{detail}</p>
         </div>
